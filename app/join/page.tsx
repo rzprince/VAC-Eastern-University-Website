@@ -32,17 +32,35 @@ export default async function JoinPage() {
           <div className="eyebrow">Online membership registration</div>
           <h1>Join <span>{settings.clubName}</span></h1>
           <p>
-            This digital form replaces the paper membership form. Complete your
-            information, send ৳{settings.registrationFee} by bKash to{" "}
-            <strong>{settings.bkashNumber}</strong>, and submit your Transaction
+            Complete your information, send ৳{settings.registrationFee} by bKash
+            to <strong>{settings.bkashNumber}</strong>, and submit your Transaction
             ID for verification.
           </p>
         </header>
 
-        <RegistrationForm
-          registrationFee={settings.registrationFee}
-          bkashNumber={settings.bkashNumber}
-        />
+        {settings.registrationOpen ? (
+          <RegistrationForm
+            registrationFee={settings.registrationFee}
+            bkashNumber={settings.bkashNumber}
+          />
+        ) : (
+          <section className="registration-closed">
+            <div className="eyebrow">Applications paused</div>
+            <h2>Membership registration is currently closed.</h2>
+            <p>
+              VAC will reopen this form when the next intake begins. Follow the
+              official Facebook page and group for announcements.
+            </p>
+            <div className="hero-actions">
+              <a className="primary-button" href={settings.facebookPage} target="_blank" rel="noreferrer">
+                Official Facebook Page ↗
+              </a>
+              <a className="secondary-button" href={settings.facebookGroup} target="_blank" rel="noreferrer">
+                VAC Facebook Group ↗
+              </a>
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );
