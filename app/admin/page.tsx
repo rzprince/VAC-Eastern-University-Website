@@ -80,7 +80,7 @@ export default async function AdminPage() {
       .order("sort_order"),
     supabase
       .from("member_applications")
-      .select("id,full_name,eu_id,department,phone_whatsapp,bkash_sender,bkash_transaction_id,status,created_at")
+      .select("id,full_name,eu_id,department,address,date_of_birth,blood_group,email,phone_whatsapp,skills,reason,bkash_sender,bkash_transaction_id,registration_fee,status,created_at")
       .order("created_at", { ascending: false })
       .limit(50),
     supabase
@@ -274,9 +274,22 @@ export default async function AdminPage() {
               <div>
                 <strong>{application.full_name}</strong>
                 <span>{application.eu_id} · {application.department}</span>
-                <span>{application.phone_whatsapp}</span>
+                <span>{application.phone_whatsapp} · {application.email}</span>
+                <details className="application-details">
+                  <summary>View full application</summary>
+                  <dl>
+                    <dt>Address</dt><dd>{application.address}</dd>
+                    <dt>Date of birth</dt><dd>{application.date_of_birth}</dd>
+                    <dt>Blood group</dt><dd>{application.blood_group}</dd>
+                    <dt>Skills</dt><dd>{application.skills}</dd>
+                    <dt>Reason for joining</dt><dd>{application.reason}</dd>
+                    <dt>Submitted</dt><dd>{new Date(application.created_at).toLocaleString("en-BD", { timeZone: "Asia/Dhaka" })}</dd>
+                  </dl>
+                </details>
               </div>
               <div>
+                <small>Registration fee</small>
+                <b>৳{application.registration_fee}</b>
                 <small>bKash sender</small>
                 <b>{application.bkash_sender}</b>
                 <small>Transaction ID</small>
