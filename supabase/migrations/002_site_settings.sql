@@ -36,3 +36,15 @@ alter table public.member_applications
 alter table public.member_applications
   add constraint member_applications_registration_fee_check
   check (registration_fee > 0);
+
+
+drop policy if exists "Public application submit" on public.member_applications;
+
+create policy "Public application submit"
+on public.member_applications for insert
+with check (
+  status = 'payment_submitted'
+  and registration_fee = (
+    select registration_fee from public.site_settings where id = true
+  )
+);
