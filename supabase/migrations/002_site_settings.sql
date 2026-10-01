@@ -28,3 +28,11 @@ with check (exists(select 1 from public.admin_users a where a.user_id = auth.uid
 insert into public.site_settings (id)
 values (true)
 on conflict (id) do nothing;
+
+
+alter table public.member_applications
+  drop constraint if exists member_applications_registration_fee_check;
+
+alter table public.member_applications
+  add constraint member_applications_registration_fee_check
+  check (registration_fee > 0);
