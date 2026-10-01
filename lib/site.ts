@@ -10,11 +10,12 @@ export type SiteSettings = {
   facebookGroup: string;
   bkashNumber: string;
   registrationFee: number;
+  registrationOpen: boolean;
+  contactEmail: string;
+  contactPhone: string;
 };
 
-export const SITE: SiteSettings & {
-  president: { name: string; phone: string; email: string };
-} = {
+export const SITE: SiteSettings = {
   clubName: "Visual Archive Club",
   shortName: "VAC",
   university: "Eastern University",
@@ -27,9 +28,7 @@ export const SITE: SiteSettings & {
   facebookGroup: "https://www.facebook.com/groups/603306963175089",
   bkashNumber: "01860899999",
   registrationFee: 100,
-  president: {
-    name: "Rezwan Hossain Prince",
-    phone: "+880 1860899999",
-    email: "rzprince02@gmail.com"
-  }
+  registrationOpen: true,
+  contactEmail: "rzprince02@gmail.com",
+  contactPhone: "+880 1860899999"
 };
