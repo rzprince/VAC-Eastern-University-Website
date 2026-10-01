@@ -132,3 +132,7 @@ build/vac-fullstack-v1
 ```
 
 Draft pull request: #1
+
+## Vercel deployment
+
+The repository is connected to Vercel. Preview deployments are created from the `build/vac-fullstack-v1` branch while production remains on `main` until final approval.
