@@ -1,1 +1,66 @@
-import type {MediaItem} from "@/lib/data";import {SITE} from "@/lib/site";export function MediaSection({items}:{items:MediaItem[]}){return <section id="media" className="section"><div className="shell"><div className="eyebrow">Latest archive</div><h2>Featured photos & <span>videos</span></h2><p className="section-copy">Newest uploads appear first. Video thumbnails open the exact Facebook video/post configured by the VAC admin.</p>{items.length?<div className="media-grid">{items.map(i=>{const href=i.media_type==="video"?(i.destination_url||SITE.facebookPage):i.thumbnail_url;return <a className="media-card" href={href} target="_blank" rel="noreferrer" key={i.id}><img src={i.thumbnail_url} alt={i.title}/>{i.media_type==="video"&&<span className="play-button">▶</span>}<div className="media-overlay"><small>{i.media_type==="video"?"Facebook video":i.featured?"Featured photo":"Photo"}</small><strong>{i.title}</strong></div></a>})}</div>:<div className="empty-state"><strong>The new archive is ready for your uploads.</strong><p>Upload a photo, or upload a video thumbnail and paste its Facebook post link in the admin dashboard. No code edits required.</p></div>}</div></section>}
+import type { MediaItem } from "@/lib/data";
+
+export function MediaSection({
+  items,
+  facebookPage
+}: {
+  items: MediaItem[];
+  facebookPage: string;
+}) {
+  return (
+    <section id="media" className="section">
+      <div className="shell">
+        <div className="eyebrow">Latest archive</div>
+        <h2>Featured photos & <span>videos</span></h2>
+        <p className="section-copy">
+          Newest uploads appear first. Video thumbnails open the exact Facebook
+          video/post configured by the VAC admin.
+        </p>
+
+        {items.length ? (
+          <div className="media-grid">
+            {items.map((item) => {
+              const href =
+                item.media_type === "video"
+                  ? item.destination_url || facebookPage
+                  : item.thumbnail_url;
+
+              return (
+                <a
+                  className="media-card"
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  key={item.id}
+                >
+                  <img src={item.thumbnail_url} alt={item.title} />
+                  {item.media_type === "video" && (
+                    <span className="play-button">▶</span>
+                  )}
+                  <div className="media-overlay">
+                    <small>
+                      {item.media_type === "video"
+                        ? "Facebook video"
+                        : item.featured
+                          ? "Featured photo"
+                          : "Photo"}
+                    </small>
+                    <strong>{item.title}</strong>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <strong>The new archive is ready for your uploads.</strong>
+            <p>
+              Upload a photo, or upload a video thumbnail and paste its Facebook
+              post link in the admin dashboard. No code edits required.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
