@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { MediaItem } from "@/lib/data";
 
 export function MediaSection({
@@ -10,8 +11,14 @@ export function MediaSection({
   return (
     <section id="media" className="section">
       <div className="shell">
-        <div className="eyebrow">Latest archive</div>
-        <h2>Featured photos & <span>videos</span></h2>
+        <div className="section-heading-row">
+          <div>
+            <div className="eyebrow">Latest archive</div>
+            <h2>Featured photos & <span>videos</span></h2>
+          </div>
+          <Link className="text-link" href="/archive">Open full archive →</Link>
+        </div>
+
         <p className="section-copy">
           Newest uploads appear first. Video thumbnails open the exact Facebook
           video/post configured by the VAC admin.
@@ -56,7 +63,7 @@ export function MediaSection({
             <strong>The new archive is ready for your uploads.</strong>
             <p>
               Upload a photo, or upload a video thumbnail and paste its Facebook
-              post link in the admin dashboard. No code edits required.
+              post link in the admin dashboard.
             </p>
           </div>
         )}
