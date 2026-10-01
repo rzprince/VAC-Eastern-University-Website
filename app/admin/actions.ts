@@ -4,11 +4,21 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSupabase } from "@/lib/supabase/server";
 
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+]);
+
 async function requireAdmin() {
   const supabase = await getServerSupabase();
   if (!supabase) throw new Error("Supabase is not configured.");
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
   if (!user) redirect("/admin/login");
 
   const { data: admin } = await supabase
@@ -22,8 +32,9 @@ async function requireAdmin() {
 }
 
 function revalidateContent() {
-  revalidatePath("/");
-  revalidatePath("/admin");
+  ["/", "/admin", "/archive", "/events", "/join"].forEach((path) =>
+    revalidatePath(path)
+  );
 }
 
 function bangladeshDateTime(raw: string) {
@@ -31,23 +42,72 @@ function bangladeshDateTime(raw: string) {
   return /[zZ]|[+-]\d\d:\d\d$/.test(raw) ? raw : raw + "+06:00";
 }
 
+function optionalUrl(raw: FormDataEntryValue | null, facebookOnly = false) {
+  const value = String(raw || "").trim();
+  if (!value) return null;
+
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error("Please enter a valid URL.");
+  }
+
+  if (!["http:", "https:"].includes(url.protocol)) {
+    throw new Error("Only http/https links are allowed.");
+  }
+
+  if (facebookOnly) {
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
+    const valid =
+      host === "facebook.com" ||
+      host.endsWith(".facebook.com") ||
+      host === "fb.watch";
+
+    if (!valid) {
+      throw new Error("Please paste a Facebook post/video URL.");
+    }
+  }
+
+  return url.toString();
+}
+
 async function upload(file: File | null, folder: string) {
   if (!file || file.size === 0) return null;
 
+  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+    throw new Error("Images must be JPG, PNG, or WebP.");
+  }
+
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new Error("Image files must be 8 MB or smaller.");
+  }
+
   const supabase = await requireAdmin();
-  const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
-  const path = `${folder}/${Date.now()}-${safe}`;
+  const extension =
+    file.type === "image/png"
+      ? "png"
+      : file.type === "image/webp"
+        ? "webp"
+        : "jpg";
+  const path = `${folder}/${crypto.randomUUID()}.${extension}`;
 
   const { error } = await supabase.storage
     .from("vac-media")
-    .upload(path, file, { upsert: false });
+    .upload(path, file, {
+      upsert: false,
+      contentType: file.type,
+      cacheControl: "3600"
+    });
 
   if (error) throw error;
+
   return supabase.storage.from("vac-media").getPublicUrl(path).data.publicUrl;
 }
 
 async function deleteStoredPublicFile(url?: string | null) {
   if (!url) return;
+
   const marker = "/vac-media/";
   const index = url.indexOf(marker);
   if (index < 0) return;
@@ -59,11 +119,70 @@ async function deleteStoredPublicFile(url?: string | null) {
   await supabase.storage.from("vac-media").remove([path]);
 }
 
+export async function addAnnouncement(formData: FormData) {
+  const supabase = await requireAdmin();
+
+  const title = String(formData.get("title") || "").trim();
+  const body = String(formData.get("body") || "").trim();
+
+  if (!title || !body) throw new Error("Announcement title and text are required.");
+
+  const expiresRaw = String(formData.get("expiresAt") || "").trim();
+
+  const { error } = await supabase.from("announcements").insert({
+    title,
+    body,
+    link_url: optionalUrl(formData.get("linkUrl")),
+    pinned: formData.get("pinned") === "on",
+    published: true,
+    expires_at: expiresRaw ? bangladeshDateTime(expiresRaw) : null
+  });
+
+  if (error) throw error;
+  revalidateContent();
+}
+
+export async function updateAnnouncement(formData: FormData) {
+  const supabase = await requireAdmin();
+  const id = String(formData.get("id"));
+  const expiresRaw = String(formData.get("expiresAt") || "").trim();
+
+  const { error } = await supabase
+    .from("announcements")
+    .update({
+      title: String(formData.get("title") || "").trim(),
+      body: String(formData.get("body") || "").trim(),
+      link_url: optionalUrl(formData.get("linkUrl")),
+      pinned: formData.get("pinned") === "on",
+      published: formData.get("published") === "on",
+      expires_at: expiresRaw ? bangladeshDateTime(expiresRaw) : null
+    })
+    .eq("id", id);
+
+  if (error) throw error;
+  revalidateContent();
+}
+
+export async function deleteAnnouncement(formData: FormData) {
+  const supabase = await requireAdmin();
+  const id = String(formData.get("id"));
+  const { error } = await supabase.from("announcements").delete().eq("id", id);
+  if (error) throw error;
+  revalidateContent();
+}
+
 export async function addMedia(formData: FormData) {
   const supabase = await requireAdmin();
-  const thumbnailUrl = await upload(formData.get("thumbnail") as File | null, "archive");
-  const mediaType = String(formData.get("mediaType")) === "video" ? "video" : "photo";
-  const destination = String(formData.get("destinationUrl") || "").trim();
+  const thumbnailUrl = await upload(
+    formData.get("thumbnail") as File | null,
+    "archive"
+  );
+  const mediaType =
+    String(formData.get("mediaType")) === "video" ? "video" : "photo";
+  const destination =
+    mediaType === "video"
+      ? optionalUrl(formData.get("destinationUrl"), true)
+      : optionalUrl(formData.get("destinationUrl"));
 
   if (!thumbnailUrl) throw new Error("Thumbnail/photo is required.");
   if (mediaType === "video" && !destination) {
@@ -74,7 +193,7 @@ export async function addMedia(formData: FormData) {
     title: String(formData.get("title") || "").trim(),
     media_type: mediaType,
     thumbnail_url: thumbnailUrl,
-    destination_url: destination || null,
+    destination_url: destination,
     featured: formData.get("featured") === "on",
     published: true,
     published_at: new Date().toISOString()
@@ -87,8 +206,12 @@ export async function addMedia(formData: FormData) {
 export async function updateMedia(formData: FormData) {
   const supabase = await requireAdmin();
   const id = String(formData.get("id"));
-  const mediaType = String(formData.get("mediaType")) === "video" ? "video" : "photo";
-  const destination = String(formData.get("destinationUrl") || "").trim();
+  const mediaType =
+    String(formData.get("mediaType")) === "video" ? "video" : "photo";
+  const destination =
+    mediaType === "video"
+      ? optionalUrl(formData.get("destinationUrl"), true)
+      : optionalUrl(formData.get("destinationUrl"));
 
   if (mediaType === "video" && !destination) {
     throw new Error("Facebook post/video URL is required for videos.");
@@ -99,17 +222,25 @@ export async function updateMedia(formData: FormData) {
     .select("thumbnail_url")
     .eq("id", id)
     .single();
+
   if (currentError) throw currentError;
 
-  const replacement = await upload(formData.get("thumbnail") as File | null, "archive");
-  const { error } = await supabase.from("media_items").update({
-    title: String(formData.get("title") || "").trim(),
-    media_type: mediaType,
-    destination_url: destination || null,
-    featured: formData.get("featured") === "on",
-    published: formData.get("published") === "on",
-    ...(replacement ? { thumbnail_url: replacement } : {})
-  }).eq("id", id);
+  const replacement = await upload(
+    formData.get("thumbnail") as File | null,
+    "archive"
+  );
+
+  const { error } = await supabase
+    .from("media_items")
+    .update({
+      title: String(formData.get("title") || "").trim(),
+      media_type: mediaType,
+      destination_url: destination,
+      featured: formData.get("featured") === "on",
+      published: formData.get("published") === "on",
+      ...(replacement ? { thumbnail_url: replacement } : {})
+    })
+    .eq("id", id);
 
   if (error) throw error;
   if (replacement) await deleteStoredPublicFile(current.thumbnail_url);
@@ -143,6 +274,7 @@ export async function addEvent(formData: FormData) {
     starts_at: bangladeshDateTime(String(formData.get("startsAt") || "")),
     location: String(formData.get("location") || "").trim() || null,
     poster_url: posterUrl,
+    facebook_url: optionalUrl(formData.get("facebookUrl"), true),
     published: true
   });
 
@@ -159,17 +291,23 @@ export async function updateEvent(formData: FormData) {
     .select("poster_url")
     .eq("id", id)
     .single();
+
   if (currentError) throw currentError;
 
   const replacement = await upload(formData.get("poster") as File | null, "events");
-  const { error } = await supabase.from("events").update({
-    title: String(formData.get("title") || "").trim(),
-    description: String(formData.get("description") || "").trim() || null,
-    starts_at: bangladeshDateTime(String(formData.get("startsAt") || "")),
-    location: String(formData.get("location") || "").trim() || null,
-    published: formData.get("published") === "on",
-    ...(replacement ? { poster_url: replacement } : {})
-  }).eq("id", id);
+
+  const { error } = await supabase
+    .from("events")
+    .update({
+      title: String(formData.get("title") || "").trim(),
+      description: String(formData.get("description") || "").trim() || null,
+      starts_at: bangladeshDateTime(String(formData.get("startsAt") || "")),
+      location: String(formData.get("location") || "").trim() || null,
+      facebook_url: optionalUrl(formData.get("facebookUrl"), true),
+      published: formData.get("published") === "on",
+      ...(replacement ? { poster_url: replacement } : {})
+    })
+    .eq("id", id);
 
   if (error) throw error;
   if (replacement) await deleteStoredPublicFile(current.poster_url);
@@ -195,14 +333,17 @@ export async function deleteEvent(formData: FormData) {
 
 export async function addCommitteeMember(formData: FormData) {
   const supabase = await requireAdmin();
-  const photoUrl = await upload(formData.get("photo") as File | null, "committee");
+  const photoUrl = await upload(
+    formData.get("photo") as File | null,
+    "committee"
+  );
 
   const { error } = await supabase.from("committee_members").insert({
     serial: String(formData.get("serial") || "—"),
     position: String(formData.get("position") || "").trim(),
     name: String(formData.get("name") || "").trim(),
     phone: String(formData.get("phone") || "").trim() || null,
-    email: String(formData.get("email") || "").trim() || null,
+    email: String(formData.get("email") || "").trim().toLowerCase() || null,
     department: String(formData.get("department") || "").trim() || null,
     photo_url: photoUrl,
     leader: formData.get("leader") === "on",
@@ -223,21 +364,29 @@ export async function updateCommitteeMember(formData: FormData) {
     .select("photo_url")
     .eq("id", id)
     .single();
+
   if (currentError) throw currentError;
 
-  const replacement = await upload(formData.get("photo") as File | null, "committee");
-  const { error } = await supabase.from("committee_members").update({
-    serial: String(formData.get("serial") || "—"),
-    position: String(formData.get("position") || "").trim(),
-    name: String(formData.get("name") || "").trim(),
-    phone: String(formData.get("phone") || "").trim() || null,
-    email: String(formData.get("email") || "").trim() || null,
-    department: String(formData.get("department") || "").trim() || null,
-    leader: formData.get("leader") === "on",
-    active: formData.get("active") === "on",
-    sort_order: Number(formData.get("sortOrder") || 999),
-    ...(replacement ? { photo_url: replacement } : {})
-  }).eq("id", id);
+  const replacement = await upload(
+    formData.get("photo") as File | null,
+    "committee"
+  );
+
+  const { error } = await supabase
+    .from("committee_members")
+    .update({
+      serial: String(formData.get("serial") || "—"),
+      position: String(formData.get("position") || "").trim(),
+      name: String(formData.get("name") || "").trim(),
+      phone: String(formData.get("phone") || "").trim() || null,
+      email: String(formData.get("email") || "").trim().toLowerCase() || null,
+      department: String(formData.get("department") || "").trim() || null,
+      leader: formData.get("leader") === "on",
+      active: formData.get("active") === "on",
+      sort_order: Number(formData.get("sortOrder") || 999),
+      ...(replacement ? { photo_url: replacement } : {})
+    })
+    .eq("id", id);
 
   if (error) throw error;
   if (replacement) await deleteStoredPublicFile(current.photo_url);
@@ -254,13 +403,34 @@ export async function updateApplicationStatus(formData: FormData) {
 
   const { error } = await supabase
     .from("member_applications")
-    .update({ status })
+    .update({
+      status,
+      admin_notes: String(formData.get("adminNotes") || "").trim() || null,
+      reviewed_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  if (error) throw error;
+  revalidateContent();
+}
+
+export async function updateClubMember(formData: FormData) {
+  const supabase = await requireAdmin();
+  const id = String(formData.get("id"));
+  const memberNumber = String(formData.get("memberNumber") || "").trim();
+
+  const { error } = await supabase
+    .from("club_members")
+    .update({
+      member_number: memberNumber || null,
+      active: formData.get("active") === "on",
+      updated_at: new Date().toISOString()
+    })
     .eq("id", id);
 
   if (error) throw error;
   revalidatePath("/admin");
 }
-
 
 export async function updateSiteSettings(formData: FormData) {
   const supabase = await requireAdmin();
@@ -268,6 +438,13 @@ export async function updateSiteSettings(formData: FormData) {
   const fee = Number(formData.get("registrationFee") || 100);
   if (!Number.isFinite(fee) || fee <= 0) {
     throw new Error("Registration fee must be a positive number.");
+  }
+
+  const facebookPage = optionalUrl(formData.get("facebookPage"));
+  const facebookGroup = optionalUrl(formData.get("facebookGroup"));
+
+  if (!facebookPage || !facebookGroup) {
+    throw new Error("Facebook page and group links are required.");
   }
 
   const { error } = await supabase
@@ -280,17 +457,21 @@ export async function updateSiteSettings(formData: FormData) {
       tenure: String(formData.get("tenure") || "").trim(),
       tagline: String(formData.get("tagline") || "").trim(),
       about_text: String(formData.get("aboutText") || "").trim(),
-      facebook_page: String(formData.get("facebookPage") || "").trim(),
-      facebook_group: String(formData.get("facebookGroup") || "").trim(),
+      facebook_page: facebookPage,
+      facebook_group: facebookGroup,
       bkash_number: String(formData.get("bkashNumber") || "").trim(),
       registration_fee: fee,
+      registration_open: formData.get("registrationOpen") === "on",
+      contact_email: String(formData.get("contactEmail") || "")
+        .trim()
+        .toLowerCase(),
+      contact_phone: String(formData.get("contactPhone") || "").trim(),
       updated_at: new Date().toISOString()
     })
     .eq("id", true);
 
   if (error) throw error;
   revalidateContent();
-  revalidatePath("/join");
 }
 
 export async function logout() {
