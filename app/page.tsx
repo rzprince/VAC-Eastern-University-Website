@@ -1,29 +1,39 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Navbar } from "@/components/Navbar";
+import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { CommitteeSection } from "@/components/CommitteeSection";
 import { EventsSection } from "@/components/EventsSection";
 import { MediaSection } from "@/components/MediaSection";
+import { Navbar } from "@/components/Navbar";
 import {
+  getAnnouncements,
   getCommittee,
-  getEvents,
   getMedia,
-  getSiteSettings
+  getRecentEvents,
+  getSiteSettings,
+  getUpcomingEvents
 } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
-  const [committee, events, media, settings] = await Promise.all([
-    getCommittee(),
-    getEvents(),
-    getMedia(),
-    getSiteSettings()
-  ]);
+function compactTenure(tenure: string) {
+  const years = tenure.match(/20\d{2}/g);
+  if (years?.length === 2) {
+    return `${years[0]}–${years[1].slice(2)}`;
+  }
+  return tenure;
+}
 
-  const president =
-    committee.find((member) => member.position.toLowerCase() === "president") ||
-    committee[0];
+export default async function Home() {
+  const [committee, upcoming, recent, media, announcements, settings] =
+    await Promise.all([
+      getCommittee(),
+      getUpcomingEvents(6),
+      getRecentEvents(3),
+      getMedia(9),
+      getAnnouncements(4),
+      getSiteSettings()
+    ]);
 
   return (
     <>
@@ -68,7 +78,13 @@ export default async function Home() {
             <p>{settings.tagline}</p>
 
             <div className="hero-actions">
-              <Link className="primary-button" href="/join">Join VAC</Link>
+              {settings.registrationOpen ? (
+                <Link className="primary-button" href="/join">Join VAC</Link>
+              ) : (
+                <span className="primary-button primary-button--disabled">
+                  Registration closed
+                </span>
+              )}
               <a className="secondary-button" href="#committee">
                 Meet the committee
               </a>
@@ -76,7 +92,7 @@ export default async function Home() {
 
             <div className="hero-meta">
               <div>
-                <strong>2026–27</strong>
+                <strong>{compactTenure(settings.tenure)}</strong>
                 <small>Current committee</small>
               </div>
               <div>
@@ -90,6 +106,8 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        <AnnouncementsSection items={announcements} />
 
         <section id="about" className="section section-alt">
           <div className="shell about-grid">
@@ -110,18 +128,10 @@ export default async function Home() {
                 <span>Archiving</span>
               </div>
               <div className="social-row">
-                <a
-                  href={settings.facebookPage}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={settings.facebookPage} target="_blank" rel="noreferrer">
                   Official Facebook Page ↗
                 </a>
-                <a
-                  href={settings.facebookGroup}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={settings.facebookGroup} target="_blank" rel="noreferrer">
                   VAC Facebook Group ↗
                 </a>
               </div>
@@ -130,11 +140,8 @@ export default async function Home() {
         </section>
 
         <CommitteeSection members={committee} />
-        <EventsSection events={events} />
-        <MediaSection
-          items={media}
-          facebookPage={settings.facebookPage}
-        />
+        <EventsSection upcoming={upcoming} recent={recent} />
+        <MediaSection items={media} facebookPage={settings.facebookPage} />
 
         <section id="contact" className="section section-alt">
           <div className="shell contact-grid">
@@ -144,9 +151,8 @@ export default async function Home() {
                 Stay close to the <span>archive.</span>
               </h2>
               <p className="section-copy">
-                Follow VAC for new event announcements, photography, videos and
-                club updates. Membership applications are handled directly on
-                this website.
+                Follow VAC for events, photography, videos and club updates.
+                Membership applications are handled directly on this website.
               </p>
             </div>
 
@@ -159,18 +165,14 @@ export default async function Home() {
                 <small>Community</small>
                 <strong>VAC Facebook Group ↗</strong>
               </a>
-              {president?.phone && (
-                <a href={"tel:" + president.phone.replace(/\s/g, "")}>
-                  <small>Committee contact</small>
-                  <strong>{president.phone}</strong>
-                </a>
-              )}
-              {president?.email && (
-                <a href={"mailto:" + president.email}>
-                  <small>Email</small>
-                  <strong>{president.email}</strong>
-                </a>
-              )}
+              <a href={"tel:" + settings.contactPhone.replace(/\s/g, "")}>
+                <small>Committee contact</small>
+                <strong>{settings.contactPhone}</strong>
+              </a>
+              <a href={"mailto:" + settings.contactEmail}>
+                <small>Email</small>
+                <strong>{settings.contactEmail}</strong>
+              </a>
             </div>
           </div>
         </section>
@@ -184,12 +186,16 @@ export default async function Home() {
               </h2>
               <p>
                 Apply online, submit your bKash payment reference, and VAC can
-                review everything from the admin dashboard.
+                review everything securely from the admin dashboard.
               </p>
             </div>
-            <Link className="primary-button" href="/join">
-              Apply to join VAC
-            </Link>
+            {settings.registrationOpen ? (
+              <Link className="primary-button" href="/join">
+                Apply to join VAC
+              </Link>
+            ) : (
+              <span className="secondary-button">Applications currently closed</span>
+            )}
           </div>
         </section>
       </main>
@@ -201,6 +207,8 @@ export default async function Home() {
             <span>{settings.university} · Since {settings.since}</span>
           </div>
           <div>
+            <Link href="/events">Events</Link>
+            <Link href="/archive">Archive</Link>
             <a href={settings.facebookPage} target="_blank" rel="noreferrer">
               Facebook Page
             </a>
