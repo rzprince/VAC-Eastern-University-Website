@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/database.types";
 
 function getSupabaseConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -14,7 +13,7 @@ export function getPublicSupabase() {
   const config = getSupabaseConfig();
   if (!config) return null;
 
-  return createClient<Database>(config.url, config.key, {
+  return createClient(config.url, config.key, {
     auth: { persistSession: false }
   });
 }
