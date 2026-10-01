@@ -115,3 +115,10 @@
   .admin-export-actions{width:100%}
   .admin-export-actions .secondary-button{width:100%}
 }
+
+.privacy-page{max-width:900px}
+.privacy-content{display:grid;gap:14px;margin:38px 0}
+.privacy-content section{background:#111116;border:1px solid var(--line);border-radius:16px;padding:22px}
+.privacy-content h2{font-size:22px;margin:0 0 10px;letter-spacing:-.02em}
+.privacy-content p{color:#c8c8d1;line-height:1.75;margin:0}
+.privacy-content a,.consent a{color:var(--orange);text-decoration:underline;text-underline-offset:3px}
