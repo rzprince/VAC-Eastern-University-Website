@@ -5,10 +5,10 @@ import { SITE, type SiteSettings } from "@/lib/site";
 export type EventItem = {
   id: string;
   title: string;
-  description?: string;
+  description?: string | null;
   starts_at: string;
-  location?: string;
-  poster_url?: string;
+  location?: string | null;
+  poster_url?: string | null;
 };
 
 export type MediaItem = {
@@ -16,7 +16,7 @@ export type MediaItem = {
   title: string;
   media_type: "photo" | "video";
   thumbnail_url: string;
-  destination_url?: string;
+  destination_url?: string | null;
   published_at: string;
   featured: boolean;
 };
