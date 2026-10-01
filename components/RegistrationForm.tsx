@@ -144,7 +144,10 @@ export function RegistrationForm({
 
       <label className="consent">
         <input type="checkbox" required />
-        I confirm that the information and payment reference I submitted are accurate.
+        <span>
+          I confirm that the information and payment reference I submitted are
+          accurate, and I have read the <a href="/privacy" target="_blank">privacy notice</a>.
+        </span>
       </label>
 
       <label className="website-honeypot" aria-hidden="true">
