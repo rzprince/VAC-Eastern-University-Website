@@ -2,39 +2,133 @@
 
 Full-stack website for Visual Archive Club, Eastern University.
 
-## Included in v1
+## Current v1 build
+
 - Professional VAC/Eastern University responsive homepage
 - Official Committee 2026–2027 data
-- Committee cards with phone, email and department
-- Upcoming event posters with automatic countdowns
-- Structured photo + Facebook-video archive
-- Online member registration based on the paper form
+- Committee cards with photo, phone, email and department
+- Admin editing for committee details, images, public visibility and order
+- Upcoming event posters with automatic Bangladesh-time countdowns
+- Structured newest-first photo + Facebook-video archive
+- Facebook video workflow: upload thumbnail + paste exact Facebook post/video URL
+- Online member registration based on the former paper form
 - ৳100 bKash Send Money workflow to **01860899999**, storing sender number + Transaction ID for verification
-- Supabase-backed Admin Dashboard for media, events, committee additions and membership review
+- Membership application statuses: payment submitted, verified, approved, rejected
+- Editable club settings from Admin (about text, tenure, social links, bKash number and registration fee)
+- Supabase Postgres + Auth + Storage + Row Level Security
+- GitHub Actions TypeScript/build validation
+- Ready for Vercel once the Supabase project is connected
 
-Facebook Page: https://www.facebook.com/visualarchiveeu  
-Facebook Group: https://www.facebook.com/groups/603306963175089
+Official Facebook Page: https://www.facebook.com/visualarchiveeu  
+Official Facebook Group: https://www.facebook.com/groups/603306963175089
 
-## Facebook video workflow
-Admin → Latest photos & video links → choose **Video** → upload a thumbnail → paste the exact Facebook video/post URL → Publish. The thumbnail appears on the website; clicking it redirects to that Facebook post/video.
+## Stack
 
-## Setup
-1. Create a Supabase project.
-2. Run `supabase/migrations/001_initial_schema.sql` in Supabase SQL Editor.
-3. Create the VAC admin in Supabase Auth.
-4. Add the admin user UUID:
-   ```sql
-   insert into public.admin_users (user_id,display_name) values ('YOUR_AUTH_USER_UUID','VAC Admin');
-   ```
-5. Copy `.env.example` to `.env.local` and add the Supabase URL and anon key.
-6. `npm install` then `npm run dev`.
-7. Visit `/admin/login`.
+- Next.js + TypeScript
+- Supabase (Postgres, Auth, Storage)
+- Vercel
+- GitHub Actions
 
-## Daily updates
-Normal content changes do not require code edits. Upload media, paste Facebook links, publish events and review membership applications from Admin.
+## Supabase setup
+
+Run migrations in order:
+
+1. `supabase/migrations/001_initial_schema.sql`
+2. `supabase/migrations/002_site_settings.sql`
+
+Then create the first VAC admin in Supabase Authentication and add that user's UUID:
+
+```sql
+insert into public.admin_users (user_id, display_name)
+values ('YOUR_AUTH_USER_UUID', 'VAC Admin');
+```
+
+Create `.env.local` from `.env.example`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=YOUR_PROJECT_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_ANON_KEY
+```
+
+Install/run:
+
+```bash
+npm install
+npm run dev
+```
+
+Admin login:
+
+```text
+/admin/login
+```
+
+## Daily VAC update workflow
+
+### New photo
+
+Admin → **Latest photos & Facebook videos** → Photo → title → upload image → optionally Featured → Publish.
+
+Existing media can be opened in Admin and edited, hidden, given a replacement image, or deleted.
+
+### New Facebook video
+
+Admin → **Latest photos & Facebook videos** → Video → title → upload the thumbnail/poster you want displayed → paste the **exact Facebook post/video URL** → Publish.
+
+The thumbnail appears on the VAC website with a play button. Clicking it redirects directly to that Facebook video/post.
+
+### Upcoming event
+
+Admin → **Upcoming & past events** → title → Dhaka-local date/time → location → poster → description → Publish.
+
+The website automatically shows the remaining days/hours. Events can later be edited, hidden, have their poster replaced, or be deleted.
+
+### Committee updates
+
+Admin → **Committee manager**.
+
+You can:
+- replace a member photo,
+- update name/position/department/phone/email,
+- change display order,
+- mark leadership cards,
+- hide former members from the public site,
+- add future committee members.
+
+### General club information
+
+Admin → **Club settings**.
+
+You can update:
+- club/university name,
+- current tenure,
+- tagline,
+- About VAC text,
+- Facebook page,
+- Facebook group,
+- bKash registration number,
+- registration fee.
+
+No source-code editing is needed for these normal updates.
 
 ## bKash
-This first version uses Send Money + Transaction ID verification. Official automated bKash Checkout can be added later when merchant API credentials are available.
+
+The current release uses **Send Money + Transaction ID verification**. The registration page shows the current bKash number and fee from the database.
+
+Official automated bKash Checkout can be added later if VAC obtains bKash merchant/API credentials.
 
 ## Privacy
-Public committee cards intentionally show the club contact fields requested (phone, email and department). Home addresses and EU IDs from the committee sheet are not published.
+
+Public committee cards intentionally expose only the club contact information requested for the website. EU IDs and home addresses from the official committee registration sheet are not published.
+
+Member application data is protected by Supabase Row Level Security and is available to authorized VAC administrators.
+
+## Development
+
+Work is being developed on:
+
+```text
+build/vac-fullstack-v1
+```
+
+Draft pull request: #1
