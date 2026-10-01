@@ -20,41 +20,56 @@ export function RegistrationForm({
     const form = event.currentTarget;
     const payload = Object.fromEntries(new FormData(form).entries());
 
-    const response = await fetch("/api/registrations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const result = await response.json();
+    try {
+      const response = await fetch("/api/registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-    if (response.ok) {
-      setState("success");
-      setMessage(result.message || "Application submitted.");
-      form.reset();
-    } else {
+      const result = await response.json();
+
+      if (response.ok) {
+        setState("success");
+        setMessage(result.message || "Application submitted.");
+        form.reset();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        setState("error");
+        setMessage(result.error || "Could not submit your application.");
+      }
+    } catch {
       setState("error");
-      setMessage(result.error || "Could not submit your application.");
+      setMessage("Network error. Please check your connection and try again.");
     }
   }
 
   return (
     <form className="registration-form" onSubmit={submit}>
+      <div className="form-note">
+        <strong>Before you submit</strong>
+        <p>
+          Use your correct Eastern University information. VAC will verify the
+          bKash Transaction ID before approving an application.
+        </p>
+      </div>
+
       <div className="form-grid">
         <label>
           Full name
-          <input name="fullName" required placeholder="As you want it recorded" />
+          <input name="fullName" required maxLength={120} placeholder="As you want it recorded" />
         </label>
         <label>
           EU ID
-          <input name="euId" required inputMode="numeric" />
+          <input name="euId" required maxLength={40} inputMode="numeric" autoComplete="off" />
         </label>
         <label>
           Department
-          <input name="department" required placeholder="CSE, BBA, LAW…" />
+          <input name="department" required maxLength={80} placeholder="CSE, BBA, LAW…" />
         </label>
         <label>
           Date of birth
-          <input name="dateOfBirth" required type="date" />
+          <input name="dateOfBirth" required type="date" max={new Date().toISOString().slice(0, 10)} />
         </label>
         <label>
           Blood group
@@ -67,28 +82,36 @@ export function RegistrationForm({
         </label>
         <label>
           Email
-          <input name="email" required type="email" />
+          <input name="email" required type="email" maxLength={160} autoComplete="email" />
         </label>
         <label>
           Phone + WhatsApp
-          <input name="phone" required type="tel" placeholder="01XXXXXXXXX" />
+          <input
+            name="phone"
+            required
+            type="tel"
+            maxLength={20}
+            autoComplete="tel"
+            placeholder="01XXXXXXXXX"
+          />
         </label>
         <label className="span-2">
           Address
-          <textarea name="address" required rows={2} />
+          <textarea name="address" required maxLength={500} rows={2} />
         </label>
         <label className="span-2">
           Skills you have
           <textarea
             name="skills"
             required
+            maxLength={1000}
             rows={3}
             placeholder="Photography, videography, editing, design, hosting…"
           />
         </label>
         <label className="span-2">
           Why do you want to join VAC?
-          <textarea name="reason" required rows={4} />
+          <textarea name="reason" required maxLength={1500} rows={4} />
         </label>
       </div>
 
@@ -104,11 +127,17 @@ export function RegistrationForm({
         <div className="form-grid">
           <label>
             bKash sender number
-            <input name="bkashSender" required type="tel" />
+            <input name="bkashSender" required type="tel" maxLength={20} placeholder="01XXXXXXXXX" />
           </label>
           <label>
             bKash Transaction ID
-            <input name="bkashTransactionId" required placeholder="Example: C8N..." />
+            <input
+              name="bkashTransactionId"
+              required
+              maxLength={40}
+              autoCapitalize="characters"
+              placeholder="Example: C8N..."
+            />
           </label>
         </div>
       </div>
@@ -127,7 +156,14 @@ export function RegistrationForm({
         {state === "sending" ? "Submitting…" : "Submit membership application"}
       </button>
 
-      {message && <p className={"form-message " + state}>{message}</p>}
+      {message && (
+        <div
+          className={"form-message " + state}
+          role={state === "error" ? "alert" : "status"}
+        >
+          {message}
+        </div>
+      )}
     </form>
   );
 }
