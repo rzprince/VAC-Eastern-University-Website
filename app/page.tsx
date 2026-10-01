@@ -215,6 +215,7 @@ export default async function Home() {
             <a href={settings.facebookGroup} target="_blank" rel="noreferrer">
               Facebook Group
             </a>
+            <Link href="/privacy">Privacy</Link>
             <Link href="/admin">Admin</Link>
           </div>
         </div>
