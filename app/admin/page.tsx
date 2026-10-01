@@ -9,7 +9,8 @@ import {
   updateApplicationStatus,
   updateCommitteeMember,
   updateEvent,
-  updateMedia
+  updateMedia,
+  updateSiteSettings
 } from "./actions";
 import { getServerSupabase } from "@/lib/supabase/server";
 
@@ -60,7 +61,8 @@ export default async function AdminPage() {
     { data: media },
     { data: events },
     { data: committee },
-    { data: applications }
+    { data: applications },
+    { data: siteSettings }
   ] = await Promise.all([
     supabase
       .from("media_items")
@@ -80,7 +82,12 @@ export default async function AdminPage() {
       .from("member_applications")
       .select("id,full_name,eu_id,department,phone_whatsapp,bkash_sender,bkash_transaction_id,status,created_at")
       .order("created_at", { ascending: false })
-      .limit(50)
+      .limit(50),
+    supabase
+      .from("site_settings")
+      .select("club_name,short_name,university,since,tenure,tagline,about_text,facebook_page,facebook_group,bkash_number,registration_fee")
+      .eq("id", true)
+      .maybeSingle()
   ]);
 
   return (
@@ -95,6 +102,32 @@ export default async function AdminPage() {
           <button className="secondary-button">Sign out</button>
         </form>
       </header>
+
+      <section className="admin-panel">
+        <h2>Club settings</h2>
+        <p>
+          These values update the public homepage and membership form without
+          editing source code.
+        </p>
+        {siteSettings ? (
+          <form action={updateSiteSettings} className="admin-form">
+            <label>Club name<input name="clubName" required defaultValue={siteSettings.club_name} /></label>
+            <label>Short name<input name="shortName" required defaultValue={siteSettings.short_name} /></label>
+            <label>University<input name="university" required defaultValue={siteSettings.university} /></label>
+            <label>Since<input name="since" required defaultValue={siteSettings.since} /></label>
+            <label>Current tenure<input name="tenure" required defaultValue={siteSettings.tenure} /></label>
+            <label>Tagline<input name="tagline" required defaultValue={siteSettings.tagline} /></label>
+            <label className="full">About text<textarea name="aboutText" rows={4} required defaultValue={siteSettings.about_text} /></label>
+            <label>Facebook page<input name="facebookPage" type="url" required defaultValue={siteSettings.facebook_page} /></label>
+            <label>Facebook group<input name="facebookGroup" type="url" required defaultValue={siteSettings.facebook_group} /></label>
+            <label>bKash number<input name="bkashNumber" required defaultValue={siteSettings.bkash_number} /></label>
+            <label>Registration fee (৳)<input name="registrationFee" type="number" min="1" required defaultValue={siteSettings.registration_fee} /></label>
+            <button className="primary-button">Save club settings</button>
+          </form>
+        ) : (
+          <p>Run migration 002_site_settings.sql to enable editable club settings.</p>
+        )}
+      </section>
 
       <section className="admin-panel">
         <h2>Latest photos & Facebook videos</h2>
