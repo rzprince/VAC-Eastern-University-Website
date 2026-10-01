@@ -1,3 +1,7 @@
+# Live Website
+
+https://vac-eastern-university.vercel.app
+
 # Visual Archive Club (VAC) — Eastern University
 
 Full-stack website for Visual Archive Club, Eastern University.
