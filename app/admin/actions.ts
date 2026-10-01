@@ -261,6 +261,38 @@ export async function updateApplicationStatus(formData: FormData) {
   revalidatePath("/admin");
 }
 
+
+export async function updateSiteSettings(formData: FormData) {
+  const supabase = await requireAdmin();
+
+  const fee = Number(formData.get("registrationFee") || 100);
+  if (!Number.isFinite(fee) || fee <= 0) {
+    throw new Error("Registration fee must be a positive number.");
+  }
+
+  const { error } = await supabase
+    .from("site_settings")
+    .update({
+      club_name: String(formData.get("clubName") || "").trim(),
+      short_name: String(formData.get("shortName") || "VAC").trim(),
+      university: String(formData.get("university") || "").trim(),
+      since: String(formData.get("since") || "").trim(),
+      tenure: String(formData.get("tenure") || "").trim(),
+      tagline: String(formData.get("tagline") || "").trim(),
+      about_text: String(formData.get("aboutText") || "").trim(),
+      facebook_page: String(formData.get("facebookPage") || "").trim(),
+      facebook_group: String(formData.get("facebookGroup") || "").trim(),
+      bkash_number: String(formData.get("bkashNumber") || "").trim(),
+      registration_fee: fee,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", true);
+
+  if (error) throw error;
+  revalidateContent();
+  revalidatePath("/join");
+}
+
 export async function logout() {
   const supabase = await getServerSupabase();
   if (supabase) await supabase.auth.signOut();
