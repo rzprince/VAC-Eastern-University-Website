@@ -161,7 +161,6 @@ export async function getAnnouncements(limit = 5): Promise<AnnouncementItem[]> {
     .from("announcements")
     .select("id,title,body,link_url,pinned,created_at")
     .eq("published", true)
-    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
     .order("pinned", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(limit);
