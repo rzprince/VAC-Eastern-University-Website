@@ -1,12 +1,17 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
+  addAnnouncement,
   addCommitteeMember,
   addEvent,
   addMedia,
+  deleteAnnouncement,
   deleteEvent,
   deleteMedia,
   logout,
+  updateAnnouncement,
   updateApplicationStatus,
+  updateClubMember,
   updateCommitteeMember,
   updateEvent,
   updateMedia,
@@ -16,14 +21,23 @@ import { getServerSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-function dhakaLocalValue(iso: string) {
+function dhakaLocalValue(iso?: string | null) {
+  if (!iso) return "";
   return new Date(iso)
     .toLocaleString("sv-SE", { timeZone: "Asia/Dhaka", hour12: false })
     .replace(" ", "T")
     .slice(0, 16);
 }
 
-export default async function AdminPage() {
+function statusLabel(status: string) {
+  return status.replaceAll("_", " ");
+}
+
+export default async function AdminPage({
+  searchParams
+}: {
+  searchParams: Promise<{ q?: string; status?: string }>;
+}) {
   const supabase = await getServerSupabase();
 
   if (!supabase) {
@@ -31,18 +45,21 @@ export default async function AdminPage() {
       <main className="admin-shell">
         <div className="empty-state">
           <strong>Supabase is not connected.</strong>
-          <p>Add the environment variables and run the included migration.</p>
+          <p>Add the environment variables and run the included migrations.</p>
         </div>
       </main>
     );
   }
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
   if (!user) redirect("/admin/login");
 
   const { data: admin } = await supabase
     .from("admin_users")
-    .select("user_id")
+    .select("user_id,display_name")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -61,34 +78,96 @@ export default async function AdminPage() {
     { data: media },
     { data: events },
     { data: committee },
-    { data: applications },
-    { data: siteSettings }
+    { data: applicationRows },
+    { data: siteSettings },
+    { data: announcements },
+    { data: clubMembers }
   ] = await Promise.all([
     supabase
       .from("media_items")
-      .select("id,title,media_type,thumbnail_url,destination_url,featured,published,published_at")
+      .select(
+        "id,title,media_type,thumbnail_url,destination_url,featured,published,published_at"
+      )
       .order("published_at", { ascending: false })
-      .limit(30),
+      .limit(60),
     supabase
       .from("events")
-      .select("id,title,description,starts_at,location,poster_url,published")
+      .select(
+        "id,title,description,starts_at,location,poster_url,facebook_url,published"
+      )
       .order("starts_at", { ascending: false })
-      .limit(30),
+      .limit(60),
     supabase
       .from("committee_members")
-      .select("id,serial,position,name,phone,email,department,photo_url,leader,active,sort_order")
+      .select(
+        "id,serial,position,name,phone,email,department,photo_url,leader,active,sort_order"
+      )
       .order("sort_order"),
     supabase
       .from("member_applications")
-      .select("id,full_name,eu_id,department,address,date_of_birth,blood_group,email,phone_whatsapp,skills,reason,bkash_sender,bkash_transaction_id,registration_fee,status,created_at")
+      .select(
+        "id,full_name,eu_id,department,address,date_of_birth,blood_group,email,phone_whatsapp,skills,reason,bkash_sender,bkash_transaction_id,registration_fee,status,admin_notes,reviewed_at,created_at"
+      )
       .order("created_at", { ascending: false })
-      .limit(50),
+      .limit(200),
     supabase
       .from("site_settings")
-      .select("club_name,short_name,university,since,tenure,tagline,about_text,facebook_page,facebook_group,bkash_number,registration_fee")
+      .select(
+        "club_name,short_name,university,since,tenure,tagline,about_text,facebook_page,facebook_group,bkash_number,registration_fee,registration_open,contact_email,contact_phone"
+      )
       .eq("id", true)
-      .maybeSingle()
+      .maybeSingle(),
+    supabase
+      .from("announcements")
+      .select(
+        "id,title,body,link_url,pinned,published,expires_at,created_at"
+      )
+      .order("pinned", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(30),
+    supabase
+      .from("club_members")
+      .select(
+        "id,application_id,member_number,active,joined_at,member_applications(full_name,eu_id,department,email,phone_whatsapp)"
+      )
+      .order("joined_at", { ascending: false })
+      .limit(200)
   ]);
+
+  const params = await searchParams;
+  const query = String(params.q || "").trim().toLowerCase();
+  const statusFilter = String(params.status || "").trim();
+
+  const allApplications = applicationRows ?? [];
+  const applications = allApplications.filter((application) => {
+    const matchesStatus =
+      !statusFilter || application.status === statusFilter;
+    const haystack = [
+      application.full_name,
+      application.eu_id,
+      application.department,
+      application.email,
+      application.phone_whatsapp,
+      application.bkash_transaction_id
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    return matchesStatus && (!query || haystack.includes(query));
+  });
+
+  const pendingCount = allApplications.filter(
+    (item) => item.status === "payment_submitted"
+  ).length;
+  const verifiedCount = allApplications.filter(
+    (item) => item.status === "verified"
+  ).length;
+  const approvedCount = allApplications.filter(
+    (item) => item.status === "approved"
+  ).length;
+  const activeMemberCount = (clubMembers ?? []).filter(
+    (member) => member.active
+  ).length;
 
   return (
     <main className="admin-shell">
@@ -96,19 +175,43 @@ export default async function AdminPage() {
         <div>
           <div className="eyebrow">VAC control room</div>
           <h1>Admin Dashboard</h1>
-          <p>Update VAC without touching code.</p>
+          <p>
+            Signed in as {admin.display_name || user.email}. Update the live VAC
+            website without touching code.
+          </p>
         </div>
-        <form action={logout}>
-          <button className="secondary-button">Sign out</button>
-        </form>
+        <div className="admin-header-actions">
+          <Link className="secondary-button" href="/" target="_blank">
+            Open website ↗
+          </Link>
+          <form action={logout}>
+            <button className="secondary-button">Sign out</button>
+          </form>
+        </div>
       </header>
 
+      <section className="admin-stats" aria-label="VAC dashboard summary">
+        <article><small>Applications</small><strong>{allApplications.length}</strong></article>
+        <article><small>Payment submitted</small><strong>{pendingCount}</strong></article>
+        <article><small>Verified</small><strong>{verifiedCount}</strong></article>
+        <article><small>Approved</small><strong>{approvedCount}</strong></article>
+        <article><small>Active members</small><strong>{activeMemberCount}</strong></article>
+        <article><small>Published media</small><strong>{(media ?? []).filter((x) => x.published).length}</strong></article>
+      </section>
+
       <section className="admin-panel">
-        <h2>Club settings</h2>
-        <p>
-          These values update the public homepage and membership form without
-          editing source code.
-        </p>
+        <div className="admin-panel-heading">
+          <div>
+            <h2>Club settings</h2>
+            <p>Core information shared by the homepage and registration system.</p>
+          </div>
+          {siteSettings && (
+            <span className={"status-chip " + (siteSettings.registration_open ? "open" : "closed")}>
+              Registration {siteSettings.registration_open ? "open" : "closed"}
+            </span>
+          )}
+        </div>
+
         {siteSettings ? (
           <form action={updateSiteSettings} className="admin-form">
             <label>Club name<input name="clubName" required defaultValue={siteSettings.club_name} /></label>
@@ -120,22 +223,71 @@ export default async function AdminPage() {
             <label className="full">About text<textarea name="aboutText" rows={4} required defaultValue={siteSettings.about_text} /></label>
             <label>Facebook page<input name="facebookPage" type="url" required defaultValue={siteSettings.facebook_page} /></label>
             <label>Facebook group<input name="facebookGroup" type="url" required defaultValue={siteSettings.facebook_group} /></label>
+            <label>Public contact email<input name="contactEmail" type="email" required defaultValue={siteSettings.contact_email} /></label>
+            <label>Public contact phone<input name="contactPhone" required defaultValue={siteSettings.contact_phone} /></label>
             <label>bKash number<input name="bkashNumber" required defaultValue={siteSettings.bkash_number} /></label>
             <label>Registration fee (৳)<input name="registrationFee" type="number" min="1" required defaultValue={siteSettings.registration_fee} /></label>
+            <label className="check full"><input name="registrationOpen" type="checkbox" defaultChecked={siteSettings.registration_open} /> Accept new membership applications</label>
             <button className="primary-button">Save club settings</button>
           </form>
         ) : (
-          <p>Run migration 002_site_settings.sql to enable editable club settings.</p>
+          <p>Run the site-settings migration to enable editable club settings.</p>
         )}
       </section>
 
       <section className="admin-panel">
-        <h2>Latest photos & Facebook videos</h2>
-        <p>
-          For a video, upload the thumbnail you want visible on the website and
-          paste the exact Facebook post/video link. The public thumbnail opens
-          that Facebook link.
-        </p>
+        <h2>Announcements</h2>
+        <p>Publish short notices on the homepage. Add an optional link and expiry time.</p>
+
+        <form action={addAnnouncement} className="admin-form">
+          <label>Title<input name="title" required /></label>
+          <label>Optional link<input name="linkUrl" type="url" placeholder="https://..." /></label>
+          <label className="full">Announcement<textarea name="body" required rows={3} /></label>
+          <label>Expires at<input name="expiresAt" type="datetime-local" /></label>
+          <label className="check"><input name="pinned" type="checkbox" /> Pin first</label>
+          <button className="primary-button">Publish announcement</button>
+        </form>
+
+        <div className="admin-records">
+          {announcements?.map((item) => (
+            <details className="admin-record" key={item.id}>
+              <summary>
+                <span>
+                  <b>{item.title}</b>
+                  <small>{item.published ? "published" : "hidden"}{item.pinned ? " · pinned" : ""}</small>
+                </span>
+                <span>Edit</span>
+              </summary>
+              <form action={updateAnnouncement} className="admin-form compact-form">
+                <input type="hidden" name="id" value={item.id} />
+                <label>Title<input name="title" required defaultValue={item.title} /></label>
+                <label>Link<input name="linkUrl" type="url" defaultValue={item.link_url || ""} /></label>
+                <label className="full">Announcement<textarea name="body" required rows={3} defaultValue={item.body} /></label>
+                <label>Expires at<input name="expiresAt" type="datetime-local" defaultValue={dhakaLocalValue(item.expires_at)} /></label>
+                <label className="check"><input name="pinned" type="checkbox" defaultChecked={item.pinned} /> Pinned</label>
+                <label className="check"><input name="published" type="checkbox" defaultChecked={item.published} /> Visible</label>
+                <button className="primary-button">Save announcement</button>
+              </form>
+              <form action={deleteAnnouncement}>
+                <input type="hidden" name="id" value={item.id} />
+                <button className="danger-button">Delete announcement</button>
+              </form>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section className="admin-panel">
+        <div className="admin-panel-heading">
+          <div>
+            <h2>Latest photos & Facebook videos</h2>
+            <p>
+              Upload a photo, or upload a video thumbnail and paste the exact
+              Facebook post/video URL.
+            </p>
+          </div>
+          <Link className="text-link" href="/archive" target="_blank">View archive ↗</Link>
+        </div>
 
         <form action={addMedia} className="admin-form">
           <label>Title<input name="title" required /></label>
@@ -145,7 +297,7 @@ export default async function AdminPage() {
               <option value="video">Video</option>
             </select>
           </label>
-          <label>Thumbnail / photo<input name="thumbnail" type="file" accept="image/*" required /></label>
+          <label>Thumbnail / photo<input name="thumbnail" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required /></label>
           <label>Facebook post/video link<input name="destinationUrl" type="url" placeholder="https://www.facebook.com/..." /></label>
           <label className="check"><input name="featured" type="checkbox" /> Featured</label>
           <button className="primary-button">Publish media</button>
@@ -167,7 +319,7 @@ export default async function AdminPage() {
                     <option value="video">Video</option>
                   </select>
                 </label>
-                <label>Replace thumbnail/photo<input name="thumbnail" type="file" accept="image/*" /></label>
+                <label>Replace thumbnail/photo<input name="thumbnail" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
                 <label>Facebook link<input name="destinationUrl" type="url" defaultValue={item.destination_url || ""} /></label>
                 <label className="check"><input name="featured" type="checkbox" defaultChecked={item.featured} /> Featured</label>
                 <label className="check"><input name="published" type="checkbox" defaultChecked={item.published} /> Visible</label>
@@ -183,13 +335,20 @@ export default async function AdminPage() {
       </section>
 
       <section className="admin-panel">
-        <h2>Upcoming & past events</h2>
+        <div className="admin-panel-heading">
+          <div>
+            <h2>Upcoming & past events</h2>
+            <p>Publish event posters, countdowns and optional Facebook event/post links.</p>
+          </div>
+          <Link className="text-link" href="/events" target="_blank">View events ↗</Link>
+        </div>
 
         <form action={addEvent} className="admin-form">
           <label>Event title<input name="title" required /></label>
           <label>Date & time<input name="startsAt" type="datetime-local" required /></label>
           <label>Location<input name="location" /></label>
-          <label>Poster<input name="poster" type="file" accept="image/*" /></label>
+          <label>Facebook event/post link<input name="facebookUrl" type="url" placeholder="https://www.facebook.com/..." /></label>
+          <label>Poster<input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
           <label className="full">Description<textarea name="description" rows={3} /></label>
           <button className="primary-button">Publish event</button>
         </form>
@@ -198,7 +357,10 @@ export default async function AdminPage() {
           {events?.map((event) => (
             <details className="admin-record" key={event.id}>
               <summary>
-                <span><b>{event.title}</b><small>{new Date(event.starts_at).toLocaleString("en-BD", { timeZone: "Asia/Dhaka" })}</small></span>
+                <span>
+                  <b>{event.title}</b>
+                  <small>{new Date(event.starts_at).toLocaleString("en-BD", { timeZone: "Asia/Dhaka" })}</small>
+                </span>
                 <span>{event.published ? "Published" : "Hidden"}</span>
               </summary>
               <form action={updateEvent} className="admin-form compact-form">
@@ -206,7 +368,8 @@ export default async function AdminPage() {
                 <label>Title<input name="title" required defaultValue={event.title} /></label>
                 <label>Date & time<input name="startsAt" type="datetime-local" required defaultValue={dhakaLocalValue(event.starts_at)} /></label>
                 <label>Location<input name="location" defaultValue={event.location || ""} /></label>
-                <label>Replace poster<input name="poster" type="file" accept="image/*" /></label>
+                <label>Facebook link<input name="facebookUrl" type="url" defaultValue={event.facebook_url || ""} /></label>
+                <label>Replace poster<input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
                 <label className="full">Description<textarea name="description" rows={3} defaultValue={event.description || ""} /></label>
                 <label className="check"><input name="published" type="checkbox" defaultChecked={event.published} /> Visible</label>
                 <button className="primary-button">Save event</button>
@@ -223,8 +386,8 @@ export default async function AdminPage() {
       <section className="admin-panel">
         <h2>Committee manager</h2>
         <p>
-          Upload or replace member photos, correct names/contact details, change
-          order, or hide an old member without deleting history.
+          Add or update committee members, replace photos, change display order,
+          or hide past members.
         </p>
 
         <form action={addCommitteeMember} className="admin-form">
@@ -235,7 +398,7 @@ export default async function AdminPage() {
           <label>Department<input name="department" /></label>
           <label>Phone<input name="phone" /></label>
           <label>Email<input name="email" type="email" /></label>
-          <label>Photo<input name="photo" type="file" accept="image/*" /></label>
+          <label>Photo<input name="photo" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
           <label className="check"><input name="leader" type="checkbox" /> Leadership card</label>
           <button className="primary-button">Add member</button>
         </form>
@@ -256,7 +419,7 @@ export default async function AdminPage() {
                 <label>Department<input name="department" defaultValue={member.department || ""} /></label>
                 <label>Phone<input name="phone" defaultValue={member.phone || ""} /></label>
                 <label>Email<input name="email" type="email" defaultValue={member.email || ""} /></label>
-                <label>Replace photo<input name="photo" type="file" accept="image/*" /></label>
+                <label>Replace photo<input name="photo" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
                 <label className="check"><input name="leader" type="checkbox" defaultChecked={member.leader} /> Leadership card</label>
                 <label className="check"><input name="active" type="checkbox" defaultChecked={member.active} /> Show publicly</label>
                 <button className="primary-button">Save member</button>
@@ -267,14 +430,44 @@ export default async function AdminPage() {
       </section>
 
       <section className="admin-panel">
-        <h2>Membership applications</h2>
+        <div className="admin-panel-heading">
+          <div>
+            <h2>Membership applications</h2>
+            <p>Search, verify bKash references, approve applicants, and export records.</p>
+          </div>
+          <div className="admin-export-actions">
+            <a className="secondary-button" href="/admin/export?scope=applications">Export applications CSV</a>
+            <a className="secondary-button" href="/admin/export?scope=members">Export members CSV</a>
+          </div>
+        </div>
+
+        <form method="get" className="admin-search">
+          <input name="q" type="search" placeholder="Search name, EU ID, phone, email or TxID" defaultValue={params.q || ""} />
+          <select name="status" defaultValue={params.status || ""}>
+            <option value="">All statuses</option>
+            <option value="payment_submitted">Payment submitted</option>
+            <option value="verified">Verified</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <button className="secondary-button">Filter</button>
+          {(query || statusFilter) && <Link className="text-link" href="/admin">Clear</Link>}
+        </form>
+
+        <p className="admin-result-count">
+          Showing {applications.length} of {allApplications.length} applications
+        </p>
+
         <div className="applications">
-          {applications?.length ? applications.map((application) => (
+          {applications.length ? applications.map((application) => (
             <article key={application.id}>
               <div>
                 <strong>{application.full_name}</strong>
                 <span>{application.eu_id} · {application.department}</span>
                 <span>{application.phone_whatsapp} · {application.email}</span>
+                <span className={"application-status application-status--" + application.status}>
+                  {statusLabel(application.status)}
+                </span>
                 <details className="application-details">
                   <summary>View full application</summary>
                   <dl>
@@ -284,6 +477,7 @@ export default async function AdminPage() {
                     <dt>Skills</dt><dd>{application.skills}</dd>
                     <dt>Reason for joining</dt><dd>{application.reason}</dd>
                     <dt>Submitted</dt><dd>{new Date(application.created_at).toLocaleString("en-BD", { timeZone: "Asia/Dhaka" })}</dd>
+                    <dt>Reviewed</dt><dd>{application.reviewed_at ? new Date(application.reviewed_at).toLocaleString("en-BD", { timeZone: "Asia/Dhaka" }) : "Not reviewed yet"}</dd>
                   </dl>
                 </details>
               </div>
@@ -295,7 +489,7 @@ export default async function AdminPage() {
                 <small>Transaction ID</small>
                 <b>{application.bkash_transaction_id}</b>
               </div>
-              <form action={updateApplicationStatus}>
+              <form action={updateApplicationStatus} className="application-review-form">
                 <input type="hidden" name="id" value={application.id} />
                 <select name="status" defaultValue={application.status}>
                   <option value="payment_submitted">Payment submitted</option>
@@ -303,10 +497,58 @@ export default async function AdminPage() {
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>
                 </select>
-                <button className="secondary-button">Update</button>
+                <textarea name="adminNotes" rows={3} placeholder="Private admin note" defaultValue={application.admin_notes || ""} />
+                <button className="secondary-button">Save review</button>
               </form>
             </article>
-          )) : <p>No applications yet.</p>}
+          )) : (
+            <div className="empty-state">
+              <strong>No applications match this filter.</strong>
+              <p>Clear the search or choose another status.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="admin-panel">
+        <div className="admin-panel-heading">
+          <div>
+            <h2>Approved member registry</h2>
+            <p>
+              Approving an application automatically creates a club member
+              record. Assign an optional VAC member number here.
+            </p>
+          </div>
+          <span className="status-chip open">{activeMemberCount} active</span>
+        </div>
+
+        <div className="member-registry">
+          {clubMembers?.length ? clubMembers.map((member) => {
+            const application = Array.isArray(member.member_applications)
+              ? member.member_applications[0]
+              : member.member_applications;
+
+            return (
+              <article key={member.id}>
+                <div>
+                  <strong>{application?.full_name || "Approved member"}</strong>
+                  <span>{application?.eu_id || "—"} · {application?.department || "—"}</span>
+                  <small>{application?.email || ""} {application?.phone_whatsapp ? "· " + application.phone_whatsapp : ""}</small>
+                </div>
+                <form action={updateClubMember}>
+                  <input type="hidden" name="id" value={member.id} />
+                  <input name="memberNumber" placeholder="VAC member no." defaultValue={member.member_number || ""} />
+                  <label className="check"><input name="active" type="checkbox" defaultChecked={member.active} /> Active member</label>
+                  <button className="secondary-button">Save</button>
+                </form>
+              </article>
+            );
+          }) : (
+            <div className="empty-state">
+              <strong>No approved members yet.</strong>
+              <p>Approved applications will automatically appear here.</p>
+            </div>
+          )}
         </div>
       </section>
     </main>
