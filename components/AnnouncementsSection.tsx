@@ -10,15 +10,18 @@ export function AnnouncementsSection({
   return (
     <section className="announcement-section" aria-label="VAC announcements">
       <div className="shell announcement-list">
-        {items.map((item) => {
+        {items.map((item, index) => {
           const content = (
             <>
+              <span className="announcement-index">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               <div>
-                <small>{item.pinned ? "Pinned announcement" : "Announcement"}</small>
+                <small>{item.pinned ? "Pinned notice" : "VAC notice"}</small>
                 <strong>{item.title}</strong>
                 <p>{item.body}</p>
               </div>
-              {item.link_url && <span>Open ↗</span>}
+              {item.link_url && <span className="announcement-arrow">↗</span>}
             </>
           );
 
