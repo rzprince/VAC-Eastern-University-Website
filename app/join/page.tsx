@@ -3,39 +3,48 @@ import Link from "next/link";
 import { RegistrationForm } from "@/components/RegistrationForm";
 import { getSiteSettings } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function JoinPage() {
   const settings = await getSiteSettings();
 
   return (
-    <main className="join-page">
-      <div className="shell">
+    <main className="join-page join-page--v2">
+      <div className="join-background" aria-hidden="true" />
+      <div className="shell join-shell">
         <Link className="back-link" href="/">← Back to VAC</Link>
 
-        <header className="form-header">
-          <div className="form-header-logos">
+        <header className="form-header form-header--v2">
+          <div className="join-logo-lockup">
             <Image
-              src="/eastern-university-logo.webp"
-              alt={settings.university}
-              width={130}
-              height={94}
-            />
-            <Image
-              src="/vac-logo.webp"
+              src="/vac-logo.png"
               alt={settings.clubName}
-              width={160}
-              height={106}
+              width={520}
+              height={347}
+              priority
+            />
+            <span />
+            <Image
+              src="/eastern-university-logo.png"
+              alt={settings.university}
+              width={520}
+              height={375}
+              priority
             />
           </div>
 
-          <div className="eyebrow">Online membership registration</div>
-          <h1>Join <span>{settings.clubName}</span></h1>
-          <p>
-            Complete your information, send ৳{settings.registrationFee} by bKash
-            to <strong>{settings.bkashNumber}</strong>, and submit your Transaction
-            ID for verification.
-          </p>
+          <div>
+            <div className="eyebrow">Online membership · {settings.tenure}</div>
+            <h1>
+              Join the people behind the <span>frame.</span>
+            </h1>
+            <p>
+              Complete one clean digital application. Send ৳{settings.registrationFee}
+              {" "}by bKash to <strong>{settings.bkashNumber}</strong>, submit the
+              form, and we&apos;ll open the VAC WhatsApp chat so you can send your
+              TRX ID manually.
+            </p>
+          </div>
         </header>
 
         {settings.registrationOpen ? (
@@ -52,10 +61,20 @@ export default async function JoinPage() {
               official Facebook page and group for announcements.
             </p>
             <div className="hero-actions">
-              <a className="primary-button" href={settings.facebookPage} target="_blank" rel="noreferrer">
+              <a
+                className="primary-button"
+                href={settings.facebookPage}
+                target="_blank"
+                rel="noreferrer"
+              >
                 Official Facebook Page ↗
               </a>
-              <a className="secondary-button" href={settings.facebookGroup} target="_blank" rel="noreferrer">
+              <a
+                className="secondary-button"
+                href={settings.facebookGroup}
+                target="_blank"
+                rel="noreferrer"
+              >
                 VAC Facebook Group ↗
               </a>
             </div>
