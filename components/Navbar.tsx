@@ -25,7 +25,7 @@ export function Navbar({
         <Link className="brand" href="/" onClick={close} aria-label="Visual Archive Club home">
           <span className="brand-mark">
             <Image
-              src="/vac-logo.png"
+              src="/vac-logo.webp"
               alt=""
               width={72}
               height={48}
