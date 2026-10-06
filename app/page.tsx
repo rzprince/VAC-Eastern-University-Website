@@ -54,7 +54,7 @@ export default async function Home() {
             <div className="hero-copy">
               <div className="hero-brandline">
                 <Image
-                  src="/eastern-university-logo.png"
+                  src="/eastern-university-logo.webp"
                   alt={settings.university}
                   width={520}
                   height={375}
@@ -157,14 +157,14 @@ export default async function Home() {
 
             <div className="brand-lockup" aria-label="VAC and Eastern University">
               <Image
-                src="/vac-logo.png"
+                src="/vac-logo.webp"
                 alt={settings.clubName}
                 width={520}
                 height={347}
               />
               <span />
               <Image
-                src="/eastern-university-logo.png"
+                src="/eastern-university-logo.webp"
                 alt={settings.university}
                 width={520}
                 height={375}
@@ -240,7 +240,7 @@ export default async function Home() {
       <footer>
         <div className="shell footer-inner">
           <div className="footer-brand">
-            <Image src="/vac-logo.png" alt="" width={70} height={47} />
+            <Image src="/vac-logo.webp" alt="" width={70} height={47} />
             <div>
               <strong>{settings.clubName}</strong>
               <span>{settings.university} · Since {settings.since}</span>
