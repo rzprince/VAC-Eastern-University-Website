@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     "Visual Storytelling"
   ],
   alternates: { canonical: "/" },
-  icons: { icon: "/vac-logo.png" },
+  icons: { icon: "/vac-logo.webp" },
   openGraph: {
     title: "Visual Archive Club | Eastern University",
     description:
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/vac-logo.png",
+        url: "/vac-logo.webp",
         width: 1000,
         height: 667,
         alt: "Visual Archive Club"
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     title: "Visual Archive Club | Eastern University",
     description:
       "Photography, videography and visual storytelling at Eastern University.",
-    images: ["/vac-logo.png"]
+    images: ["/vac-logo.webp"]
   }
 };
 
