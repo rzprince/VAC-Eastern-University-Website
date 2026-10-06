@@ -4,36 +4,67 @@ import type { EventItem } from "@/lib/data";
 
 function EventCard({
   event,
-  upcoming
+  upcoming,
+  index
 }: {
   event: EventItem;
   upcoming: boolean;
+  index: number;
 }) {
+  const date = new Date(event.starts_at);
+  const day = new Intl.DateTimeFormat("en", {
+    day: "2-digit",
+    timeZone: "Asia/Dhaka"
+  }).format(date);
+  const month = new Intl.DateTimeFormat("en", {
+    month: "short",
+    timeZone: "Asia/Dhaka"
+  }).format(date);
+
   const card = (
-    <article className="event-card">
-      {event.poster_url ? (
-        <img src={event.poster_url} alt={event.title} />
-      ) : (
-        <div className="event-poster-placeholder">VAC EVENT</div>
-      )}
+    <article className={"event-card " + (index === 0 && upcoming ? "event-card--featured" : "")}>
+      <div className="event-visual">
+        {event.poster_url ? (
+          <img src={event.poster_url} alt={event.title} loading="lazy" />
+        ) : (
+          <div className="event-poster-placeholder">
+            <span>VAC</span>
+            <strong>EVENT</strong>
+          </div>
+        )}
+        <div className="event-date">
+          <strong>{day}</strong>
+          <span>{month}</span>
+        </div>
+      </div>
 
       <div className="event-body">
-        {upcoming ? (
-          <Countdown target={event.starts_at} />
-        ) : (
-          <span className="countdown countdown--past">Recent event</span>
-        )}
+        <div className="event-meta-row">
+          {upcoming ? (
+            <Countdown target={event.starts_at} />
+          ) : (
+            <span className="countdown countdown--past">Archived</span>
+          )}
+          <span className="event-arrow" aria-hidden="true">↗</span>
+        </div>
+
         <h3>{event.title}</h3>
         <p>{event.description || "More details will be published soon."}</p>
-        <small>
-          {new Date(event.starts_at).toLocaleString("en-BD", {
-            timeZone: "Asia/Dhaka",
-            dateStyle: "medium",
-            timeStyle: "short"
-          })}
-          {event.location ? " · " + event.location : ""}
-        </small>
-        {event.facebook_url && <span className="event-link">View Facebook post ↗</span>}
+
+        <div className="event-details">
+          <span>
+            {new Date(event.starts_at).toLocaleString("en-BD", {
+              timeZone: "Asia/Dhaka",
+              dateStyle: "medium",
+              timeStyle: "short"
+            })}
+          </span>
+          {event.location && <span>{event.location}</span>}
+        </div>
+
+        {event.facebook_url && (
+          <span className="event-link">Open Facebook post</span>
+        )}
       </div>
     </article>
   );
@@ -44,6 +75,7 @@ function EventCard({
       href={event.facebook_url}
       target="_blank"
       rel="noreferrer"
+      aria-label={event.title + " — open Facebook post"}
     >
       {card}
     </a>
@@ -58,38 +90,52 @@ export function EventsSection({
   recent: EventItem[];
 }) {
   return (
-    <section id="events" className="section section-alt">
+    <section id="events" className="section events-section">
       <div className="shell">
-        <div className="section-heading-row">
+        <div className="section-kicker-row">
           <div>
-            <div className="eyebrow">Events</div>
-            <h2>Upcoming & <span>recent</span></h2>
+            <div className="eyebrow">Programs & moments</div>
+            <h2>
+              What&apos;s happening <span>next.</span>
+            </h2>
           </div>
-          <Link className="text-link" href="/events">View all events →</Link>
+          <Link className="text-link" href="/events">
+            View event archive <span>↗</span>
+          </Link>
         </div>
 
         {upcoming.length ? (
-          <>
-            <h3 className="subsection-title">Upcoming</h3>
-            <div className="event-grid">
-              {upcoming.map((event) => (
-                <EventCard key={event.id} event={event} upcoming />
-              ))}
-            </div>
-          </>
+          <div className="event-grid">
+            {upcoming.map((event, index) => (
+              <EventCard key={event.id} event={event} upcoming index={index} />
+            ))}
+          </div>
         ) : (
-          <div className="empty-state">
-            <strong>No upcoming event published yet.</strong>
-            <p>New VAC events and countdowns will appear here automatically.</p>
+          <div className="empty-state empty-state--editorial">
+            <span className="empty-state-index">NEXT /</span>
+            <div>
+              <strong>No upcoming event is published yet.</strong>
+              <p>
+                The next VAC workshop, photowalk or creative session will appear
+                here as soon as it is announced.
+              </p>
+            </div>
           </div>
         )}
 
         {recent.length > 0 && (
           <div className="recent-events">
-            <h3 className="subsection-title">Recently archived</h3>
-            <div className="event-grid">
-              {recent.slice(0, 3).map((event) => (
-                <EventCard key={event.id} event={event} upcoming={false} />
+            <div className="subsection-line">
+              <span>Recently archived</span>
+            </div>
+            <div className="event-grid event-grid--recent">
+              {recent.slice(0, 3).map((event, index) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  upcoming={false}
+                  index={index}
+                />
               ))}
             </div>
           </div>
