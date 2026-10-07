@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { VacLogo } from "@/components/BrandLogo";
 
 type SuccessData = {
   applicationRef: string;
@@ -228,7 +229,7 @@ export function RegistrationForm({
             aria-labelledby="application-success-title"
           >
             <div className="success-logo">
-              <img src="/vac-logo.png" alt="Visual Archive Club" />
+              <VacLogo alt="Visual Archive Club" />
             </div>
             <div className="success-check" aria-hidden="true">✓</div>
             <div className="eyebrow">Application received</div>
