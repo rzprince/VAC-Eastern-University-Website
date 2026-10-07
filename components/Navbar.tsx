@@ -22,13 +22,18 @@ export function Navbar({
   return (
     <header className="navbar">
       <div className="shell nav-inner">
-        <Link className="brand" href="/" onClick={close} aria-label="Visual Archive Club home">
+        <Link
+          className="brand"
+          href="/"
+          onClick={close}
+          aria-label="Visual Archive Club home"
+        >
           <span className="brand-mark">
             <Image
-              src="/vac-logo.webp"
+              src="/vac-logo.png"
               alt=""
-              width={72}
-              height={48}
+              width={520}
+              height={373}
               priority
             />
           </span>
