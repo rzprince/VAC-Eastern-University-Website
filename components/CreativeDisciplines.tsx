@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 const disciplines = [
   {
     number: "01",
@@ -48,7 +50,7 @@ export function CreativeDisciplines() {
               className={"craft-card " + item.className}
               key={item.title}
               data-reveal
-              style={{ "--reveal-delay": index * 70 + "ms" } as React.CSSProperties}
+              style={{ "--reveal-delay": index * 70 + "ms" } as CSSProperties}
             >
               <div className="craft-art">
                 <img
