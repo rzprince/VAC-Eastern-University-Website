@@ -4930,3 +4930,34 @@ body {
     transition: none !important;
   }
 }
+
+
+/* Committee ordering refinements */
+.committee-grid--advisory {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 14px;
+}
+
+.committee-grid--advisory .member-card {
+  min-height: 292px;
+}
+
+.committee-grid--advisory + .president-feature {
+  margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+  .committee-grid--advisory {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .committee-grid--advisory {
+    grid-template-columns: 1fr;
+  }
+
+  .committee-grid--advisory .member-card {
+    min-height: 250px;
+  }
+}
