@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { CSSProperties } from "react";
 import type { CommitteeMember } from "@/lib/committee";
 
 function initials(name: string) {
@@ -128,7 +129,7 @@ export function CommitteeSection({
                 onClick={() => setSelected(member)}
                 type="button"
                 data-reveal
-                style={{ "--reveal-delay": (index % 4) * 45 + "ms" } as React.CSSProperties}
+                style={{ "--reveal-delay": (index % 4) * 45 + "ms" } as CSSProperties}
               >
                 <div className="member-card-top">
                   <span className="member-index">
