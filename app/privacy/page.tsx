@@ -32,8 +32,9 @@ export default async function PrivacyPage() {
                   The membership form collects the information needed to review
                   an application: name, Eastern University ID, department,
                   address, date of birth, blood group, email, phone/WhatsApp,
-                  skills, reason for joining, bKash sender number and Transaction
-                  ID.
+                  skills, reason for joining and bKash sender number. The bKash
+                  Transaction ID is sent separately in the VAC WhatsApp chat and
+                  may be recorded by an authorized administrator for verification.
                 </p>
               </section>
 
@@ -42,7 +43,19 @@ export default async function PrivacyPage() {
                 <p>
                   Submitted information is used for VAC membership administration,
                   payment-reference verification, applicant communication and the
-                  approved-member registry.
+                  approved-member registry. A VAC-themed PDF snapshot of the
+                  application is generated when the form is submitted.
+                </p>
+              </section>
+
+              <section>
+                <h2>Application PDFs</h2>
+                <p>
+                  Generated membership PDFs are stored privately in VAC&apos;s
+                  Supabase storage. When the Google Drive integration is configured,
+                  a copy is also saved to the club&apos;s restricted membership
+                  application folder. Applicants receive a private high-entropy
+                  download link for their own PDF after submitting the form.
                 </p>
               </section>
 
