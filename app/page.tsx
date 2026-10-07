@@ -236,25 +236,13 @@ export default async function Home() {
         </section>
       </main>
 
-      <footer>
-        <div className="shell footer-inner">
-          <div className="footer-brand">
-            <Image src="/vac-logo.webp" alt="" width={70} height={47} />
-            <div>
-              <strong>{settings.clubName}</strong>
-              <span>{settings.university} · Since {settings.since}</span>
-            </div>
-          </div>
-
-          <div className="footer-links">
-            <Link href="/events">Events</Link>
-            <Link href="/archive">Archive</Link>
-            <Link href="/join">Membership</Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/admin">Admin</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        clubName={settings.clubName}
+        university={settings.university}
+        since={settings.since}
+        facebookPage={settings.facebookPage}
+        facebookGroup={settings.facebookGroup}
+      />
     </>
   );
 }
