@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
+import { SiteFooter } from "@/components/SiteFooter";
 import { getSiteSettings } from "@/lib/data";
 
 export const revalidate = 300;
@@ -81,6 +82,13 @@ export default async function PrivacyPage() {
           </div>
         </section>
       </main>
+      <SiteFooter
+        clubName={settings.clubName}
+        university={settings.university}
+        since={settings.since}
+        facebookPage={settings.facebookPage}
+        facebookGroup={settings.facebookGroup}
+      />
     </>
   );
 }
