@@ -553,3 +553,84 @@ export async function logout() {
   if (supabase) await supabase.auth.signOut();
   redirect("/admin/login");
 }
+
+
+export async function syncPendingApplicationPdfsToDrive() {
+  const supabase = await requireAdmin();
+
+  const { data: applications, error } = await supabase
+    .from("member_applications")
+    .select("id,application_ref,full_name,pdf_storage_path,drive_sync_status")
+    .not("pdf_storage_path", "is", null)
+    .neq("drive_sync_status", "synced")
+    .order("created_at", { ascending: true })
+    .limit(100);
+
+  if (error) throw error;
+  if (!applications?.length) {
+    redirect("/admin?drive=all_synced");
+  }
+
+  let synced = 0;
+  let notConfigured = false;
+  let failed = 0;
+
+  for (const application of applications) {
+    if (!application.pdf_storage_path) continue;
+
+    const { data: pdf, error: pdfError } = await supabase.storage
+      .from("vac-applications")
+      .download(application.pdf_storage_path);
+
+    if (pdfError || !pdf) {
+      failed += 1;
+      await supabase
+        .from("member_applications")
+        .update({ drive_sync_status: "failed" })
+        .eq("id", application.id);
+      continue;
+    }
+
+    const pdfBytes = new Uint8Array(await pdf.arrayBuffer());
+    const safeName = String(application.full_name || "Applicant")
+      .replace(/[^a-zA-Z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    const fileName =
+      "VAC-Membership-" +
+      String(application.application_ref || application.id.slice(0, 8)) +
+      "-" +
+      safeName +
+      ".pdf";
+
+    const drive = await uploadMembershipPdfToDrive({ pdfBytes, fileName });
+
+    if (drive.status === "not_configured") {
+      notConfigured = true;
+      break;
+    }
+
+    if (drive.status === "synced") {
+      synced += 1;
+      await supabase
+        .from("member_applications")
+        .update({
+          google_drive_file_id: drive.fileId,
+          drive_sync_status: "synced"
+        })
+        .eq("id", application.id);
+    } else {
+      failed += 1;
+      await supabase
+        .from("member_applications")
+        .update({ drive_sync_status: "failed" })
+        .eq("id", application.id);
+    }
+  }
+
+  revalidatePath("/admin");
+
+  if (notConfigured) redirect("/admin?drive=not_configured");
+  if (failed > 0) redirect("/admin?drive=bulk_partial");
+  if (synced > 0) redirect("/admin?drive=bulk_synced");
+  redirect("/admin?drive=all_synced");
+}
