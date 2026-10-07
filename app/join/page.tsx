@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { RegistrationForm } from "@/components/RegistrationForm";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getSiteSettings } from "@/lib/data";
+import { EuLogo, VacLogo } from "@/components/BrandLogo";
 
 export const revalidate = 60;
 
@@ -19,23 +19,11 @@ export default async function JoinPage() {
           <header className="form-header form-header--premium" data-reveal>
             <div className="join-institution-lockup" aria-label="VAC and Eastern University">
               <div className="join-logo-card join-logo-card--vac">
-                <Image
-                  src="/vac-logo.png"
-                  alt={settings.clubName}
-                  width={520}
-                  height={373}
-                  priority
-                />
+                <VacLogo alt={settings.clubName} priority />
               </div>
               <span className="join-lockup-divider" />
               <div className="join-logo-card join-logo-card--eu">
-                <Image
-                  src="/eastern-university-logo.png"
-                  alt={settings.university}
-                  width={520}
-                  height={295}
-                  priority
-                />
+                <EuLogo alt={settings.university} priority />
               </div>
             </div>
 
