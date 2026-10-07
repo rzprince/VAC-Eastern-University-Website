@@ -23,7 +23,7 @@ export const SITE: SiteSettings = {
   tenure: "June 2026 — June 2027",
   tagline: "Where Every Frame Tells a Story",
   aboutText:
-    "Visual Archive Club is a creative community for photography, videography, editing, design and visual storytelling. VAC documents university life and helps students build practical creative skills.",
+    "Visual Archive Club (VAC) is the premier creative media organization of Eastern University — a collective of passionate photographers, videographers, editors, and storytellers. Founded in 2010, VAC documents events, produces cinematic content, and builds a lasting archive of university life.",
   facebookPage: "https://www.facebook.com/visualarchiveeu",
   facebookGroup: "https://www.facebook.com/groups/603306963175089",
   bkashNumber: "01860899999",

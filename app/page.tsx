@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { CommitteeSection } from "@/components/CommitteeSection";
 import { CreativeDisciplines } from "@/components/CreativeDisciplines";
+import { CreativeMarquee } from "@/components/CreativeMarquee";
 import { EventsSection } from "@/components/EventsSection";
 import { HeroScene } from "@/components/HeroScene";
 import { MediaSection } from "@/components/MediaSection";
@@ -62,12 +63,13 @@ export default async function Home() {
               <div className="eyebrow">Creative media community · Since {settings.since}</div>
 
               <h1>
-                Every frame becomes <em>history.</em>
+                Where every <em>frame</em> becomes <em>history.</em>
               </h1>
 
               <p className="hero-lead">
-                The creative media club of {settings.university}. We photograph,
-                film, edit and preserve the moments that define university life.
+                Visual Archive Club is the photography, film and storytelling
+                community of {settings.university} — shooting today so the campus
+                remembers tomorrow.
               </p>
 
               <div className="hero-actions">
@@ -110,6 +112,7 @@ export default async function Home() {
           </div>
         </section>
 
+        <CreativeMarquee />
         <AnnouncementsSection items={announcements} />
         <CreativeDisciplines />
 
@@ -125,17 +128,42 @@ export default async function Home() {
             <div className="about-story" data-reveal>
               <p>{settings.aboutText}</p>
               <p>
-                VAC is not only about taking photographs. We document Eastern
-                University, develop practical media skills and create an archive
-                that lets important moments live beyond the day they happened.
+                Since 2010, VAC has photographed, filmed and archived life at
+                Eastern University. We are students who shoot, edit and design —
+                and we keep what we make, so every new batch inherits the story
+                of the one before it.
               </p>
+
+              <div className="about-pillars" aria-label="VAC creative pillars">
+                <article>
+                  <span>01</span>
+                  <strong>Photography</strong>
+                  <small>Portraits, events and street frames.</small>
+                </article>
+                <article>
+                  <span>02</span>
+                  <strong>Videography</strong>
+                  <small>Short films, coverage and reels.</small>
+                </article>
+                <article>
+                  <span>03</span>
+                  <strong>Content &amp; Design</strong>
+                  <small>Posters, edits and social stories.</small>
+                </article>
+                <article>
+                  <span>04</span>
+                  <strong>Archive</strong>
+                  <small>A growing record of university life.</small>
+                </article>
+              </div>
 
               <div className="pill-row">
                 <span>Photography</span>
                 <span>Videography</span>
-                <span>Filmmaking</span>
-                <span>Editing</span>
-                <span>Digital Media</span>
+                <span>Video Editing</span>
+                <span>Content Creation</span>
+                <span>Event Coverage</span>
+                <span>Archive</span>
               </div>
 
               <div className="about-links">
