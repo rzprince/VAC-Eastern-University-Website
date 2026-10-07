@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Manrope, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import { PremiumMotion } from "@/components/PremiumMotion";
 import "./globals.css";
 
 const productionUrl = "https://vac-eastern-university.vercel.app";
 
-const manrope = Manrope({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap"
@@ -36,8 +36,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   icons: {
-    icon: [{ url: "/vac-logo.png", type: "image/png" }],
-    apple: [{ url: "/vac-logo.png", type: "image/png" }]
+    icon: [{ url: "/vac-favicon.svg", type: "image/svg+xml" }]
   },
   openGraph: {
     title: "Visual Archive Club | Eastern University",
@@ -48,7 +47,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/vac-logo.png",
+        url: "/vac-logo.webp",
         width: 520,
         height: 373,
         alt: "Visual Archive Club — Eastern University"
@@ -60,7 +59,7 @@ export const metadata: Metadata = {
     title: "Visual Archive Club | Eastern University",
     description:
       "Photography, videography, filmmaking and visual storytelling at Eastern University.",
-    images: ["/vac-logo.png"]
+    images: ["/vac-logo.webp"]
   }
 };
 
@@ -70,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={manrope.variable + " " + playfair.variable}>
+    <html lang="en" className={inter.variable + " " + playfair.variable}>
       <body>
         <PremiumMotion />
         {children}
