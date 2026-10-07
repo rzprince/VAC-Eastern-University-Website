@@ -69,7 +69,7 @@ export async function uploadMembershipPdfToDrive({
   const privateKey = process.env.GOOGLE_DRIVE_PRIVATE_KEY?.replace(/\\n/g, "\n");
   const folderId =
     process.env.GOOGLE_DRIVE_FOLDER_ID ||
-    "12KqdphskRQ1LZ2XLg_5_9qFeyQ83Qyfo";
+    "1JPVZHucyP8lqSxIeDAINvOXZT8462vA2";
 
   if (!email || !privateKey || !folderId) {
     return { status: "not_configured" };
