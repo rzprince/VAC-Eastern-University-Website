@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { PointerEvent, useRef } from "react";
+import { VacLogo } from "@/components/BrandLogo";
 
 const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1739296385343-ff091bca6203?auto=format&fit=crop&fm=webp&q=88&w=1800";
+  "https://images.unsplash.com/photo-1770154376773-7db96876fc3b?auto=format&fit=crop&fm=webp&q=92&w=2800";
 const FILM_IMAGE =
-  "https://images.unsplash.com/photo-1727451139462-cd34008cd50b?auto=format&fit=crop&fm=webp&q=84&w=1000";
+  "https://images.unsplash.com/photo-1705107959309-ca7d26fbeb08?auto=format&fit=crop&fm=webp&q=90&w=1800";
 
 export function HeroScene() {
   const ref = useRef<HTMLDivElement>(null);
@@ -66,13 +66,7 @@ export function HeroScene() {
       </div>
 
       <div className="hero-logo-seal">
-        <Image
-          src="/vac-logo.png"
-          alt="Visual Archive Club"
-          width={520}
-          height={373}
-          priority
-        />
+        <VacLogo alt="Visual Archive Club" priority />
       </div>
 
       <div className="hero-coordinate hero-coordinate--one" aria-hidden="true">
