@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { VacLogo } from "@/components/BrandLogo";
 
 export function Navbar({
   facebookPage,
@@ -29,13 +29,7 @@ export function Navbar({
           aria-label="Visual Archive Club home"
         >
           <span className="brand-mark">
-            <Image
-              src="/vac-logo.png"
-              alt=""
-              width={520}
-              height={373}
-              priority
-            />
+            <VacLogo alt="" priority />
           </span>
           <span className="brand-copy">
             <strong>{clubName}</strong>
