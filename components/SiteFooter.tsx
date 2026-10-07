@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { VacLogo } from "@/components/BrandLogo";
 
 function FacebookIcon() {
   return (
@@ -29,12 +29,7 @@ export function SiteFooter({
     <footer className="site-footer">
       <div className="shell footer-top">
         <div className="footer-brand">
-          <Image
-            src="/vac-logo.png"
-            alt=""
-            width={520}
-            height={373}
-          />
+          <VacLogo alt="" />
           <div>
             <strong>{clubName}</strong>
             <span>{university} · Since {since}</span>
