@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Cormorant, Montserrat } from "next/font/google";
 import { PremiumMotion } from "@/components/PremiumMotion";
 import "./globals.css";
 
 const productionUrl = "https://vac-eastern-university.vercel.app";
 
-const inter = Inter({
+const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap"
 });
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant({
   subsets: ["latin"],
   variable: "--font-display",
-  display: "swap"
+  display: "swap",
+  weight: ["500", "600", "700"]
 });
 
 export const metadata: Metadata = {
@@ -36,7 +37,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   icons: {
-    icon: [{ url: "/vac-favicon.svg", type: "image/svg+xml" }]
+    icon: [{ url: "/vac-logo.webp", type: "image/webp" }],
+    apple: [{ url: "/vac-logo.webp", type: "image/webp" }]
   },
   openGraph: {
     title: "Visual Archive Club | Eastern University",
@@ -69,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable + " " + playfair.variable}>
+    <html lang="en" className={montserrat.variable + " " + cormorant.variable}>
       <body>
         <PremiumMotion />
         {children}
