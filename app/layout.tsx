@@ -38,8 +38,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   icons: {
-    icon: [{ url: "/vac-logo.webp", type: "image/webp" }],
-    apple: [{ url: "/vac-logo.webp", type: "image/webp" }]
+    icon: [{ url: "/vac-logo-original.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/vac-logo-original.svg", type: "image/webp" }]
   },
   openGraph: {
     title: "Visual Archive Club | Eastern University",
@@ -50,9 +50,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/vac-logo.webp",
-        width: 520,
-        height: 373,
+        url: "/vac-logo-original.svg",
+        width: 441,
+        height: 441,
         alt: "Visual Archive Club — Eastern University"
       }
     ]
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     title: "Visual Archive Club | Eastern University",
     description:
       "Photography, videography, filmmaking and visual storytelling at Eastern University.",
-    images: ["/vac-logo.webp"]
+    images: ["/vac-logo-original.svg"]
   }
 };
 
