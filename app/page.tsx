@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { CommitteeSection } from "@/components/CommitteeSection";
@@ -8,6 +7,7 @@ import { HeroScene } from "@/components/HeroScene";
 import { MediaSection } from "@/components/MediaSection";
 import { Navbar } from "@/components/Navbar";
 import { SiteFooter } from "@/components/SiteFooter";
+import { EuLogo, VacLogo } from "@/components/BrandLogo";
 import {
   getAnnouncements,
   getCommittee,
@@ -54,13 +54,7 @@ export default async function Home() {
           <div className="shell hero-layout">
             <div className="hero-copy">
               <div className="hero-brandline">
-                <Image
-                  src="/eastern-university-logo.png"
-                  alt={settings.university}
-                  width={520}
-                  height={295}
-                  priority
-                />
+                <EuLogo alt={settings.university} priority />
                 <span />
                 <p>{settings.university}<b> · </b>Visual Archive Club</p>
               </div>
@@ -155,19 +149,9 @@ export default async function Home() {
             </div>
 
             <div className="brand-lockup" aria-label="VAC and Eastern University">
-              <Image
-                src="/vac-logo.png"
-                alt={settings.clubName}
-                width={520}
-                height={373}
-              />
+              <VacLogo alt={settings.clubName} />
               <span />
-              <Image
-                src="/eastern-university-logo.png"
-                alt={settings.university}
-                width={520}
-                height={295}
-              />
+              <EuLogo alt={settings.university} />
             </div>
           </div>
         </section>
