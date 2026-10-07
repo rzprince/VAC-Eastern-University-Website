@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSupabase } from "@/lib/supabase/server";
+import { uploadMembershipPdfToDrive } from "@/lib/google-drive";
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set([
@@ -398,6 +399,58 @@ export async function updateCommitteeMember(formData: FormData) {
   if (error) throw error;
   if (replacement) await deleteStoredPublicFile(current.photo_url);
   revalidateContent();
+}
+
+
+export async function syncApplicationPdfToDrive(formData: FormData) {
+  const supabase = await requireAdmin();
+  const id = String(formData.get("id") || "");
+
+  const { data: application, error } = await supabase
+    .from("member_applications")
+    .select("id,application_ref,full_name,pdf_storage_path")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !application) {
+    redirect("/admin?drive=application_not_found");
+  }
+
+  if (!application.pdf_storage_path) {
+    redirect("/admin?drive=missing_pdf");
+  }
+
+  const { data: pdf, error: pdfError } = await supabase.storage
+    .from("vac-applications")
+    .download(application.pdf_storage_path);
+
+  if (pdfError || !pdf) {
+    redirect("/admin?drive=missing_pdf");
+  }
+
+  const pdfBytes = new Uint8Array(await pdf.arrayBuffer());
+  const safeName = String(application.full_name || "Applicant")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  const fileName =
+    "VAC-Membership-" +
+    String(application.application_ref || application.id.slice(0, 8)) +
+    "-" +
+    safeName +
+    ".pdf";
+
+  const drive = await uploadMembershipPdfToDrive({ pdfBytes, fileName });
+
+  await supabase
+    .from("member_applications")
+    .update({
+      google_drive_file_id: drive.status === "synced" ? drive.fileId : null,
+      drive_sync_status: drive.status
+    })
+    .eq("id", id);
+
+  revalidatePath("/admin");
+  redirect("/admin?drive=" + drive.status);
 }
 
 export async function updateApplicationStatus(formData: FormData) {

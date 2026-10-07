@@ -142,6 +142,9 @@ export async function POST(request: Request) {
 
   const id = crypto.randomUUID();
   const applicationRef = applicationReference(id);
+  const pdfDownloadToken =
+    crypto.randomUUID().replaceAll("-", "") +
+    crypto.randomUUID().replaceAll("-", "");
   const submittedAt = new Date().toLocaleString("en-BD", {
     timeZone: "Asia/Dhaka",
     dateStyle: "medium",
@@ -214,7 +217,8 @@ export async function POST(request: Request) {
     pdf_storage_path: pdfPath,
     pdf_generated_at: new Date().toISOString(),
     google_drive_file_id: drive.status === "synced" ? drive.fileId : null,
-    drive_sync_status: drive.status
+    drive_sync_status: drive.status,
+    pdf_download_token: pdfDownloadToken
   });
 
   if (error) {
@@ -250,11 +254,21 @@ export async function POST(request: Request) {
     "?text=" +
     encodeURIComponent(message);
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const pdfDownloadUrl = supabaseUrl
+    ? supabaseUrl +
+      "/functions/v1/membership-pdf?id=" +
+      encodeURIComponent(id) +
+      "&token=" +
+      encodeURIComponent(pdfDownloadToken)
+    : null;
+
   return NextResponse.json({
     message:
-      "Application saved. Opening VAC WhatsApp now so you can send your bKash TRX ID.",
+      "Application saved. WhatsApp is opening so you can send your bKash TRX ID.",
     applicationRef,
     whatsappUrl,
+    pdfDownloadUrl,
     pdfSaved: true,
     driveStatus: drive.status
   });

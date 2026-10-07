@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArchiveExplorer } from "@/components/ArchiveExplorer";
 import { Navbar } from "@/components/Navbar";
+import { SiteFooter } from "@/components/SiteFooter";
 import { getAllMedia, getSiteSettings } from "@/lib/data";
 
 export const revalidate = 60;
@@ -31,19 +32,13 @@ export default async function ArchivePage() {
           </div>
         </section>
       </main>
-      <footer>
-        <div className="shell footer-inner">
-          <div>
-            <strong>{settings.clubName}</strong>
-            <span>{settings.university} · Since {settings.since}</span>
-          </div>
-          <div>
-            <Link href="/">Home</Link>
-            <Link href="/events">Events</Link>
-            <Link href="/join">Join VAC</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        clubName={settings.clubName}
+        university={settings.university}
+        since={settings.since}
+        facebookPage={settings.facebookPage}
+        facebookGroup={settings.facebookGroup}
+      />
     </>
   );
 }

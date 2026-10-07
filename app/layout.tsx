@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Manrope, Space_Grotesk } from "next/font/google";
+import { Manrope, Playfair_Display } from "next/font/google";
+import { PremiumMotion } from "@/components/PremiumMotion";
 import "./globals.css";
 
 const productionUrl = "https://vac-eastern-university.vercel.app";
@@ -10,7 +11,7 @@ const manrope = Manrope({
   display: "swap"
 });
 
-const spaceGrotesk = Space_Grotesk({
+const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap"
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | Visual Archive Club"
   },
   description:
-    "Official website of Visual Archive Club (VAC), Eastern University — photography, videography, filmmaking, events, archive and membership.",
+    "Official website of Visual Archive Club (VAC), Eastern University — photography, videography, filmmaking, events, visual archive and membership.",
   keywords: [
     "Visual Archive Club",
     "VAC",
@@ -34,20 +35,23 @@ export const metadata: Metadata = {
     "Visual Storytelling"
   ],
   alternates: { canonical: "/" },
-  icons: { icon: "/vac-logo.webp" },
+  icons: {
+    icon: [{ url: "/vac-logo.png", type: "image/png" }],
+    apple: [{ url: "/vac-logo.png", type: "image/png" }]
+  },
   openGraph: {
     title: "Visual Archive Club | Eastern University",
     description:
-      "Photography, videography and visual storytelling at Eastern University.",
+      "Photography, videography, filmmaking and visual storytelling at Eastern University.",
     url: productionUrl,
     siteName: "Visual Archive Club",
     type: "website",
     images: [
       {
-        url: "/vac-logo.webp",
-        width: 1000,
-        height: 667,
-        alt: "Visual Archive Club"
+        url: "/vac-logo.png",
+        width: 520,
+        height: 373,
+        alt: "Visual Archive Club — Eastern University"
       }
     ]
   },
@@ -55,8 +59,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Visual Archive Club | Eastern University",
     description:
-      "Photography, videography and visual storytelling at Eastern University.",
-    images: ["/vac-logo.webp"]
+      "Photography, videography, filmmaking and visual storytelling at Eastern University.",
+    images: ["/vac-logo.png"]
   }
 };
 
@@ -66,8 +70,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={manrope.variable + " " + spaceGrotesk.variable}>
-      <body>{children}</body>
+    <html lang="en" className={manrope.variable + " " + playfair.variable}>
+      <body>
+        <PremiumMotion />
+        {children}
+      </body>
     </html>
   );
 }

@@ -9,6 +9,7 @@ import {
   deleteEvent,
   deleteMedia,
   logout,
+  syncApplicationPdfToDrive,
   updateAnnouncement,
   updateApplicationStatus,
   updateClubMember,
@@ -36,7 +37,7 @@ function statusLabel(status: string) {
 export default async function AdminPage({
   searchParams
 }: {
-  searchParams: Promise<{ q?: string; status?: string }>;
+  searchParams: Promise<{ q?: string; status?: string; drive?: string }>;
 }) {
   const supabase = await getServerSupabase();
 
@@ -137,6 +138,7 @@ export default async function AdminPage({
   const params = await searchParams;
   const query = String(params.q || "").trim().toLowerCase();
   const statusFilter = String(params.status || "").trim();
+  const driveMessage = String(params.drive || "").trim();
 
   const allApplications = applicationRows ?? [];
   const applications = allApplications.filter((application) => {
@@ -401,7 +403,7 @@ export default async function AdminPage({
           <label>Phone<input name="phone" /></label>
           <label>Email<input name="email" type="email" /></label>
           <label>Photo<input name="photo" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
-          <label className="check"><input name="leader" type="checkbox" /> Leadership card</label>
+          <label className="check"><input name="leader" type="checkbox" /> Leadership metadata</label>
           <button className="primary-button">Add member</button>
         </form>
 
@@ -422,7 +424,7 @@ export default async function AdminPage({
                 <label>Phone<input name="phone" defaultValue={member.phone || ""} /></label>
                 <label>Email<input name="email" type="email" defaultValue={member.email || ""} /></label>
                 <label>Replace photo<input name="photo" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
-                <label className="check"><input name="leader" type="checkbox" defaultChecked={member.leader} /> Leadership card</label>
+                <label className="check"><input name="leader" type="checkbox" defaultChecked={member.leader} /> Leadership metadata</label>
                 <label className="check"><input name="active" type="checkbox" defaultChecked={member.active} /> Show publicly</label>
                 <button className="primary-button">Save member</button>
               </form>
@@ -442,6 +444,20 @@ export default async function AdminPage({
             <a className="secondary-button" href="/admin/export?scope=members">Export members CSV</a>
           </div>
         </div>
+
+        {driveMessage && (
+          <div className={"admin-drive-notice admin-drive-notice--" + driveMessage}>
+            {driveMessage === "synced"
+              ? "Application PDF synced to Google Drive."
+              : driveMessage === "not_configured"
+                ? "Google Drive automation is ready in code, but the Vercel service-account email/private key are not configured yet."
+                : driveMessage === "failed"
+                  ? "Google Drive rejected the upload. Check Drive API access, folder sharing and service-account credentials."
+                  : driveMessage === "missing_pdf"
+                    ? "This application does not have a stored PDF to sync."
+                    : "Could not sync this application PDF."}
+          </div>
+        )}
 
         <form method="get" className="admin-search">
           <input name="q" type="search" placeholder="Search name, EU ID, phone, email or TxID" defaultValue={params.q || ""} />
@@ -495,7 +511,7 @@ export default async function AdminPage({
                   <a href={"/admin/applications/" + application.id + "/pdf"} target="_blank">
                     Application PDF ↗
                   </a>
-                  {application.google_drive_file_id && (
+                  {application.google_drive_file_id ? (
                     <a
                       href={"https://drive.google.com/file/d/" + application.google_drive_file_id + "/view"}
                       target="_blank"
@@ -503,7 +519,14 @@ export default async function AdminPage({
                     >
                       Google Drive ↗
                     </a>
-                  )}
+                  ) : application.pdf_storage_path ? (
+                    <form action={syncApplicationPdfToDrive}>
+                      <input type="hidden" name="id" value={application.id} />
+                      <button className="admin-inline-action" type="submit">
+                        Retry Drive sync
+                      </button>
+                    </form>
+                  ) : null}
                   <small>Drive: {application.drive_sync_status || "pending"}</small>
                 </div>
               </div>

@@ -7,6 +7,7 @@ import { EventsSection } from "@/components/EventsSection";
 import { HeroScene } from "@/components/HeroScene";
 import { MediaSection } from "@/components/MediaSection";
 import { Navbar } from "@/components/Navbar";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   getAnnouncements,
   getCommittee,
@@ -54,10 +55,10 @@ export default async function Home() {
             <div className="hero-copy">
               <div className="hero-brandline">
                 <Image
-                  src="/eastern-university-logo.webp"
+                  src="/eastern-university-logo.png"
                   alt={settings.university}
                   width={520}
-                  height={375}
+                  height={295}
                   priority
                 />
                 <span />
@@ -67,14 +68,12 @@ export default async function Home() {
               <div className="eyebrow">Creative media community · Since {settings.since}</div>
 
               <h1>
-                We capture the <em>now.</em>
-                <br />
-                We archive what matters.
+                Every frame becomes <em>history.</em>
               </h1>
 
               <p className="hero-lead">
-                Photography, videography, filmmaking and visual storytelling —
-                created by students of {settings.university}.
+                The creative media club of {settings.university}. We photograph,
+                film, edit and preserve the moments that define university life.
               </p>
 
               <div className="hero-actions">
@@ -122,14 +121,14 @@ export default async function Home() {
 
         <section id="about" className="section about-section">
           <div className="shell about-editorial">
-            <div className="about-heading">
-              <div className="eyebrow">About the club</div>
+            <div className="about-heading" data-reveal>
+              <div className="eyebrow">About Visual Archive Club</div>
               <h2>
-                A creative space for people who think in <span>frames.</span>
+                We do more than document campus. We build its <em>visual memory.</em>
               </h2>
             </div>
 
-            <div className="about-story">
+            <div className="about-story" data-reveal>
               <p>{settings.aboutText}</p>
               <p>
                 VAC is not only about taking photographs. We document Eastern
@@ -157,17 +156,17 @@ export default async function Home() {
 
             <div className="brand-lockup" aria-label="VAC and Eastern University">
               <Image
-                src="/vac-logo.webp"
+                src="/vac-logo.png"
                 alt={settings.clubName}
                 width={520}
-                height={347}
+                height={373}
               />
               <span />
               <Image
-                src="/eastern-university-logo.webp"
+                src="/eastern-university-logo.png"
                 alt={settings.university}
                 width={520}
-                height={375}
+                height={295}
               />
             </div>
           </div>
@@ -237,25 +236,13 @@ export default async function Home() {
         </section>
       </main>
 
-      <footer>
-        <div className="shell footer-inner">
-          <div className="footer-brand">
-            <Image src="/vac-logo.webp" alt="" width={70} height={47} />
-            <div>
-              <strong>{settings.clubName}</strong>
-              <span>{settings.university} · Since {settings.since}</span>
-            </div>
-          </div>
-
-          <div className="footer-links">
-            <Link href="/events">Events</Link>
-            <Link href="/archive">Archive</Link>
-            <Link href="/join">Membership</Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/admin">Admin</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        clubName={settings.clubName}
+        university={settings.university}
+        since={settings.since}
+        facebookPage={settings.facebookPage}
+        facebookGroup={settings.facebookGroup}
+      />
     </>
   );
 }
