@@ -15,6 +15,7 @@ const cormorant = Cormorant({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
+  style: ["normal", "italic"],
   weight: ["500", "600", "700"]
 });
 
