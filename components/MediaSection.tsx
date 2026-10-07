@@ -9,24 +9,23 @@ export function MediaSection({
   facebookPage: string;
 }) {
   return (
-    <section id="media" className="section">
+    <section id="media" className="section media-section">
       <div className="shell">
-        <div className="section-heading-row">
+        <div className="section-kicker-row">
           <div>
-            <div className="eyebrow">Latest archive</div>
-            <h2>Featured photos & <span>videos</span></h2>
+            <div className="eyebrow">The living archive</div>
+            <h2>
+              New frames. <span>Real stories.</span>
+            </h2>
           </div>
-          <Link className="text-link" href="/archive">Open full archive →</Link>
+          <Link className="text-link" href="/archive">
+            Explore full archive <span>↗</span>
+          </Link>
         </div>
-
-        <p className="section-copy">
-          Newest uploads appear first. Video thumbnails open the exact Facebook
-          video/post configured by the VAC admin.
-        </p>
 
         {items.length ? (
           <div className="media-grid">
-            {items.map((item) => {
+            {items.map((item, index) => {
               const href =
                 item.media_type === "video"
                   ? item.destination_url || facebookPage
@@ -34,37 +33,53 @@ export function MediaSection({
 
               return (
                 <a
-                  className="media-card"
+                  className={
+                    "media-card " +
+                    (item.featured || index === 0 ? "media-card--featured" : "")
+                  }
                   href={href}
                   target="_blank"
                   rel="noreferrer"
                   key={item.id}
                 >
-                  <img src={item.thumbnail_url} alt={item.title} />
+                  <img src={item.thumbnail_url} alt={item.title} loading="lazy" />
+                  <span className="media-shade" />
+
                   {item.media_type === "video" && (
-                    <span className="play-button">▶</span>
+                    <span className="play-button" aria-hidden="true">
+                      <i>▶</i>
+                    </span>
                   )}
+
                   <div className="media-overlay">
                     <small>
                       {item.media_type === "video"
-                        ? "Facebook video"
+                        ? "Film / Facebook"
                         : item.featured
-                          ? "Featured photo"
-                          : "Photo"}
+                          ? "Featured frame"
+                          : "Photography"}
                     </small>
                     <strong>{item.title}</strong>
+                    <span aria-hidden="true">↗</span>
                   </div>
                 </a>
               );
             })}
           </div>
         ) : (
-          <div className="empty-state">
-            <strong>The new archive is ready for your uploads.</strong>
-            <p>
-              Upload a photo, or upload a video thumbnail and paste its Facebook
-              post link in the admin dashboard.
-            </p>
+          <div className="archive-placeholder">
+            <div className="archive-placeholder-lens">
+              <span />
+              <span />
+            </div>
+            <div>
+              <div className="eyebrow">Archive ready</div>
+              <h3>Your next visual story starts here.</h3>
+              <p>
+                When VAC publishes photographs or Facebook video thumbnails in
+                Admin, they flow into this gallery automatically — newest first.
+              </p>
+            </div>
           </div>
         )}
       </div>

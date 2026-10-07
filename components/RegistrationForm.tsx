@@ -29,14 +29,19 @@ export function RegistrationForm({
 
       const result = await response.json();
 
-      if (response.ok) {
-        setState("success");
-        setMessage(result.message || "Application submitted.");
-        form.reset();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
+      if (!response.ok) {
         setState("error");
         setMessage(result.error || "Could not submit your application.");
+        return;
+      }
+
+      setState("success");
+      setMessage(result.message || "Application submitted.");
+
+      if (result.whatsappUrl) {
+        window.setTimeout(() => {
+          window.location.assign(result.whatsappUrl);
+        }, 550);
       }
     } catch {
       setState("error");
@@ -45,12 +50,19 @@ export function RegistrationForm({
   }
 
   return (
-    <form className="registration-form" onSubmit={submit}>
+    <form className="registration-form registration-form--v2" onSubmit={submit}>
+      <div className="form-steps">
+        <span><b>01</b> Your information</span>
+        <span><b>02</b> Send fee by bKash</span>
+        <span><b>03</b> Submit</span>
+        <span><b>04</b> Send TRX ID in WhatsApp</span>
+      </div>
+
       <div className="form-note">
-        <strong>Before you submit</strong>
+        <strong>Your application becomes a PDF automatically.</strong>
         <p>
-          Use your correct Eastern University information. VAC will verify the
-          bKash Transaction ID before approving an application.
+          After submission, this page opens the VAC WhatsApp chat. Send your
+          bKash TRX ID there so the committee can confirm the payment manually.
         </p>
       </div>
 
@@ -60,7 +72,7 @@ export function RegistrationForm({
           <input name="fullName" required maxLength={120} placeholder="As you want it recorded" />
         </label>
         <label>
-          EU ID
+          Eastern University ID
           <input name="euId" required maxLength={40} inputMode="numeric" autoComplete="off" />
         </label>
         <label>
@@ -74,7 +86,7 @@ export function RegistrationForm({
         <label>
           Blood group
           <select name="bloodGroup" required defaultValue="">
-            <option value="" disabled>Select</option>
+            <option value="" disabled>Select blood group</option>
             {["A+","A-","B+","B-","AB+","AB-","O+","O-"].map((group) => (
               <option key={group}>{group}</option>
             ))}
@@ -82,7 +94,7 @@ export function RegistrationForm({
         </label>
         <label>
           Email
-          <input name="email" required type="email" maxLength={160} autoComplete="email" />
+          <input name="email" required type="email" maxLength={160} autoComplete="email" placeholder="name@example.com" />
         </label>
         <label>
           Phone + WhatsApp
@@ -97,7 +109,7 @@ export function RegistrationForm({
         </label>
         <label className="span-2">
           Address
-          <textarea name="address" required maxLength={500} rows={2} />
+          <textarea name="address" required maxLength={500} rows={3} placeholder="Current address" />
         </label>
         <label className="span-2">
           Skills you have
@@ -111,42 +123,38 @@ export function RegistrationForm({
         </label>
         <label className="span-2">
           Why do you want to join VAC?
-          <textarea name="reason" required maxLength={1500} rows={4} />
+          <textarea name="reason" required maxLength={1500} rows={4} placeholder="Tell us what you want to learn, create or contribute." />
         </label>
       </div>
 
-      <div className="payment-box">
-        <div>
-          <small>Registration fee</small>
+      <div className="payment-box payment-box--v2">
+        <div className="payment-price">
+          <small>Membership fee</small>
           <strong>৳{registrationFee}</strong>
         </div>
-        <p>
-          Send Money to <b>{bkashNumber}</b> using bKash, then enter the sender
-          number and Transaction ID below.
-        </p>
-        <div className="form-grid">
-          <label>
-            bKash sender number
-            <input name="bkashSender" required type="tel" maxLength={20} placeholder="01XXXXXXXXX" />
-          </label>
-          <label>
-            bKash Transaction ID
-            <input
-              name="bkashTransactionId"
-              required
-              maxLength={40}
-              autoCapitalize="characters"
-              placeholder="Example: C8N..."
-            />
-          </label>
+        <div>
+          <div className="eyebrow">Manual bKash verification</div>
+          <h3>Send Money to {bkashNumber}</h3>
+          <p>
+            Send the fee first. Then submit this form. WhatsApp opens
+            automatically and you send only your TRX ID there.
+          </p>
         </div>
+        <label className="payment-sender">
+          bKash number you sent from
+          <input name="bkashSender" required type="tel" maxLength={20} placeholder="01XXXXXXXXX" />
+        </label>
+        <label className="consent payment-confirm">
+          <input name="paymentConfirmed" value="yes" type="checkbox" required />
+          <span>I confirm that I have already sent ৳{registrationFee} to {bkashNumber}.</span>
+        </label>
       </div>
 
       <label className="consent">
         <input type="checkbox" required />
         <span>
-          I confirm that the information and payment reference I submitted are
-          accurate, and I have read the <a href="/privacy" target="_blank">privacy notice</a>.
+          I confirm that the information above is accurate and I have read the{" "}
+          <a href="/privacy" target="_blank" rel="noreferrer">privacy notice</a>.
         </span>
       </label>
 
@@ -155,8 +163,8 @@ export function RegistrationForm({
         <input name="website" tabIndex={-1} autoComplete="off" />
       </label>
 
-      <button className="primary-button" disabled={state === "sending"}>
-        {state === "sending" ? "Submitting…" : "Submit membership application"}
+      <button className="primary-button form-submit" disabled={state === "sending"}>
+        {state === "sending" ? "Creating application PDF…" : "Submit & open WhatsApp"}
       </button>
 
       {message && (

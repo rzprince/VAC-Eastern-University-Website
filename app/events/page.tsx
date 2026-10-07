@@ -8,7 +8,7 @@ import {
   type EventItem
 } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 function EventCard({
   event,

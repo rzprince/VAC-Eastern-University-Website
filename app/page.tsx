@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { CommitteeSection } from "@/components/CommitteeSection";
+import { CreativeDisciplines } from "@/components/CreativeDisciplines";
 import { EventsSection } from "@/components/EventsSection";
+import { HeroScene } from "@/components/HeroScene";
 import { MediaSection } from "@/components/MediaSection";
 import { Navbar } from "@/components/Navbar";
 import {
@@ -14,12 +16,12 @@ import {
   getUpcomingEvents
 } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 function compactTenure(tenure: string) {
   const years = tenure.match(/20\d{2}/g);
   if (years?.length === 2) {
-    return `${years[0]}–${years[1].slice(2)}`;
+    return years[0] + "–" + years[1].slice(2);
   }
   return tenure;
 }
@@ -44,97 +46,129 @@ export default async function Home() {
       />
 
       <main>
-        <section className="hero">
-          <div className="hero-grid" />
-          <div className="shell hero-content">
-            <div className="hero-logos">
-              <Image
-                src="/eastern-university-logo.webp"
-                alt={settings.university}
-                width={170}
-                height={123}
-                priority
-              />
-              <span />
-              <Image
-                src="/vac-logo.webp"
-                alt={settings.clubName}
-                width={210}
-                height={140}
-                priority
-              />
-            </div>
+        <section className="hero hero-v2">
+          <div className="hero-noise" aria-hidden="true" />
+          <div className="hero-orb" aria-hidden="true" />
 
-            <div className="eyebrow">
-              {settings.university} · Since {settings.since}
-            </div>
-
-            <h1>
-              <span>VISUAL</span>
-              <span>ARCHIVE</span>
-              <span>CLUB</span>
-            </h1>
-
-            <p>{settings.tagline}</p>
-
-            <div className="hero-actions">
-              {settings.registrationOpen ? (
-                <Link className="primary-button" href="/join">Join VAC</Link>
-              ) : (
-                <span className="primary-button primary-button--disabled">
-                  Registration closed
-                </span>
-              )}
-              <a className="secondary-button" href="#committee">
-                Meet the committee
-              </a>
-            </div>
-
-            <div className="hero-meta">
-              <div>
-                <strong>{compactTenure(settings.tenure)}</strong>
-                <small>Current committee</small>
+          <div className="shell hero-layout">
+            <div className="hero-copy">
+              <div className="hero-brandline">
+                <Image
+                  src="/eastern-university-logo.webp"
+                  alt={settings.university}
+                  width={520}
+                  height={375}
+                  priority
+                />
+                <span />
+                <p>{settings.university}<b> · </b>Visual Archive Club</p>
               </div>
-              <div>
-                <strong>{committee.length}</strong>
-                <small>Committee positions</small>
+
+              <div className="eyebrow">Creative media community · Since {settings.since}</div>
+
+              <h1>
+                We capture the <em>now.</em>
+                <br />
+                We archive what matters.
+              </h1>
+
+              <p className="hero-lead">
+                Photography, videography, filmmaking and visual storytelling —
+                created by students of {settings.university}.
+              </p>
+
+              <div className="hero-actions">
+                {settings.registrationOpen ? (
+                  <Link className="primary-button" href="/join">
+                    Join VAC <span>↗</span>
+                  </Link>
+                ) : (
+                  <span className="primary-button primary-button--disabled">
+                    Registration closed
+                  </span>
+                )}
+                <Link className="secondary-button" href="/archive">
+                  Explore archive
+                </Link>
               </div>
-              <div>
-                <strong>৳{settings.registrationFee}</strong>
-                <small>Registration fee</small>
+
+              <div className="hero-meta">
+                <div>
+                  <strong>{compactTenure(settings.tenure)}</strong>
+                  <small>Current committee</small>
+                </div>
+                <div>
+                  <strong>{committee.length}</strong>
+                  <small>Committee members</small>
+                </div>
+                <div>
+                  <strong>৳{settings.registrationFee}</strong>
+                  <small>Membership fee</small>
+                </div>
               </div>
             </div>
+
+            <HeroScene />
+          </div>
+
+          <div className="hero-scroll shell">
+            <span>Scroll to explore</span>
+            <i />
           </div>
         </section>
 
         <AnnouncementsSection items={announcements} />
+        <CreativeDisciplines />
 
-        <section id="about" className="section section-alt">
-          <div className="shell about-grid">
-            <div>
-              <div className="eyebrow">About VAC</div>
+        <section id="about" className="section about-section">
+          <div className="shell about-editorial">
+            <div className="about-heading">
+              <div className="eyebrow">About the club</div>
               <h2>
-                We preserve the <span>visual story</span> of {settings.university}.
+                A creative space for people who think in <span>frames.</span>
               </h2>
             </div>
 
-            <div className="about-copy">
+            <div className="about-story">
               <p>{settings.aboutText}</p>
+              <p>
+                VAC is not only about taking photographs. We document Eastern
+                University, develop practical media skills and create an archive
+                that lets important moments live beyond the day they happened.
+              </p>
+
               <div className="pill-row">
                 <span>Photography</span>
                 <span>Videography</span>
+                <span>Filmmaking</span>
                 <span>Editing</span>
                 <span>Digital Media</span>
-                <span>Archiving</span>
               </div>
-              <div className="social-row">
+
+              <div className="about-links">
                 <a href={settings.facebookPage} target="_blank" rel="noreferrer">
-                  Official Facebook Page ↗
+                  Official Facebook Page <span>↗</span>
                 </a>
                 <a href={settings.facebookGroup} target="_blank" rel="noreferrer">
-                  VAC Facebook Group ↗
+                  VAC Facebook Group <span>↗</span>
                 </a>
               </div>
+            </div>
+
+            <div className="brand-lockup" aria-label="VAC and Eastern University">
+              <Image
+                src="/vac-logo.webp"
+                alt={settings.clubName}
+                width={520}
+                height={347}
+              />
+              <span />
+              <Image
+                src="/eastern-university-logo.webp"
+                alt={settings.university}
+                width={520}
+                height={375}
+              />
             </div>
           </div>
         </section>
@@ -143,55 +177,58 @@ export default async function Home() {
         <EventsSection upcoming={upcoming} recent={recent} />
         <MediaSection items={media} facebookPage={settings.facebookPage} />
 
-        <section id="contact" className="section section-alt">
-          <div className="shell contact-grid">
-            <div>
+        <section id="contact" className="section contact-section">
+          <div className="shell contact-layout">
+            <div className="contact-statement">
               <div className="eyebrow">Connect with VAC</div>
               <h2>
-                Stay close to the <span>archive.</span>
+                Have a frame worth <span>sharing?</span>
               </h2>
-              <p className="section-copy">
-                Follow VAC for events, photography, videos and club updates.
-                Membership applications are handled directly on this website.
+              <p>
+                Follow our work, collaborate with the committee or join the
+                community. We keep the contact paths simple.
               </p>
             </div>
 
             <div className="contact-links">
               <a href={settings.facebookPage} target="_blank" rel="noreferrer">
-                <small>Official Facebook Page</small>
-                <strong>Visual Archive Club ↗</strong>
+                <small>Official page</small>
+                <strong>Facebook</strong>
+                <span>↗</span>
               </a>
               <a href={settings.facebookGroup} target="_blank" rel="noreferrer">
                 <small>Community</small>
-                <strong>VAC Facebook Group ↗</strong>
+                <strong>VAC Group</strong>
+                <span>↗</span>
               </a>
               <a href={"tel:" + settings.contactPhone.replace(/\s/g, "")}>
-                <small>Committee contact</small>
+                <small>Committee</small>
                 <strong>{settings.contactPhone}</strong>
+                <span>↗</span>
               </a>
               <a href={"mailto:" + settings.contactEmail}>
                 <small>Email</small>
                 <strong>{settings.contactEmail}</strong>
+                <span>↗</span>
               </a>
             </div>
           </div>
         </section>
 
-        <section className="section join-strip">
-          <div className="shell join-strip-inner">
+        <section className="section final-cta">
+          <div className="shell final-cta-inner">
             <div>
               <div className="eyebrow">Membership</div>
-              <h2>
-                Your next frame starts <span>here.</span>
-              </h2>
+              <h2>Make your next frame part of the archive.</h2>
               <p>
-                Apply online, submit your bKash payment reference, and VAC can
-                review everything securely from the admin dashboard.
+                Fill the form, send the membership fee by bKash, then submit.
+                WhatsApp opens automatically so you can send your TRX ID for
+                manual confirmation.
               </p>
             </div>
             {settings.registrationOpen ? (
               <Link className="primary-button" href="/join">
-                Apply to join VAC
+                Apply to join VAC <span>↗</span>
               </Link>
             ) : (
               <span className="secondary-button">Applications currently closed</span>
@@ -202,19 +239,18 @@ export default async function Home() {
 
       <footer>
         <div className="shell footer-inner">
-          <div>
-            <strong>{settings.clubName}</strong>
-            <span>{settings.university} · Since {settings.since}</span>
+          <div className="footer-brand">
+            <Image src="/vac-logo.webp" alt="" width={70} height={47} />
+            <div>
+              <strong>{settings.clubName}</strong>
+              <span>{settings.university} · Since {settings.since}</span>
+            </div>
           </div>
-          <div>
+
+          <div className="footer-links">
             <Link href="/events">Events</Link>
             <Link href="/archive">Archive</Link>
-            <a href={settings.facebookPage} target="_blank" rel="noreferrer">
-              Facebook Page
-            </a>
-            <a href={settings.facebookGroup} target="_blank" rel="noreferrer">
-              Facebook Group
-            </a>
+            <Link href="/join">Membership</Link>
             <Link href="/privacy">Privacy</Link>
             <Link href="/admin">Admin</Link>
           </div>

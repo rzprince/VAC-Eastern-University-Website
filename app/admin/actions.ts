@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSupabase } from "@/lib/supabase/server";
 
@@ -35,6 +35,13 @@ function revalidateContent() {
   ["/", "/admin", "/archive", "/events", "/join"].forEach((path) =>
     revalidatePath(path)
   );
+  [
+    "vac-site-settings",
+    "vac-committee",
+    "vac-events",
+    "vac-media",
+    "vac-announcements"
+  ].forEach((tag) => revalidateTag(tag));
 }
 
 function bangladeshDateTime(raw: string) {
@@ -397,14 +404,28 @@ export async function updateApplicationStatus(formData: FormData) {
   const supabase = await requireAdmin();
   const id = String(formData.get("id"));
   const status = String(formData.get("status"));
-  const allowed = ["payment_submitted", "verified", "approved", "rejected"];
+  const allowed = [
+    "awaiting_whatsapp",
+    "payment_submitted",
+    "verified",
+    "approved",
+    "rejected"
+  ];
 
   if (!allowed.includes(status)) throw new Error("Invalid application status.");
+
+  const transactionId =
+    String(formData.get("bkashTransactionId") || "").trim().toUpperCase() || null;
+
+  if (["payment_submitted", "verified", "approved"].includes(status) && !transactionId) {
+    throw new Error("Enter the bKash TRX ID before marking this payment as received.");
+  }
 
   const { error } = await supabase
     .from("member_applications")
     .update({
       status,
+      bkash_transaction_id: transactionId,
       admin_notes: String(formData.get("adminNotes") || "").trim() || null,
       reviewed_at: new Date().toISOString()
     })

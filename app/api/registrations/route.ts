@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
-import { getPublicSupabase } from "@/lib/supabase/public";
+import { createMembershipPdf } from "@/lib/application-pdf";
+import { uploadMembershipPdfToDrive } from "@/lib/google-drive";
 import { SITE } from "@/lib/site";
+import { getPublicSupabase } from "@/lib/supabase/public";
+
+export const runtime = "nodejs";
 
 const required = [
   "fullName",
@@ -14,13 +18,33 @@ const required = [
   "skills",
   "reason",
   "bkashSender",
-  "bkashTransactionId"
+  "paymentConfirmed"
 ];
 
 const bloodGroups = new Set(["A+","A-","B+","B-","AB+","AB-","O+","O-"]);
 
 function textValue(body: Record<string, unknown>, key: string, max: number) {
   return String(body[key] || "").trim().slice(0, max);
+}
+
+function whatsappNumber(localNumber: string) {
+  const digits = localNumber.replace(/\D/g, "");
+  if (digits.startsWith("880")) return digits;
+  if (digits.startsWith("0")) return "880" + digits.slice(1);
+  return digits;
+}
+
+function applicationReference(id: string) {
+  const stamp = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Dhaka",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  })
+    .format(new Date())
+    .replaceAll("-", "");
+
+  return "VAC-" + stamp + "-" + id.slice(0, 8).toUpperCase();
 }
 
 export async function POST(request: Request) {
@@ -39,7 +63,7 @@ export async function POST(request: Request) {
   for (const field of required) {
     if (!String(body[field] || "").trim()) {
       return NextResponse.json(
-        { error: "Please complete every required field." },
+        { error: "Please complete every required field and confirm your bKash payment." },
         { status: 400 }
       );
     }
@@ -59,14 +83,14 @@ export async function POST(request: Request) {
 
   if (!bdPhonePattern.test(phone.replace(/[\s-]/g, ""))) {
     return NextResponse.json(
-      { error: "Please enter a valid Bangladesh phone number." },
+      { error: "Please enter a valid Bangladesh phone / WhatsApp number." },
       { status: 400 }
     );
   }
 
   if (!bdPhonePattern.test(bkashSender.replace(/[\s-]/g, ""))) {
     return NextResponse.json(
-      { error: "Please enter a valid bKash sender number." },
+      { error: "Please enter the bKash number you used to send the fee." },
       { status: 400 }
     );
   }
@@ -85,14 +109,6 @@ export async function POST(request: Request) {
     );
   }
 
-  const transactionId = textValue(body, "bkashTransactionId", 40).toUpperCase();
-  if (transactionId.length < 5) {
-    return NextResponse.json(
-      { error: "Please enter a valid bKash Transaction ID." },
-      { status: 400 }
-    );
-  }
-
   const supabase = getPublicSupabase();
   if (!supabase) {
     return NextResponse.json(
@@ -103,7 +119,7 @@ export async function POST(request: Request) {
 
   const { data: settings } = await supabase
     .from("site_settings")
-    .select("registration_fee,registration_open")
+    .select("registration_fee,registration_open,bkash_number")
     .eq("id", true)
     .maybeSingle();
 
@@ -122,28 +138,89 @@ export async function POST(request: Request) {
   const registrationFee = Number(
     settings?.registration_fee || SITE.registrationFee
   );
+  const paymentNumber = settings?.bkash_number || SITE.bkashNumber;
 
-  const { error } = await supabase.from("member_applications").insert({
-    full_name: textValue(body, "fullName", 120),
-    eu_id: textValue(body, "euId", 40),
+  const id = crypto.randomUUID();
+  const applicationRef = applicationReference(id);
+  const submittedAt = new Date().toLocaleString("en-BD", {
+    timeZone: "Asia/Dhaka",
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+
+  const application = {
+    fullName: textValue(body, "fullName", 120),
+    euId: textValue(body, "euId", 40),
     department: textValue(body, "department", 80),
     address: textValue(body, "address", 500),
-    date_of_birth: dateOfBirth,
-    blood_group: bloodGroup,
+    dateOfBirth,
+    bloodGroup,
     email,
-    phone_whatsapp: phone,
+    phone,
     skills: textValue(body, "skills", 1000),
     reason: textValue(body, "reason", 1500),
-    bkash_sender: bkashSender,
-    bkash_transaction_id: transactionId,
+    bkashSender
+  };
+
+  const pdfBytes = await createMembershipPdf({
+    applicationRef,
+    ...application,
+    registrationFee,
+    submittedAt
+  });
+
+  const pdfPath = "membership/" + id + ".pdf";
+  const { error: pdfError } = await supabase.storage
+    .from("vac-applications")
+    .upload(pdfPath, pdfBytes, {
+      contentType: "application/pdf",
+      cacheControl: "3600",
+      upsert: false
+    });
+
+  if (pdfError) {
+    return NextResponse.json(
+      { error: "Your application PDF could not be generated. Please try again." },
+      { status: 500 }
+    );
+  }
+
+  const fileName =
+    "VAC-Membership-" +
+    applicationRef +
+    "-" +
+    application.fullName.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "") +
+    ".pdf";
+
+  const drive = await uploadMembershipPdfToDrive({ pdfBytes, fileName });
+
+  const { error } = await supabase.from("member_applications").insert({
+    id,
+    application_ref: applicationRef,
+    full_name: application.fullName,
+    eu_id: application.euId,
+    department: application.department,
+    address: application.address,
+    date_of_birth: application.dateOfBirth,
+    blood_group: application.bloodGroup,
+    email: application.email,
+    phone_whatsapp: application.phone,
+    skills: application.skills,
+    reason: application.reason,
+    bkash_sender: application.bkashSender,
+    bkash_transaction_id: null,
     registration_fee: registrationFee,
-    status: "payment_submitted"
+    status: "awaiting_whatsapp",
+    pdf_storage_path: pdfPath,
+    pdf_generated_at: new Date().toISOString(),
+    google_drive_file_id: drive.status === "synced" ? drive.fileId : null,
+    drive_sync_status: drive.status
   });
 
   if (error) {
     if (error.code === "23505") {
       return NextResponse.json(
-        { error: "This EU ID or bKash Transaction ID has already been submitted." },
+        { error: "An application with this Eastern University ID already exists." },
         { status: 409 }
       );
     }
@@ -154,8 +231,31 @@ export async function POST(request: Request) {
     );
   }
 
+  const message = [
+    "Hello VAC, I just submitted my membership application.",
+    "",
+    "Application Ref: " + applicationRef,
+    "Name: " + application.fullName,
+    "EU ID: " + application.euId,
+    "Department: " + application.department,
+    "bKash sender: " + application.bkashSender,
+    "Fee sent: BDT " + registrationFee,
+    "",
+    "I will send my bKash TRX ID in this chat for manual payment confirmation."
+  ].join("\n");
+
+  const whatsappUrl =
+    "https://wa.me/" +
+    whatsappNumber(paymentNumber) +
+    "?text=" +
+    encodeURIComponent(message);
+
   return NextResponse.json({
     message:
-      `Application received successfully. VAC will verify your ৳${registrationFee} bKash payment and review your membership request.`
+      "Application saved. Opening VAC WhatsApp now so you can send your bKash TRX ID.",
+    applicationRef,
+    whatsappUrl,
+    pdfSaved: true,
+    driveStatus: drive.status
   });
 }

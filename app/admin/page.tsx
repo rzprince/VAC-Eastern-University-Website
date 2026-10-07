@@ -106,7 +106,7 @@ export default async function AdminPage({
     supabase
       .from("member_applications")
       .select(
-        "id,full_name,eu_id,department,address,date_of_birth,blood_group,email,phone_whatsapp,skills,reason,bkash_sender,bkash_transaction_id,registration_fee,status,admin_notes,reviewed_at,created_at"
+        "id,application_ref,full_name,eu_id,department,address,date_of_birth,blood_group,email,phone_whatsapp,skills,reason,bkash_sender,bkash_transaction_id,registration_fee,status,admin_notes,reviewed_at,created_at,pdf_storage_path,google_drive_file_id,drive_sync_status"
       )
       .order("created_at", { ascending: false })
       .limit(200),
@@ -157,7 +157,9 @@ export default async function AdminPage({
   });
 
   const pendingCount = allApplications.filter(
-    (item) => item.status === "payment_submitted"
+    (item) =>
+      item.status === "awaiting_whatsapp" ||
+      item.status === "payment_submitted"
   ).length;
   const verifiedCount = allApplications.filter(
     (item) => item.status === "verified"
@@ -192,7 +194,7 @@ export default async function AdminPage({
 
       <section className="admin-stats" aria-label="VAC dashboard summary">
         <article><small>Applications</small><strong>{allApplications.length}</strong></article>
-        <article><small>Payment submitted</small><strong>{pendingCount}</strong></article>
+        <article><small>Awaiting review</small><strong>{pendingCount}</strong></article>
         <article><small>Verified</small><strong>{verifiedCount}</strong></article>
         <article><small>Approved</small><strong>{approvedCount}</strong></article>
         <article><small>Active members</small><strong>{activeMemberCount}</strong></article>
@@ -445,7 +447,8 @@ export default async function AdminPage({
           <input name="q" type="search" placeholder="Search name, EU ID, phone, email or TxID" defaultValue={params.q || ""} />
           <select name="status" defaultValue={params.status || ""}>
             <option value="">All statuses</option>
-            <option value="payment_submitted">Payment submitted</option>
+            <option value="awaiting_whatsapp">Awaiting WhatsApp TRX</option>
+            <option value="payment_submitted">TRX received</option>
             <option value="verified">Verified</option>
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
@@ -487,12 +490,33 @@ export default async function AdminPage({
                 <small>bKash sender</small>
                 <b>{application.bkash_sender}</b>
                 <small>Transaction ID</small>
-                <b>{application.bkash_transaction_id}</b>
+                <b>{application.bkash_transaction_id || "Waiting for WhatsApp"}</b>
+                <div className="application-file-links">
+                  <a href={"/admin/applications/" + application.id + "/pdf"} target="_blank">
+                    Application PDF ↗
+                  </a>
+                  {application.google_drive_file_id && (
+                    <a
+                      href={"https://drive.google.com/file/d/" + application.google_drive_file_id + "/view"}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Google Drive ↗
+                    </a>
+                  )}
+                  <small>Drive: {application.drive_sync_status || "pending"}</small>
+                </div>
               </div>
               <form action={updateApplicationStatus} className="application-review-form">
                 <input type="hidden" name="id" value={application.id} />
+                <input
+                  name="bkashTransactionId"
+                  placeholder="Enter TRX ID from WhatsApp"
+                  defaultValue={application.bkash_transaction_id || ""}
+                />
                 <select name="status" defaultValue={application.status}>
-                  <option value="payment_submitted">Payment submitted</option>
+                  <option value="awaiting_whatsapp">Awaiting WhatsApp TRX</option>
+                  <option value="payment_submitted">TRX received</option>
                   <option value="verified">Payment verified</option>
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>

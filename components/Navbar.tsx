@@ -22,9 +22,17 @@ export function Navbar({
   return (
     <header className="navbar">
       <div className="shell nav-inner">
-        <Link className="brand" href="/" onClick={close}>
-          <Image src="/vac-logo.webp" alt={clubName} width={74} height={49} priority />
-          <span>
+        <Link className="brand" href="/" onClick={close} aria-label="Visual Archive Club home">
+          <span className="brand-mark">
+            <Image
+              src="/vac-logo.webp"
+              alt=""
+              width={72}
+              height={48}
+              priority
+            />
+          </span>
+          <span className="brand-copy">
             <strong>{clubName}</strong>
             <small>{university}</small>
           </span>
@@ -50,13 +58,15 @@ export function Navbar({
         >
           <a href="/#about" onClick={close}>About</a>
           <a href="/#committee" onClick={close}>Committee</a>
-          <a href="/#events" onClick={close}>Events</a>
+          <Link href="/events" onClick={close}>Events</Link>
           <Link href="/archive" onClick={close}>Archive</Link>
           <a href="/#contact" onClick={close}>Contact</a>
           <a href={facebookPage} target="_blank" rel="noreferrer" onClick={close}>
             Facebook
           </a>
-          <Link className="nav-join" href="/join" onClick={close}>Join VAC</Link>
+          <Link className="nav-join" href="/join" onClick={close}>
+            <span>Join VAC</span><b aria-hidden="true">↗</b>
+          </Link>
         </nav>
       </div>
     </header>

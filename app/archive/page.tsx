@@ -3,7 +3,7 @@ import { ArchiveExplorer } from "@/components/ArchiveExplorer";
 import { Navbar } from "@/components/Navbar";
 import { getAllMedia, getSiteSettings } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function ArchivePage() {
   const [items, settings] = await Promise.all([
