@@ -3,6 +3,11 @@
 import Image from "next/image";
 import { PointerEvent, useRef } from "react";
 
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1739296385343-ff091bca6203?auto=format&fit=crop&fm=webp&q=88&w=1800";
+const FILM_IMAGE =
+  "https://images.unsplash.com/photo-1727451139462-cd34008cd50b?auto=format&fit=crop&fm=webp&q=84&w=1000";
+
 export function HeroScene() {
   const ref = useRef<HTMLDivElement>(null);
   const frame = useRef<number | null>(null);
@@ -17,8 +22,8 @@ export function HeroScene() {
 
     if (frame.current) cancelAnimationFrame(frame.current);
     frame.current = requestAnimationFrame(() => {
-      element.style.setProperty("--scene-rx", (-y * 8).toFixed(2) + "deg");
-      element.style.setProperty("--scene-ry", (x * 10).toFixed(2) + "deg");
+      element.style.setProperty("--scene-rx", (-y * 5).toFixed(2) + "deg");
+      element.style.setProperty("--scene-ry", (x * 6).toFixed(2) + "deg");
       element.style.setProperty("--scene-x", (x * 18).toFixed(2) + "px");
       element.style.setProperty("--scene-y", (y * 14).toFixed(2) + "px");
     });
@@ -35,42 +40,47 @@ export function HeroScene() {
   return (
     <div
       ref={ref}
-      className="hero-scene"
+      className="hero-scene hero-scene--editorial"
       onPointerMove={move}
       onPointerLeave={reset}
-      aria-hidden="true"
+      aria-label="VAC photography and filmmaking visual"
     >
-      <div className="hero-scene-glow" />
-      <div className="scene-orbit scene-orbit--one" />
-      <div className="scene-orbit scene-orbit--two" />
-      <div className="scene-lens">
-        <div className="scene-lens-ring scene-lens-ring--outer" />
-        <div className="scene-lens-ring scene-lens-ring--mid" />
-        <div className="scene-lens-core">
-          <span />
-          <span />
-          <span />
+      <div className="hero-art-glow" aria-hidden="true" />
+
+      <div className="hero-art-main">
+        <img
+          src={HERO_IMAGE}
+          alt="Photographer working with a camera in cinematic light"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <span className="hero-art-vignette" aria-hidden="true" />
+        <div className="hero-art-caption">
+          <small>Visual Archive Club</small>
+          <strong>Frame / Story / Archive</strong>
         </div>
       </div>
 
-      <div className="scene-logo">
+      <div className="hero-art-secondary" aria-hidden="true">
+        <img src={FILM_IMAGE} alt="" loading="lazy" decoding="async" />
+      </div>
+
+      <div className="hero-logo-seal">
         <Image
           src="/vac-logo.png"
-          alt=""
+          alt="Visual Archive Club"
           width={520}
-          height={347}
+          height={373}
           priority
         />
       </div>
 
-      <div className="scene-tag scene-tag--photo">
-        <small>01</small><strong>Photography</strong>
+      <div className="hero-coordinate hero-coordinate--one" aria-hidden="true">
+        <span>23.8103° N</span><span>90.4125° E</span>
       </div>
-      <div className="scene-tag scene-tag--video">
-        <small>02</small><strong>Film</strong>
-      </div>
-      <div className="scene-tag scene-tag--archive">
-        <small>03</small><strong>Archive</strong>
+
+      <div className="hero-coordinate hero-coordinate--two" aria-hidden="true">
+        <span>EST.</span><strong>2010</strong>
       </div>
     </div>
   );
