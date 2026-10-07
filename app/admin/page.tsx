@@ -10,6 +10,7 @@ import {
   deleteMedia,
   logout,
   syncApplicationPdfToDrive,
+  syncPendingApplicationPdfsToDrive,
   updateAnnouncement,
   updateApplicationStatus,
   updateClubMember,
@@ -440,6 +441,9 @@ export default async function AdminPage({
             <p>Search, verify bKash references, approve applicants, and export records.</p>
           </div>
           <div className="admin-export-actions">
+            <form action={syncPendingApplicationPdfsToDrive}>
+              <button className="secondary-button" type="submit">Sync pending PDFs to Drive</button>
+            </form>
             <a className="secondary-button" href="/admin/export?scope=applications">Export applications CSV</a>
             <a className="secondary-button" href="/admin/export?scope=members">Export members CSV</a>
           </div>
@@ -455,7 +459,13 @@ export default async function AdminPage({
                   ? "Google Drive rejected the upload. Check Drive API access, folder sharing and service-account credentials."
                   : driveMessage === "missing_pdf"
                     ? "This application does not have a stored PDF to sync."
-                    : "Could not sync this application PDF."}
+                    : driveMessage === "bulk_synced"
+                      ? "All pending application PDFs were uploaded to Google Drive."
+                      : driveMessage === "bulk_partial"
+                        ? "Some PDFs synced, but one or more Drive uploads failed. Check the remaining status rows."
+                        : driveMessage === "all_synced"
+                          ? "There are no pending PDFs to sync."
+                          : "Could not sync this application PDF."}
           </div>
         )}
 
