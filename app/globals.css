@@ -5006,3 +5006,1124 @@ body {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+
+/* ==========================================================================
+   PREMIUM VAC V4 — UNIVERSITY CREATIVE CLUB / EDITORIAL CINEMA SYSTEM
+   Based on UI UX Pro Max principles: exaggerated minimalism, editorial
+   hierarchy, photo-led storytelling, restrained depth, transform-only motion.
+   ========================================================================== */
+
+:root {
+  --bg: #050505;
+  --bg-soft: #080808;
+  --panel: #0c0c0c;
+  --panel-2: #101010;
+  --panel-3: #151515;
+  --ink: #f4f0e8;
+  --muted: #a09a91;
+  --muted-2: #716c65;
+  --orange: #ff6500;
+  --orange-2: #ff8736;
+  --champagne: #d8b985;
+  --champagne-soft: rgba(216,185,133,.13);
+  --line: rgba(255,255,255,.085);
+  --line-strong: rgba(255,255,255,.16);
+  --radius: 28px;
+  --shadow: 0 40px 120px rgba(0,0,0,.44);
+}
+
+body {
+  background:
+    radial-gradient(circle at 82% 0%, rgba(255,101,0,.055), transparent 34rem),
+    radial-gradient(circle at 18% 28%, rgba(216,185,133,.025), transparent 30rem),
+    #050505;
+  color: var(--ink);
+}
+
+.shell {
+  width: min(1320px, calc(100% - 64px));
+}
+
+.vac-logo-asset,
+.eu-logo-asset {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  background: transparent !important;
+  mix-blend-mode: screen;
+  filter: none;
+}
+
+.vac-logo-asset {
+  aspect-ratio: 520 / 373;
+}
+
+.eu-logo-asset {
+  aspect-ratio: 520 / 295;
+}
+
+/* Navigation: compact, expensive-looking, never logo-boxy */
+.navbar {
+  background: rgba(5,5,5,.78);
+  border-bottom-color: rgba(255,255,255,.075);
+  backdrop-filter: blur(24px) saturate(125%);
+  -webkit-backdrop-filter: blur(24px) saturate(125%);
+}
+
+.nav-inner {
+  height: 86px;
+}
+
+.brand {
+  gap: 16px;
+}
+
+.brand-mark {
+  width: 62px;
+  height: 54px;
+  padding: 0;
+  overflow: visible;
+  background: #050505;
+  border-radius: 0;
+}
+
+.brand-mark .vac-logo-asset {
+  width: 62px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.brand-copy strong {
+  color: #f5f0e8;
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 760;
+  letter-spacing: -.03em;
+}
+
+.brand-copy small {
+  margin-top: 4px;
+  color: var(--orange);
+  font-size: 9px;
+  letter-spacing: .12em;
+}
+
+.nav-links {
+  gap: 30px;
+  color: #aaa49c;
+  font-size: 12px;
+}
+
+.nav-join {
+  min-height: 42px;
+  padding: 0 18px;
+  border-color: rgba(255,101,0,.52);
+  background: rgba(255,101,0,.035);
+}
+
+/* Hero: editorial stage instead of dashboard-like blocks */
+.hero-v2 {
+  min-height: 100svh;
+  padding: 144px 0 100px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px);
+  background-size: 92px 92px;
+}
+
+.hero-noise {
+  opacity: .24;
+  background-size: 92px 92px;
+}
+
+.hero-layout {
+  grid-template-columns: minmax(0,.92fr) minmax(520px,1.08fr);
+  gap: clamp(56px,7vw,112px);
+}
+
+.hero-brandline {
+  margin-bottom: 42px;
+}
+
+.hero-brandline .eu-logo-asset {
+  width: 68px;
+  height: 48px;
+  object-fit: contain;
+  background: #050505 !important;
+}
+
+.hero-brandline p {
+  color: #9b958d;
+  font-size: 9px;
+  letter-spacing: .15em;
+}
+
+.hero-copy h1 {
+  max-width: 760px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(70px,7.4vw,116px);
+  font-weight: 500;
+  letter-spacing: -.065em;
+  line-height: .88;
+  text-wrap: balance;
+}
+
+.hero-copy h1 em {
+  color: var(--orange);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.hero-lead {
+  max-width: 620px;
+  margin-top: 34px;
+  color: #aaa39a;
+  font-size: clamp(16px,1.4vw,19px);
+  line-height: 1.75;
+}
+
+.hero-actions {
+  margin-top: 38px;
+}
+
+.primary-button,
+.secondary-button {
+  min-height: 52px;
+  padding-inline: 23px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: .01em;
+}
+
+.hero-meta {
+  margin-top: 62px;
+  border-top-color: rgba(255,255,255,.1);
+}
+
+.hero-meta strong {
+  color: #f2ede5;
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.hero-meta small {
+  color: #716c65;
+}
+
+/* 3D hero art: high-res photo-led, restrained transforms */
+.hero-scene--editorial {
+  min-height: 690px;
+  perspective: 1500px;
+}
+
+.hero-art-main {
+  position: absolute;
+  z-index: 2;
+  inset: 6% 6% 8% 9%;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 34px;
+  background: #090909;
+  box-shadow: 0 55px 140px rgba(0,0,0,.52);
+  transform:
+    translate3d(var(--scene-x),var(--scene-y),0)
+    rotateX(var(--scene-rx))
+    rotateY(var(--scene-ry));
+  transform-style: preserve-3d;
+  transition: transform .18s ease-out, border-color .3s ease;
+}
+
+.hero-art-main::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.08), transparent 24%),
+    linear-gradient(to top, rgba(0,0,0,.75), transparent 50%);
+}
+
+.hero-art-main img {
+  width: 100%;
+  height: 100%;
+  min-height: 610px;
+  object-fit: cover;
+  object-position: 55% center;
+  filter: saturate(.78) contrast(1.08) brightness(.78);
+  transform: scale(1.035);
+}
+
+.hero-art-caption {
+  position: absolute;
+  z-index: 5;
+  left: 28px;
+  bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hero-art-caption small {
+  color: var(--orange);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.hero-art-caption strong {
+  color: #f7f3ec;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -.03em;
+}
+
+.hero-art-secondary {
+  position: absolute;
+  z-index: 5;
+  width: 210px;
+  aspect-ratio: 4/5;
+  right: -1%;
+  bottom: 2%;
+  overflow: hidden;
+  border: 8px solid #080808;
+  border-radius: 20px;
+  box-shadow: 0 28px 90px rgba(0,0,0,.6);
+  transform:
+    translate3d(calc(var(--scene-x) * -.38),calc(var(--scene-y) * -.38),60px)
+    rotate(4deg);
+  transition: transform .2s ease-out;
+}
+
+.hero-art-secondary img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.7) contrast(1.09);
+}
+
+.hero-logo-seal {
+  position: absolute;
+  z-index: 7;
+  width: 170px;
+  left: 0;
+  top: 9%;
+  padding: 16px;
+  background: #050505;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 18px;
+  box-shadow: 0 22px 70px rgba(0,0,0,.42);
+  transform:
+    translate3d(calc(var(--scene-x) * -.22),calc(var(--scene-y) * -.22),80px)
+    rotate(-4deg);
+}
+
+.hero-logo-seal .vac-logo-asset {
+  width: 100%;
+  height: auto;
+}
+
+.hero-art-glow {
+  position: absolute;
+  inset: 20% 0 10% 15%;
+  background: radial-gradient(circle, rgba(255,101,0,.18), transparent 66%);
+  filter: blur(48px);
+}
+
+.hero-coordinate {
+  position: absolute;
+  z-index: 8;
+  display: flex;
+  gap: 7px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 999px;
+  background: rgba(5,5,5,.72);
+  backdrop-filter: blur(12px);
+  color: #817b73;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.hero-coordinate--one { left: 2%; bottom: 6%; }
+.hero-coordinate--two { right: 8%; top: 4%; }
+.hero-coordinate strong { color: var(--orange); }
+
+/* Editorial section rhythm */
+.section {
+  padding: 142px 0;
+}
+
+.section-kicker-row {
+  margin-bottom: 62px;
+}
+
+.section h2,
+.page-title {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -.052em;
+  line-height: .98;
+}
+
+.section h2 em,
+.page-title em {
+  color: var(--orange);
+  font-style: italic;
+}
+
+/* Creative discipline cards: magazine / film-poster quality */
+.craft-section {
+  background:
+    radial-gradient(circle at 90% 0, rgba(255,101,0,.045), transparent 34rem),
+    #070707;
+}
+
+.craft-grid {
+  grid-template-columns: 1.18fr .82fr;
+  grid-template-rows: repeat(2,minmax(340px,1fr));
+  gap: 18px;
+  perspective: 1600px;
+}
+
+.craft-card {
+  min-height: 360px;
+  border-radius: 30px;
+  border-color: rgba(255,255,255,.1);
+  background: #0a0a0a;
+  box-shadow: 0 24px 80px rgba(0,0,0,.22);
+  transform-origin: center;
+  transition:
+    transform .45s cubic-bezier(.2,.8,.2,1),
+    border-color .3s ease,
+    box-shadow .45s ease;
+}
+
+.craft-card:hover {
+  transform: translateY(-7px) rotateX(1deg) rotateY(-.75deg);
+  border-color: rgba(216,185,133,.32);
+  box-shadow: 0 45px 120px rgba(0,0,0,.38);
+}
+
+.craft-card--wide {
+  min-height: 718px;
+}
+
+.craft-art {
+  inset: 0;
+  opacity: 1;
+}
+
+.craft-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.78) contrast(1.08) brightness(.8);
+  transform: scale(1.015);
+  transition: transform .8s cubic-bezier(.2,.8,.2,1), filter .5s ease;
+}
+
+.craft-card:hover .craft-art img {
+  transform: scale(1.055);
+  filter: saturate(.9) contrast(1.08) brightness(.86);
+}
+
+.craft-gradient,
+.craft-card::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(4,4,4,.97), rgba(4,4,4,.12) 68%),
+    linear-gradient(135deg, rgba(255,101,0,.08), transparent 38%);
+  pointer-events: none;
+}
+
+.craft-number {
+  position: absolute;
+  z-index: 3;
+  top: 24px;
+  left: 25px;
+  color: rgba(255,255,255,.72);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.craft-copy {
+  z-index: 4;
+  grid-template-columns: 1fr auto;
+  left: 30px;
+  right: 30px;
+  bottom: 29px;
+  gap: 28px;
+}
+
+.craft-copy small {
+  display: block;
+  margin-bottom: 8px;
+  color: #817b72;
+  font-size: 8px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.craft-copy h3 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(31px,3.4vw,52px);
+  font-weight: 500;
+  letter-spacing: -.045em;
+}
+
+.craft-copy p {
+  margin-top: 9px;
+  color: #b0aaa2;
+  font-size: 11px;
+}
+
+.craft-arrow {
+  align-self: end;
+  color: var(--orange);
+  font-size: 20px;
+}
+
+/* Brand lockup: black is visually removed by screen blend, no fake boxes */
+.brand-lockup {
+  min-height: 190px;
+  background: #050505;
+}
+
+.brand-lockup img {
+  max-width: 270px;
+  max-height: 118px;
+  background: transparent !important;
+}
+
+/* Committee: official order, President is the one deliberate focal point */
+.committee-section {
+  background:
+    radial-gradient(circle at 76% 16%, rgba(216,185,133,.045), transparent 28rem),
+    #070707;
+}
+
+.committee-grid--advisory,
+.committee-grid--uniform {
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 14px;
+}
+
+.committee-grid--advisory {
+  margin-bottom: 32px;
+}
+
+.member-card--uniform {
+  min-height: 330px;
+  padding: 14px;
+  border-radius: 22px;
+  border-color: rgba(255,255,255,.09);
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.025),transparent 45%),
+    #0b0b0b;
+  box-shadow: none;
+  transition:
+    transform .28s cubic-bezier(.2,.8,.2,1),
+    border-color .25s ease,
+    background .25s ease;
+}
+
+.member-card--uniform:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255,101,0,.32);
+  background: #0e0e0e;
+}
+
+.member-card--uniform .member-avatar {
+  height: 185px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 65% 25%, rgba(255,101,0,.07), transparent 34%),
+    #080808;
+}
+
+.member-avatar > span {
+  color: rgba(244,240,232,.24);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 52px;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.member-card-copy small {
+  min-height: 26px;
+  color: var(--orange);
+  font-size: 8px;
+  letter-spacing: .1em;
+}
+
+.member-card-copy strong {
+  color: #f0ebe3;
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 720;
+  letter-spacing: -.025em;
+}
+
+.president-feature {
+  min-height: 470px;
+  margin: 42px 0 78px;
+  border: 1px solid rgba(216,185,133,.34);
+  border-radius: 34px;
+  background:
+    linear-gradient(112deg,rgba(216,185,133,.055),transparent 46%),
+    radial-gradient(circle at 80% 18%,rgba(255,101,0,.14),transparent 34rem),
+    #0b0b0a;
+  box-shadow: 0 42px 120px rgba(0,0,0,.28);
+}
+
+.president-feature::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg,rgba(255,255,255,.045),transparent 28%);
+}
+
+.president-feature-media {
+  min-height: 438px;
+  border-radius: 26px;
+}
+
+.president-feature-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.president-kicker {
+  color: var(--champagne);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.president-feature-copy h3 {
+  margin: 15px 0 18px;
+  color: #f5f0e8;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(48px,5.8vw,78px);
+  font-weight: 500;
+  letter-spacing: -.055em;
+  line-height: .94;
+}
+
+.president-feature-copy p {
+  max-width: 620px;
+  color: #a9a39b;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.president-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 27px;
+}
+
+.president-meta span {
+  padding: 8px 11px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 999px;
+  color: #aaa39a;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.president-open {
+  display: inline-flex;
+  gap: 9px;
+  margin-top: 30px;
+  color: #eee9e1;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.president-open b {
+  color: var(--orange);
+}
+
+.president-feature-mark {
+  color: rgba(255,255,255,.08);
+}
+
+.member-modal {
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 80% 10%,rgba(255,101,0,.08),transparent 18rem),
+    #0b0b0b;
+}
+
+.member-modal--president {
+  border-color: rgba(216,185,133,.35);
+}
+
+.member-contact-list {
+  margin-top: 28px;
+}
+
+.member-contact-list > div {
+  display: grid;
+  grid-template-columns: 105px 1fr;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.member-contact-list dt {
+  color: #716c65;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.member-contact-list dd {
+  margin: 0;
+  color: #e9e3db;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.member-contact-list a:hover {
+  color: var(--orange);
+}
+
+/* Membership brand lockup: both logos fully visible, no clipping */
+.form-header--premium {
+  grid-template-columns: minmax(360px,.72fr) minmax(0,1.28fr);
+  gap: clamp(52px,7vw,100px);
+}
+
+.join-institution-lockup {
+  min-height: 225px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 1px minmax(0,1fr);
+  align-items: center;
+  align-content: center;
+  gap: 24px;
+  padding: 30px 24px;
+  overflow: visible;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 50% 20%,rgba(255,101,0,.06),transparent 52%),
+    #080808;
+}
+
+.join-logo-card {
+  min-width: 0;
+  min-height: 150px;
+  padding: 14px;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  background: #080808;
+}
+
+.join-logo-card .vac-logo-asset {
+  width: min(100%,230px);
+  max-height: none;
+}
+
+.join-logo-card .eu-logo-asset {
+  width: min(100%,250px);
+  max-height: none;
+}
+
+.join-lockup-divider {
+  width: 1px;
+  height: 104px;
+  background: linear-gradient(transparent,rgba(255,101,0,.72),transparent);
+}
+
+.join-intro h1,
+.form-header h1 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -.055em;
+  line-height: .94;
+}
+
+/* Successful submission must be impossible to miss */
+.application-success-backdrop {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow-y: auto;
+  background: rgba(0,0,0,.82);
+  backdrop-filter: blur(18px);
+}
+
+.application-success-card {
+  width: min(620px,100%);
+  padding: clamp(28px,5vw,48px);
+  border: 1px solid rgba(216,185,133,.28);
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 90% 0,rgba(255,101,0,.12),transparent 24rem),
+    #0b0b0b;
+  box-shadow: 0 50px 150px rgba(0,0,0,.62);
+  text-align: center;
+  animation: modal-in .32s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.success-logo {
+  width: 104px;
+  margin: 0 auto 10px;
+  padding: 8px;
+  background: #080808;
+}
+
+.success-logo .vac-logo-asset {
+  width: 100%;
+}
+
+.success-check {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  margin: 18px auto;
+  border-radius: 50%;
+  background: rgba(255,101,0,.1);
+  border: 1px solid rgba(255,101,0,.3);
+  color: var(--orange);
+  font-size: 22px;
+}
+
+.application-success-card h2 {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(34px,6vw,54px);
+  font-weight: 500;
+  letter-spacing: -.045em;
+}
+
+.application-success-card > p {
+  max-width: 500px;
+  margin: 16px auto 0;
+  color: #aaa39a;
+  line-height: 1.65;
+}
+
+.success-reference {
+  margin: 24px 0;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 14px;
+  background: rgba(255,255,255,.025);
+}
+
+.success-reference small {
+  display: block;
+  color: #716c65;
+  font-size: 8px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.success-reference strong {
+  display: block;
+  margin-top: 5px;
+  color: #f1ece4;
+  font-family: ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size: 12px;
+}
+
+.success-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.success-close {
+  margin-top: 18px;
+  border: 0;
+  background: transparent;
+  color: #777169;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.success-close:hover {
+  color: #fff;
+}
+
+/* Footer credit gets a deliberate signature row */
+.footer-bottom {
+  min-height: 78px;
+  border-top-color: rgba(255,255,255,.08);
+}
+
+.developer-credit {
+  padding: 7px 9px 7px 13px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 999px;
+  background: rgba(255,255,255,.018);
+}
+
+.developer-credit:hover {
+  border-color: rgba(255,101,0,.28);
+  background: rgba(255,101,0,.035);
+}
+
+.site-footer .footer-brand {
+  background: #070706;
+}
+
+.site-footer .footer-brand .vac-logo-asset {
+  width: 72px;
+  height: 58px;
+  object-fit: contain;
+}
+
+/* Motion: depth without jank */
+@media (hover:hover) and (pointer:fine) {
+  .member-card--uniform,
+  .craft-card,
+  .contact-links a,
+  .event-card,
+  .media-card {
+    will-change: transform;
+  }
+}
+
+@media (max-width: 1100px) {
+  .shell { width: min(100% - 40px, 1040px); }
+
+  .hero-layout {
+    grid-template-columns: minmax(0,1fr) minmax(420px,.9fr);
+    gap: 42px;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(60px,8vw,88px);
+  }
+
+  .hero-scene--editorial {
+    min-height: 590px;
+  }
+
+  .hero-art-main img {
+    min-height: 520px;
+  }
+
+  .committee-grid--advisory,
+  .committee-grid--uniform {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+  }
+
+  .form-header--premium {
+    grid-template-columns: 1fr;
+  }
+
+  .join-institution-lockup {
+    max-width: 760px;
+  }
+}
+
+@media (max-width: 820px) {
+  .shell { width: min(100% - 28px, 720px); }
+  .section { padding: 96px 0; }
+
+  .hero-v2 {
+    min-height: auto;
+    padding: 122px 0 74px;
+  }
+
+  .hero-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(58px,12vw,88px);
+  }
+
+  .hero-scene--editorial {
+    min-height: 610px;
+    margin-top: 12px;
+  }
+
+  .craft-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .craft-card,
+  .craft-card--wide {
+    grid-row: auto;
+    min-height: 500px;
+  }
+
+  .committee-grid--advisory,
+  .committee-grid--uniform {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+
+  .president-feature {
+    grid-template-columns: 1fr;
+  }
+
+  .president-feature-media {
+    min-height: 380px;
+  }
+
+  .president-feature-copy {
+    padding: 24px 22px 34px;
+  }
+
+  .president-feature-mark {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .shell { width: min(100% - 20px, 520px); }
+
+  .nav-inner { height: 72px; }
+  .brand-mark { width: 52px; height: 44px; }
+  .brand-mark .vac-logo-asset { width: 52px; height: 44px; }
+  .brand-copy strong { font-size: 12px; }
+  .brand-copy small { font-size: 7px; }
+
+  .hero-v2 { padding-top: 104px; }
+  .hero-copy h1 { font-size: clamp(49px,15vw,70px); }
+  .hero-lead { font-size: 14px; }
+
+  .hero-scene--editorial {
+    min-height: 470px;
+    margin-inline: -4px;
+  }
+
+  .hero-art-main {
+    inset: 8% 2% 7% 2%;
+    border-radius: 24px;
+  }
+
+  .hero-art-main img { min-height: 420px; }
+  .hero-art-secondary { width: 130px; right: -2%; }
+  .hero-logo-seal { width: 105px; left: 2%; padding: 10px; }
+  .hero-coordinate { display: none; }
+
+  .craft-card,
+  .craft-card--wide {
+    min-height: 390px;
+    border-radius: 24px;
+  }
+
+  .craft-copy {
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+  }
+
+  .craft-copy h3 { font-size: 34px; }
+
+  .committee-grid--advisory,
+  .committee-grid--uniform {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .member-card--uniform {
+    min-height: 280px;
+    padding: 10px;
+  }
+
+  .member-card--uniform .member-avatar {
+    height: 142px;
+  }
+
+  .member-card-copy strong { font-size: 14px; }
+  .member-card-copy small { font-size: 7px; }
+  .member-avatar > span { font-size: 38px; }
+
+  .president-feature {
+    min-height: auto;
+    margin: 32px 0 56px;
+    padding: 10px;
+    border-radius: 26px;
+  }
+
+  .president-feature-media {
+    min-height: 300px;
+    border-radius: 19px;
+  }
+
+  .president-feature-copy h3 { font-size: 46px; }
+
+  .member-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-contact-list > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .join-institution-lockup {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    min-height: 330px;
+    padding: 22px;
+  }
+
+  .join-logo-card {
+    min-height: 125px;
+    padding: 8px;
+  }
+
+  .join-lockup-divider {
+    width: 72%;
+    height: 1px;
+    justify-self: center;
+  }
+
+  .join-logo-card .vac-logo-asset { width: min(100%,190px); }
+  .join-logo-card .eu-logo-asset { width: min(100%,220px); }
+
+  .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+    padding-block: 20px;
+  }
+
+  .developer-credit {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-art-main,
+  .hero-art-secondary,
+  .hero-logo-seal,
+  .craft-card,
+  .member-card--uniform,
+  .president-feature {
+    transform: none !important;
+  }
+}
