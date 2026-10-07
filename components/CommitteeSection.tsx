@@ -21,10 +21,49 @@ function isPresident(member: CommitteeMember) {
   );
 }
 
-function displaySerial(member: CommitteeMember, fallbackIndex: number) {
+function displaySerial(member: CommitteeMember) {
   const serial = String(member.serial || "").trim();
-  if (serial && serial !== "—" && serial !== "-") return serial;
-  return String(fallbackIndex + 1).padStart(2, "0");
+  return serial && serial !== "-" ? serial : "—";
+}
+
+function MemberCard({
+  member,
+  index,
+  onOpen
+}: {
+  member: CommitteeMember;
+  index: number;
+  onOpen: (member: CommitteeMember) => void;
+}) {
+  return (
+    <button
+      className="member-card member-card--uniform"
+      key={member.serial + member.position + member.name}
+      onClick={() => onOpen(member)}
+      type="button"
+      data-reveal
+      style={{ "--reveal-delay": (index % 4) * 45 + "ms" } as CSSProperties}
+    >
+      <div className="member-card-top">
+        <span className="member-index">{displaySerial(member)}</span>
+        <span className="member-open" aria-hidden="true">↗</span>
+      </div>
+
+      <div className="member-avatar">
+        {member.photoUrl ? (
+          <img src={member.photoUrl} alt={member.name} loading="lazy" />
+        ) : (
+          <span>{initials(member.name)}</span>
+        )}
+      </div>
+
+      <div className="member-card-copy">
+        <small>{member.position}</small>
+        <strong>{member.name}</strong>
+        <em>{member.department || "Visual Archive Club"}</em>
+      </div>
+    </button>
+  );
 }
 
 export function CommitteeSection({
@@ -33,7 +72,14 @@ export function CommitteeSection({
   members: CommitteeMember[];
 }) {
   const [selected, setSelected] = useState<CommitteeMember | null>(null);
-  const president = useMemo(() => members.find(isPresident) || null, [members]);
+
+  const presidentIndex = useMemo(
+    () => members.findIndex(isPresident),
+    [members]
+  );
+  const president = presidentIndex >= 0 ? members[presidentIndex] : null;
+  const beforePresident = presidentIndex >= 0 ? members.slice(0, presidentIndex) : [];
+  const afterPresident = presidentIndex >= 0 ? members.slice(presidentIndex + 1) : members;
 
   useEffect(() => {
     if (!selected) return;
@@ -62,10 +108,23 @@ export function CommitteeSection({
             </h2>
           </div>
           <p className="section-copy compact-copy">
-            Coordinator, advisors and committee members remain in their official
-            order. Select any member to view their published contact information.
+            The committee is presented in its official order. Select any member
+            to view their published department, phone number and Gmail/email.
           </p>
         </div>
+
+        {beforePresident.length > 0 && (
+          <div className="committee-grid committee-grid--advisory">
+            {beforePresident.map((member, index) => (
+              <MemberCard
+                key={member.position + member.name}
+                member={member}
+                index={index}
+                onOpen={setSelected}
+              />
+            ))}
+          </div>
+        )}
 
         {president && (
           <button
@@ -90,11 +149,13 @@ export function CommitteeSection({
               <span className="president-kicker">President · Visual Archive Club</span>
               <h3>{president.name}</h3>
               <p>
-                Leading VAC&apos;s 2026–2027 committee and its photography,
-                videography, filmmaking and visual-archive initiatives.
+                President of the 2026–2027 Visual Archive Club committee,
+                leading VAC&apos;s creative direction, visual storytelling and
+                university-wide media initiatives.
               </p>
               <div className="president-meta">
                 <span>{president.department || "Eastern University"}</span>
+                <span>Serial {displaySerial(president)}</span>
                 <span>Committee 2026–2027</span>
               </div>
               <span className="president-open">
@@ -103,61 +164,27 @@ export function CommitteeSection({
             </div>
 
             <div className="president-feature-mark" aria-hidden="true">
-              <span>01</span>
+              <span>{displaySerial(president)}</span>
               <strong>PRESIDENT</strong>
             </div>
           </button>
         )}
 
         <div className="committee-list-label" data-reveal>
-          <span>Official committee</span>
+          <span>Committee members</span>
           <i />
-          <small>{members.length} members</small>
+          <small>{members.length} people in official order</small>
         </div>
 
         <div className="committee-grid committee-grid--uniform">
-          {members.map((member, index) => {
-            const presidentCard = isPresident(member);
-
-            return (
-              <button
-                className={
-                  "member-card member-card--uniform " +
-                  (presidentCard ? "member-card--president " : "")
-                }
-                key={member.serial + member.position + member.name}
-                onClick={() => setSelected(member)}
-                type="button"
-                data-reveal
-                style={{ "--reveal-delay": (index % 4) * 45 + "ms" } as CSSProperties}
-              >
-                <div className="member-card-top">
-                  <span className="member-index">
-                    {displaySerial(member, index)}
-                  </span>
-                  {presidentCard ? (
-                    <span className="member-president-chip">President</span>
-                  ) : (
-                    <span className="member-open" aria-hidden="true">↗</span>
-                  )}
-                </div>
-
-                <div className="member-avatar">
-                  {member.photoUrl ? (
-                    <img src={member.photoUrl} alt={member.name} loading="lazy" />
-                  ) : (
-                    <span>{initials(member.name)}</span>
-                  )}
-                </div>
-
-                <div className="member-card-copy">
-                  <small>{member.position}</small>
-                  <strong>{member.name}</strong>
-                  <em>{member.department || "Visual Archive Club"}</em>
-                </div>
-              </button>
-            );
-          })}
+          {afterPresident.map((member, index) => (
+            <MemberCard
+              key={member.serial + member.position + member.name}
+              member={member}
+              index={index}
+              onOpen={setSelected}
+            />
+          ))}
         </div>
       </div>
 
