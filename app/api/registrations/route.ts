@@ -254,14 +254,11 @@ export async function POST(request: Request) {
     "?text=" +
     encodeURIComponent(message);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const pdfDownloadUrl = supabaseUrl
-    ? supabaseUrl +
-      "/functions/v1/membership-pdf?id=" +
-      encodeURIComponent(id) +
-      "&token=" +
-      encodeURIComponent(pdfDownloadToken)
-    : null;
+  const pdfDownloadUrl =
+    "/api/applications/" +
+    encodeURIComponent(id) +
+    "/pdf?token=" +
+    encodeURIComponent(pdfDownloadToken);
 
   return NextResponse.json({
     message:

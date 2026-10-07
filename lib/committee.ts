@@ -1,11 +1,11 @@
 export type CommitteeMember={serial:string;position:string;name:string;phone?:string;email?:string;department?:string;leader?:boolean;photoUrl?:string};
 export const committeeFallback:CommitteeMember[]=[
-{serial:"—",position:"Coordinator",name:"Mohiuddin Majumder Ananda",phone:"+880 1795803731",leader:true},
-{serial:"—",position:"Advisor",name:"Zonayed Al Mahbub",phone:"+880 1866865393",email:"zonayedalmahbub101238@gmail.com",department:"CSE",leader:true},
-{serial:"—",position:"Advisor",name:"Muhammad Mynul Islam",phone:"+880 1980759191",email:"mynulmohammad789@gmail.com",department:"CSE",leader:true},
+{serial:"—",position:"Coordinator",name:"Mohiuddin Majumder Ananda",phone:"+880 1795803731",leader:false},
+{serial:"—",position:"Advisor",name:"Zonayed Al Mahbub",phone:"+880 1866865393",email:"zonayedalmahbub101238@gmail.com",department:"CSE",leader:false},
+{serial:"—",position:"Advisor",name:"Muhammad Mynul Islam",phone:"+880 1980759191",email:"mynulmohammad789@gmail.com",department:"CSE",leader:false},
 {serial:"1",position:"President",name:"Rezwan Hossain Prince",phone:"+880 1860899999",email:"rzprince02@gmail.com",department:"CSE",leader:true},
-{serial:"2",position:"Vice-President",name:"Tanjil Shaikot",phone:"+880 1798494015",email:"tanjilshaiket74432@gmail.com",department:"CSE",leader:true},
-{serial:"3",position:"General Secretary",name:"Nabidul Hasan Limon",phone:"+880 1624273202",email:"pokemonpitplayerunlimitedphoto@gmail.com",department:"LAW",leader:true},
+{serial:"2",position:"Vice-President",name:"Tanjil Shaikot",phone:"+880 1798494015",email:"tanjilshaiket74432@gmail.com",department:"CSE",leader:false},
+{serial:"3",position:"General Secretary",name:"Nabidul Hasan Limon",phone:"+880 1624273202",email:"pokemonpitplayerunlimitedphoto@gmail.com",department:"LAW",leader:false},
 {serial:"4",position:"Treasurer",name:"Mehedi Hassan",phone:"+880 1826468272",email:"mehedi.hasan.bgm@gmail.com",department:"CSE"},
 {serial:"5",position:"Organizing Secretary",name:"Sheikh Mahmudul Hasan Rishad",phone:"+880 1716631325",email:"smhrishad@gmail.com",department:"CSE"},
 {serial:"6",position:"Joint Secretary",name:"Ayshee Islam Liza",phone:"+880 1993053490",email:"Aysheeislam7585@gmail.com",department:"CSE"},

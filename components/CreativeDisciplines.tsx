@@ -5,24 +5,24 @@ const disciplines = [
     number: "01",
     title: "Photography",
     copy: "Light, timing and perspective — used to preserve the moments that define campus life.",
-    art: "https://images.unsplash.com/photo-1739296385343-ff091bca6203?auto=format&fit=crop&fm=webp&q=88&w=1800",
-    credit: "Photography visual · Unsplash",
+    art: "https://images.unsplash.com/photo-1739296385343-ff091bca6203?auto=format&fit=crop&fm=webp&q=92&w=2600",
+    credit: "Photography / field work · Unsplash",
     className: "craft-card--wide"
   },
   {
     number: "02",
     title: "Videography",
     copy: "Camera movement, sound and atmosphere shaped into stories that feel alive.",
-    art: "https://images.unsplash.com/photo-1727451139462-cd34008cd50b?auto=format&fit=crop&fm=webp&q=86&w=1500",
-    credit: "Film studio visual · Joshua Wann / Unsplash",
+    art: "https://images.unsplash.com/photo-1705107959309-ca7d26fbeb08?auto=format&fit=crop&fm=webp&q=92&w=2200",
+    credit: "Cinema camera / production · Unsplash",
     className: ""
   },
   {
     number: "03",
     title: "Filmmaking & Editing",
     copy: "From the first shot to the final grade — direction, rhythm, edit and finish.",
-    art: "https://images.unsplash.com/photo-1764557175375-9e2bea91530e?auto=format&fit=crop&fm=webp&q=86&w=1500",
-    credit: "Post-production visual · Unsplash",
+    art: "https://images.unsplash.com/photo-1727451139462-cd34008cd50b?auto=format&fit=crop&fm=webp&q=92&w=2200",
+    credit: "Studio / post-production · Unsplash",
     className: ""
   }
 ];
