@@ -4961,3 +4961,48 @@ body {
     min-height: 250px;
   }
 }
+
+
+/* Admin Drive sync feedback */
+.admin-drive-notice {
+  margin: 14px 0 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0b0b0a;
+  color: #c7c1b8;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.admin-drive-notice--synced {
+  border-color: rgba(142,232,173,.25);
+  color: #aeeec1;
+}
+
+.admin-drive-notice--not_configured,
+.admin-drive-notice--failed {
+  border-color: rgba(255,106,0,.28);
+  color: #ffc08f;
+}
+
+.application-file-links form {
+  margin: 0;
+}
+
+.admin-inline-action {
+  min-height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--orange);
+  font-size: 9px;
+  font-weight: 760;
+  cursor: pointer;
+  text-align: left;
+}
+
+.admin-inline-action:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
