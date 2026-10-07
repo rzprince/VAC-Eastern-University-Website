@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Countdown } from "@/components/Countdown";
 import { Navbar } from "@/components/Navbar";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   getRecentEvents,
   getSiteSettings,
@@ -106,19 +107,13 @@ export default async function EventsPage() {
           </div>
         </section>
       </main>
-      <footer>
-        <div className="shell footer-inner">
-          <div>
-            <strong>{settings.clubName}</strong>
-            <span>{settings.university} · Since {settings.since}</span>
-          </div>
-          <div>
-            <Link href="/">Home</Link>
-            <Link href="/archive">Archive</Link>
-            <Link href="/join">Join VAC</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        clubName={settings.clubName}
+        university={settings.university}
+        since={settings.since}
+        facebookPage={settings.facebookPage}
+        facebookGroup={settings.facebookGroup}
+      />
     </>
   );
 }
