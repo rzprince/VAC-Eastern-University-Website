@@ -13,7 +13,7 @@ const manrope = Manrope({
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-editorial",
+  variable: "--font-display",
   display: "swap"
 });
 
