@@ -31,7 +31,7 @@ function pdfEscape(value: string) {
     .replace(/\)/g, "\\)");
 }
 
-function wrap(value: string, max = 78) {
+function wrap(value: string, max = 76) {
   const paragraphs = ascii(value).split(/\r?\n/);
   const lines: string[] = [];
 
@@ -64,78 +64,195 @@ type Row = {
   multiline?: boolean;
 };
 
+function text(
+  commands: string[],
+  value: string,
+  x: number,
+  y: number,
+  size: number,
+  font: "F1" | "F2" = "F1",
+  color = "0.10 0.10 0.11"
+) {
+  commands.push(
+    "BT /" +
+      font +
+      " " +
+      size +
+      " Tf " +
+      color +
+      " rg " +
+      x +
+      " " +
+      y +
+      " Td (" +
+      pdfEscape(value) +
+      ") Tj ET"
+  );
+}
+
+function pageHeader(
+  commands: string[],
+  data: MembershipPdfData,
+  pageNumber: number,
+  pageCount: number
+) {
+  // VAC charcoal masthead + signature orange brand bar.
+  commands.push("q 0.035 0.035 0.04 rg 0 744 595 98 re f Q");
+  commands.push("q 1 0.36 0 rg 0 744 10 98 re f Q");
+  commands.push("q 1 0.36 0 rg 46 778 48 30 re f Q");
+
+  text(commands, "VAC", 58, 787, 13, "F2", "1 1 1");
+  text(commands, "VISUAL ARCHIVE CLUB", 112, 795, 17, "F2", "0.97 0.96 0.94");
+  text(
+    commands,
+    "Eastern University | Official Membership Application",
+    112,
+    776,
+    8.5,
+    "F1",
+    "0.68 0.68 0.70"
+  );
+
+  text(commands, data.applicationRef, 420, 797, 8.5, "F2", "1 0.46 0.10");
+  text(
+    commands,
+    "PAGE " + pageNumber + " / " + pageCount,
+    466,
+    778,
+    6.8,
+    "F2",
+    "0.58 0.58 0.61"
+  );
+}
+
+function sectionTitle(commands: string[], label: string, y: number) {
+  commands.push("q 0.96 0.955 0.945 rg 46 " + (y - 8) + " 503 24 re f Q");
+  commands.push("q 1 0.36 0 rg 46 " + (y - 8) + " 3 24 re f Q");
+  text(commands, label, 59, y, 7.5, "F2", "0.34 0.32 0.30");
+}
+
+function field(
+  commands: string[],
+  row: Row,
+  y: number
+) {
+  const lines = row.multiline ? wrap(row.value, 78) : [ascii(row.value)];
+  text(commands, row.label.toUpperCase(), 46, y, 6.8, "F2", "1 0.36 0");
+  y -= 13;
+
+  for (const line of lines) {
+    text(commands, line || "-", 46, y, 9.8, "F1", "0.10 0.10 0.11");
+    y -= 13;
+  }
+
+  commands.push("0.90 0.89 0.87 RG 46 " + (y - 2) + " m 549 " + (y - 2) + " l S");
+  return y - 12;
+}
+
 function pageStream(
   data: MembershipPdfData,
   rows: Row[],
   pageNumber: number,
-  pageCount: number
+  pageCount: number,
+  includePayment: boolean
 ) {
   const commands: string[] = [];
-  const orange = "1 0.38 0.02";
-  const ink = "0.08 0.08 0.10";
-  const muted = "0.38 0.39 0.43";
-  let y = 790;
+  pageHeader(commands, data, pageNumber, pageCount);
 
-  commands.push("q");
-  commands.push(orange + " rg");
-  commands.push("0 830 595 12 re f");
-  commands.push("Q");
-
-  commands.push("BT");
-  commands.push("/F2 19 Tf");
-  commands.push(ink + " rg");
-  commands.push("46 " + y + " Td");
-  commands.push("(" + pdfEscape("VISUAL ARCHIVE CLUB") + ") Tj");
-  commands.push("ET");
-
-  y -= 22;
-  commands.push("BT /F1 9 Tf " + muted + " rg 46 " + y + " Td (" +
-    pdfEscape("Eastern University | Online Membership Application") + ") Tj ET");
-
-  commands.push("BT /F2 10 Tf " + orange + " rg 404 790 Td (" +
-    pdfEscape(data.applicationRef) + ") Tj ET");
-
-  y -= 24;
-  commands.push("0.88 0.88 0.90 RG 46 " + y + " m 549 " + y + " l S");
-  y -= 25;
+  let y = 712;
+  sectionTitle(
+    commands,
+    pageNumber === 1 ? "APPLICANT DETAILS" : "CREATIVE PROFILE",
+    y
+  );
+  y -= 38;
 
   for (const row of rows) {
-    const lines = row.multiline ? wrap(row.value, 78) : [ascii(row.value)];
-
-    commands.push("BT /F2 7.5 Tf " + orange + " rg 46 " + y + " Td (" +
-      pdfEscape(row.label.toUpperCase()) + ") Tj ET");
-    y -= 14;
-
-    for (const line of lines) {
-      commands.push("BT /F1 10.2 Tf " + ink + " rg 46 " + y + " Td (" +
-        pdfEscape(line || "-") + ") Tj ET");
-      y -= 14;
-    }
-
-    y -= 8;
+    y = field(commands, row, y);
   }
 
-  if (pageNumber === pageCount) {
-    y -= 2;
-    commands.push("0.97 0.96 0.94 rg 46 " + (y - 83) + " 503 94 re f");
-    commands.push("0.88 0.88 0.90 RG 46 " + (y - 83) + " 503 94 re S");
-    commands.push("BT /F2 8 Tf " + orange + " rg 60 " + (y - 4) + " Td (" +
-      pdfEscape("PAYMENT REFERENCE") + ") Tj ET");
-    commands.push("BT /F2 10 Tf " + ink + " rg 60 " + (y - 23) + " Td (" +
-      pdfEscape("Registration fee: BDT " + data.registrationFee) + ") Tj ET");
-    commands.push("BT /F1 10 Tf " + ink + " rg 60 " + (y - 40) + " Td (" +
-      pdfEscape("bKash sender: " + data.bkashSender) + ") Tj ET");
-    commands.push("BT /F1 9 Tf " + muted + " rg 60 " + (y - 57) + " Td (" +
-      pdfEscape("TRX ID: supplied manually through VAC WhatsApp") + ") Tj ET");
-    commands.push("BT /F1 8 Tf " + muted + " rg 60 " + (y - 72) + " Td (" +
-      pdfEscape("Submitted: " + data.submittedAt) + ") Tj ET");
+  if (includePayment) {
+    y -= 5;
+    sectionTitle(commands, "PAYMENT & SUBMISSION", y);
+    y -= 42;
+
+    commands.push("q 0.985 0.975 0.955 rg 46 " + (y - 92) + " 503 108 re f Q");
+    commands.push("q 1 0.36 0 rg 46 " + (y - 92) + " 4 108 re f Q");
+
+    text(
+      commands,
+      "MEMBERSHIP FEE",
+      64,
+      y - 8,
+      6.8,
+      "F2",
+      "0.46 0.42 0.36"
+    );
+    text(
+      commands,
+      "BDT " + data.registrationFee,
+      64,
+      y - 30,
+      18,
+      "F2",
+      "1 0.36 0"
+    );
+    text(
+      commands,
+      "bKash sender: " + data.bkashSender,
+      190,
+      y - 17,
+      9.2,
+      "F2"
+    );
+    text(
+      commands,
+      "TRX ID is submitted separately in the official VAC WhatsApp chat.",
+      190,
+      y - 36,
+      8.4,
+      "F1",
+      "0.36 0.36 0.39"
+    );
+    text(
+      commands,
+      "Submitted: " + data.submittedAt,
+      190,
+      y - 54,
+      8.2,
+      "F1",
+      "0.42 0.42 0.45"
+    );
+    text(
+      commands,
+      "Payment remains pending until a VAC administrator verifies the TRX ID.",
+      190,
+      y - 72,
+      8.2,
+      "F1",
+      "0.42 0.42 0.45"
+    );
   }
 
-  commands.push("BT /F1 7 Tf " + muted + " rg 46 32 Td (" +
-    pdfEscape("Generated automatically by the Visual Archive Club membership system.") +
-    ") Tj ET");
-  commands.push("BT /F1 7 Tf " + muted + " rg 500 32 Td (" +
-    pdfEscape(pageNumber + "/" + pageCount) + ") Tj ET");
+  commands.push("0.88 0.87 0.85 RG 46 50 m 549 50 l S");
+  text(
+    commands,
+    "Visual Archive Club | Eastern University | Since 2010",
+    46,
+    34,
+    7.2,
+    "F2",
+    "0.34 0.34 0.37"
+  );
+  text(
+    commands,
+    "Generated securely by the VAC online membership system",
+    330,
+    34,
+    6.8,
+    "F1",
+    "0.55 0.55 0.57"
+  );
 
   return commands.join("\n");
 }
@@ -147,7 +264,7 @@ export async function createMembershipPdf(data: MembershipPdfData) {
     { label: "Department", value: data.department },
     { label: "Date of birth", value: data.dateOfBirth },
     { label: "Blood group", value: data.bloodGroup },
-    { label: "Email", value: data.email },
+    { label: "Email / Gmail", value: data.email },
     { label: "Phone / WhatsApp", value: data.phone },
     { label: "Address", value: data.address, multiline: true },
     { label: "Skills", value: data.skills, multiline: true },
@@ -155,55 +272,65 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   ];
 
   const firstPage: Row[] = [];
-  const laterPage: Row[] = [];
-  let estimatedLines = 0;
+  const secondPage: Row[] = [];
+  let estimated = 0;
 
   for (const row of rows) {
     const lineCount = row.multiline ? wrap(row.value, 78).length : 1;
     const cost = 2 + lineCount;
-    if (estimatedLines + cost <= 28) {
+    if (estimated + cost <= 25) {
       firstPage.push(row);
-      estimatedLines += cost;
+      estimated += cost;
     } else {
-      laterPage.push(row);
+      secondPage.push(row);
     }
   }
 
-  const pages = laterPage.length ? [firstPage, laterPage] : [firstPage];
+  const pages = secondPage.length ? [firstPage, secondPage] : [firstPage];
   const streams = pages.map((pageRows, index) =>
-    pageStream(data, pageRows, index + 1, pages.length)
+    pageStream(
+      data,
+      pageRows,
+      index + 1,
+      pages.length,
+      index === pages.length - 1
+    )
   );
 
   const objects: string[] = [];
   const pageObjectIds: number[] = [];
-  const contentObjectIds: number[] = [];
 
   objects[1] = "<< /Type /Catalog /Pages 2 0 R >>";
   objects[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
   objects[4] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>";
 
   let nextId = 5;
-  for (let i = 0; i < streams.length; i++) {
+  for (const stream of streams) {
     const pageId = nextId++;
     const contentId = nextId++;
     pageObjectIds.push(pageId);
-    contentObjectIds.push(contentId);
 
     objects[pageId] =
       "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] " +
       "/Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> " +
-      "/Contents " + contentId + " 0 R >>";
+      "/Contents " +
+      contentId +
+      " 0 R >>";
 
-    const stream = streams[i];
     objects[contentId] =
-      "<< /Length " + new TextEncoder().encode(stream).length + " >>\n" +
-      "stream\n" + stream + "\nendstream";
+      "<< /Length " +
+      new TextEncoder().encode(stream).length +
+      " >>\nstream\n" +
+      stream +
+      "\nendstream";
   }
 
   objects[2] =
     "<< /Type /Pages /Kids [" +
     pageObjectIds.map((id) => id + " 0 R").join(" ") +
-    "] /Count " + pageObjectIds.length + " >>";
+    "] /Count " +
+    pageObjectIds.length +
+    " >>";
 
   let pdf = "%PDF-1.4\n%VAC\n";
   const offsets: number[] = [0];
@@ -222,8 +349,11 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   }
 
   pdf +=
-    "trailer\n<< /Size " + objects.length + " /Root 1 0 R >>\n" +
-    "startxref\n" + xrefOffset + "\n%%EOF";
+    "trailer\n<< /Size " +
+    objects.length +
+    " /Root 1 0 R >>\nstartxref\n" +
+    xrefOffset +
+    "\n%%EOF";
 
   return new TextEncoder().encode(pdf);
 }
