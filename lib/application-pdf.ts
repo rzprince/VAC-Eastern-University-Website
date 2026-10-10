@@ -231,8 +231,8 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   // The supplied President signature is a facsimile for issuance only.
   // It is NOT an approval and does not verify payment.
   page.drawLine({
-    start: { x: margin, y: top - 58 },
-    end: { x: W - margin, y: top - 58 },
+    start: { x: margin, y: top - 116 },
+    end: { x: W - margin, y: top - 116 },
     color: colors.border, thickness: 0.7
   });
   label(page, "Submitted", margin + 2, top - 10, bold);
@@ -241,11 +241,11 @@ export async function createMembershipPdf(data: MembershipPdfData) {
     margin + 2, top - 45, 7.5, bold, colors.muted);
 
   page.drawSvgPath(PRINCE_SIGNATURE_PATH, {
-    x: W - margin - 145, y: top + 8,
-    scale: 0.18, color: colors.orange
+    x: W - margin - 136, y: top + 5,
+    scale: 0.16, color: colors.orange
   });
-  text(page, "Rezwan Hossain Prince", W - margin - 152, top - 46, 9.6, bold);
-  text(page, "President  |  VAC acknowledgement", W - margin - 152, top - 57, 7, regular, colors.muted);
+  text(page, "Rezwan Hossain Prince", W - margin - 152, top - 93, 9.6, bold);
+  text(page, "President  |  VAC acknowledgement", W - margin - 152, top - 108, 7, regular, colors.muted);
 
   rectangle(page, 0, 0, W, 31, colors.dark);
   text(page, "VISUAL ARCHIVE CLUB  /  EASTERN UNIVERSITY", margin, 12, 7, bold, colors.white);
