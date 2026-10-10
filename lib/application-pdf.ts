@@ -237,10 +237,26 @@ export async function createMembershipPdf(data: MembershipPdfData) {
     margin + 2, top - 45, 7.5, bold, colors.muted);
 
   console.log("VAC PDF STAGE 4: ready to sign");
-  page.drawSvgPath(PRINCE_SIGNATURE_PATH, {
-    x: W - margin - 136, y: top + 5,
-    scale: 0.16, color: colors.orange
-  });
+  // Direct vector line segments avoid expensive SVG-path parsing in serverless.
+  // The point geometry was traced from the transparent signature supplied by VAC.
+  const signX = W - margin - 136;
+  const signY = top + 5;
+  const signScale = 0.16;
+  for (const contour of PRINCE_SIGNATURE_PATH.split(/\\s+(?=M)/)) {
+    const points = Array.from(contour.matchAll(/[ML](\\d+),(\\d+)/g),
+      ([, px, py]) => ({ x: signX + Number(px) * signScale, y: signY - Number(py) * signScale }));
+    if (points.length < 2) continue;
+    for (let i = 1; i < points.length; i++) {
+      page.drawLine({
+        start: points[i - 1], end: points[i],
+        thickness: 1.05, color: colors.orange
+      });
+    }
+    page.drawLine({
+      start: points[points.length - 1], end: points[0],
+      thickness: 1.05, color: colors.orange
+    });
+  }
   text(page, "Rezwan Hossain Prince", W - margin - 152, top - 93, 9.6, bold);
   text(page, "President  |  VAC acknowledgement", W - margin - 152, top - 108, 7, regular, colors.muted);
 
