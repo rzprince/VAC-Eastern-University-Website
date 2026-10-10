@@ -35,7 +35,7 @@ export function PremiumMotion() {
               if (!entry.isIntersecting) continue;
               const element = entry.target as HTMLElement;
               element.classList.add("is-visible");
-              observer.unobserve(element);
+              observer?.unobserve(element);
             }
           },
           { rootMargin: "0px 0px -4% 0px", threshold: 0.04 }
