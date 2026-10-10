@@ -1,3 +1,11 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import {
+  PDFDocument, StandardFonts, rgb,
+  type PDFFont, type PDFPage, type PDFImage
+} from "pdf-lib";
+import { PRINCE_SIGNATURE_PATH } from "@/lib/prince-signature";
+
 export type MembershipPdfData = {
   applicationRef: string;
   fullName: string;
@@ -15,345 +23,234 @@ export type MembershipPdfData = {
   submittedAt: string;
 };
 
-function ascii(value: string) {
-  return value
+/*
+ * All data is captured on a single PDF page. Long applicant responses grow
+ * the height of that one page rather than creating a second sheet.
+ * Payment is an application receipt, NOT proof of payment verification.
+ */
+const colors = {
+  ink: rgb(0.08, 0.11, 0.16),
+  muted: rgb(0.40, 0.46, 0.52),
+  orange: rgb(1, 0.42, 0.09),
+  cream: rgb(0.99, 0.98, 0.96),
+  dark: rgb(0.055, 0.078, 0.11),
+  border: rgb(0.87, 0.89, 0.90),
+  panel: rgb(0.965, 0.970, 0.978),
+  white: rgb(1, 1, 1)
+};
+
+function clean(value: string) {
+  // Standard PDF fonts are ASCII-only. Keep the original saved record intact.
+  return String(value || "")
     .normalize("NFKD")
     .replace(/[\u2018\u2019]/g, "'")
     .replace(/[\u201C\u201D]/g, '"')
     .replace(/[\u2013\u2014]/g, "-")
-    .replace(/[^\x20-\x7E\n\r\t]/g, "?");
+    .replace(/[^\x20-\x7E\n\r\t]/g, "?")
+    .trim() || "Not supplied";
 }
 
-function pdfEscape(value: string) {
-  return ascii(value)
-    .replace(/\\/g, "\\\\")
-    .replace(/\(/g, "\\(")
-    .replace(/\)/g, "\\)");
-}
-
-function wrap(value: string, max = 76) {
-  const paragraphs = ascii(value).split(/\r?\n/);
-  const lines: string[] = [];
-
+function linesFor(value: string, font: PDFFont, size: number, maxWidth: number) {
+  const result: string[] = [];
+  const paragraphs = clean(value).split(/\r?\n/);
   for (const paragraph of paragraphs) {
     const words = paragraph.trim().split(/\s+/).filter(Boolean);
-    if (!words.length) {
-      lines.push("");
-      continue;
-    }
-
-    let current = "";
-    for (const word of words) {
-      const next = current ? current + " " + word : word;
-      if (next.length <= max) {
-        current = next;
+    if (words.length === 0) { result.push(""); continue; }
+    let line = "";
+    for (let word of words) {
+      while (font.widthOfTextAtSize(word, size) > maxWidth) {
+        let length = 1;
+        while (length < word.length &&
+          font.widthOfTextAtSize(word.slice(0, length + 1), size) <= maxWidth) length++;
+        const part = word.slice(0, length);
+        if (line) { result.push(line); line = ""; }
+        result.push(part);
+        word = word.slice(length);
+      }
+      const candidate = line ? line + " " + word : word;
+      if (font.widthOfTextAtSize(candidate, size) > maxWidth && line) {
+        result.push(line);
+        line = word;
       } else {
-        if (current) lines.push(current);
-        current = word;
+        line = candidate;
       }
     }
-    if (current) lines.push(current);
+    if (line) result.push(line);
   }
-
-  return lines.length ? lines : [""];
+  return result.length ? result : ["Not supplied"];
 }
 
-type Row = {
-  label: string;
-  value: string;
-  multiline?: boolean;
-};
-
-function text(
-  commands: string[],
-  value: string,
-  x: number,
-  y: number,
-  size: number,
-  font: "F1" | "F2" = "F1",
-  color = "0.10 0.10 0.11"
-) {
-  commands.push(
-    "BT /" +
-      font +
-      " " +
-      size +
-      " Tf " +
-      color +
-      " rg " +
-      x +
-      " " +
-      y +
-      " Td (" +
-      pdfEscape(value) +
-      ") Tj ET"
-  );
+function text(page: PDFPage, value: string, x: number, y: number,
+              size: number, font: PDFFont, color = colors.ink) {
+  page.drawText(clean(value), { x, y, size, font, color });
 }
 
-function pageHeader(
-  commands: string[],
-  data: MembershipPdfData,
-  pageNumber: number,
-  pageCount: number
-) {
-  // VAC charcoal masthead + signature orange brand bar.
-  commands.push("q 0.035 0.035 0.04 rg 0 744 595 98 re f Q");
-  commands.push("q 1 0.36 0 rg 0 744 10 98 re f Q");
-  commands.push("q 1 0.36 0 rg 46 778 48 30 re f Q");
-
-  text(commands, "VAC", 58, 787, 13, "F2", "1 1 1");
-  text(commands, "VISUAL ARCHIVE CLUB", 112, 795, 17, "F2", "0.97 0.96 0.94");
-  text(
-    commands,
-    "Eastern University | Official Membership Application",
-    112,
-    776,
-    8.5,
-    "F1",
-    "0.68 0.68 0.70"
-  );
-
-  text(commands, data.applicationRef, 420, 797, 8.5, "F2", "1 0.46 0.10");
-  text(
-    commands,
-    "PAGE " + pageNumber + " / " + pageCount,
-    466,
-    778,
-    6.8,
-    "F2",
-    "0.58 0.58 0.61"
-  );
+function rectangle(page: PDFPage, x: number, y: number, width: number,
+                   height: number, color = colors.panel) {
+  page.drawRectangle({ x, y, width, height, color });
 }
 
-function sectionTitle(commands: string[], label: string, y: number) {
-  commands.push("q 0.96 0.955 0.945 rg 46 " + (y - 8) + " 503 24 re f Q");
-  commands.push("q 1 0.36 0 rg 46 " + (y - 8) + " 3 24 re f Q");
-  text(commands, label, 59, y, 7.5, "F2", "0.34 0.32 0.30");
+function label(page: PDFPage, value: string, x: number, y: number, font: PDFFont) {
+  text(page, value.toUpperCase(), x, y, 7.3, font, colors.orange);
 }
 
-function field(
-  commands: string[],
-  row: Row,
-  y: number
-) {
-  const lines = row.multiline ? wrap(row.value, 78) : [ascii(row.value)];
-  text(commands, row.label.toUpperCase(), 46, y, 6.8, "F2", "1 0.36 0");
-  y -= 13;
-
-  for (const line of lines) {
-    text(commands, line || "-", 46, y, 9.8, "F1", "0.10 0.10 0.11");
-    y -= 13;
+function panelField(page: PDFPage, x: number, top: number, width: number,
+                    height: number, heading: string, values: string[],
+                    regular: PDFFont, bold: PDFFont, fontSize = 9.6) {
+  rectangle(page, x, top - height, width, height);
+  page.drawLine({ start: { x, y: top - height },
+                  end: { x: x + width, y: top - height },
+                  thickness: 0.6, color: colors.border });
+  label(page, heading, x + 13, top - 14, bold);
+  let y = top - 30;
+  for (const line of values) {
+    text(page, line || " ", x + 13, y, fontSize, regular);
+    y -= fontSize + 2.8;
   }
-
-  commands.push("0.90 0.89 0.87 RG 46 " + (y - 2) + " m 549 " + (y - 2) + " l S");
-  return y - 12;
 }
 
-function pageStream(
-  data: MembershipPdfData,
-  rows: Row[],
-  pageNumber: number,
-  pageCount: number,
-  includePayment: boolean
-) {
-  const commands: string[] = [];
-  pageHeader(commands, data, pageNumber, pageCount);
-
-  let y = 712;
-  sectionTitle(
-    commands,
-    pageNumber === 1 ? "APPLICANT DETAILS" : "CREATIVE PROFILE",
-    y
-  );
-  y -= 38;
-
-  for (const row of rows) {
-    y = field(commands, row, y);
+async function embedClubLogo(doc: PDFDocument, filename: string) {
+  try {
+    const data = await readFile(join(process.cwd(), "public", filename));
+    return await doc.embedPng(data);
+  } catch {
+    // The PDF still generates if one branding image is unavailable.
+    return null;
   }
+}
 
-  if (includePayment) {
-    y -= 5;
-    sectionTitle(commands, "PAYMENT & SUBMISSION", y);
-    y -= 42;
-
-    commands.push("q 0.985 0.975 0.955 rg 46 " + (y - 92) + " 503 108 re f Q");
-    commands.push("q 1 0.36 0 rg 46 " + (y - 92) + " 4 108 re f Q");
-
-    text(
-      commands,
-      "MEMBERSHIP FEE",
-      64,
-      y - 8,
-      6.8,
-      "F2",
-      "0.46 0.42 0.36"
-    );
-    text(
-      commands,
-      "BDT " + data.registrationFee,
-      64,
-      y - 30,
-      18,
-      "F2",
-      "1 0.36 0"
-    );
-    text(
-      commands,
-      "bKash sender: " + data.bkashSender,
-      190,
-      y - 17,
-      9.2,
-      "F2"
-    );
-    text(
-      commands,
-      "TRX ID is submitted separately in the official VAC WhatsApp chat.",
-      190,
-      y - 36,
-      8.4,
-      "F1",
-      "0.36 0.36 0.39"
-    );
-    text(
-      commands,
-      "Submitted: " + data.submittedAt,
-      190,
-      y - 54,
-      8.2,
-      "F1",
-      "0.42 0.42 0.45"
-    );
-    text(
-      commands,
-      "Payment remains pending until a VAC administrator verifies the TRX ID.",
-      190,
-      y - 72,
-      8.2,
-      "F1",
-      "0.42 0.42 0.45"
-    );
-  }
-
-  commands.push("0.88 0.87 0.85 RG 46 50 m 549 50 l S");
-  text(
-    commands,
-    "Visual Archive Club | Eastern University | Since 2010",
-    46,
-    34,
-    7.2,
-    "F2",
-    "0.34 0.34 0.37"
-  );
-  text(
-    commands,
-    "Generated securely by the VAC online membership system",
-    330,
-    34,
-    6.8,
-    "F1",
-    "0.55 0.55 0.57"
-  );
-
-  return commands.join("\n");
+function fitImage(page: PDFPage, image: PDFImage | null,
+                  x: number, y: number, width: number, height: number) {
+  if (!image) return;
+  const scale = Math.min(width / image.width, height / image.height);
+  const w = image.width * scale;
+  const h = image.height * scale;
+  page.drawImage(image, {
+    x: x + (width - w) / 2,
+    y: y + (height - h) / 2,
+    width: w, height: h
+  });
 }
 
 export async function createMembershipPdf(data: MembershipPdfData) {
-  const rows: Row[] = [
-    { label: "Full name", value: data.fullName },
-    { label: "Eastern University ID", value: data.euId },
-    { label: "Department", value: data.department },
-    { label: "Date of birth", value: data.dateOfBirth },
-    { label: "Blood group", value: data.bloodGroup },
-    { label: "Email / Gmail", value: data.email },
-    { label: "Phone / WhatsApp", value: data.phone },
-    { label: "Address", value: data.address, multiline: true },
-    { label: "Skills", value: data.skills, multiline: true },
-    { label: "Reason for joining VAC", value: data.reason, multiline: true }
+  const doc = await PDFDocument.create();
+  doc.setTitle("VAC Membership Application | " + clean(data.applicationRef));
+  doc.setAuthor("Visual Archive Club, Eastern University");
+  doc.setSubject("Official membership application receipt, pending payment verification");
+  doc.setCreator("Visual Archive Club membership portal");
+
+  const regular = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const editorial = await doc.embedFont(StandardFonts.TimesRomanBoldItalic);
+
+  const W = 595.28;
+  const margin = 36;
+  const contentW = W - 2 * margin;
+  const gap = 11;
+  const colW = (contentW - gap) / 2;
+  const profile: [string, string][][] = [
+    [["Full name", data.fullName], ["University ID", data.euId]],
+    [["Department", data.department], ["Date of birth", data.dateOfBirth]],
+    [["Blood group", data.bloodGroup], ["Email / Gmail", data.email]],
+    [["Phone / WhatsApp", data.phone], ["Address", data.address]]
   ];
+  const fieldRows = profile.map(pair => {
+    const parts = pair.map(([heading,value]) => ({
+      heading,
+      lines: linesFor(value, regular, 9.3, colW - 28)
+    }));
+    return {
+      parts,
+      height: Math.max(45, ...parts.map(p => 31 + p.lines.length * 12))
+    };
+  });
+  const skills = linesFor(data.skills, regular, 9, contentW - 28);
+  const reason = linesFor(data.reason, regular, 9, contentW - 28);
+  const skillsHeight = Math.max(52, 30 + skills.length * 12);
+  const reasonHeight = Math.max(61, 30 + reason.length * 12);
+  const rowTotal = fieldRows.reduce((n, row) => n + row.height, 0);
+  const overflow = Math.max(0, rowTotal - 180)
+    + Math.max(0, skillsHeight - 52)
+    + Math.max(0, reasonHeight - 61);
+  // A4 normally; extremely long applicant statements still remain on one page.
+  const H = 842 + overflow;
+  const page = doc.addPage([W, H]);
 
-  const firstPage: Row[] = [];
-  const secondPage: Row[] = [];
-  let estimated = 0;
+  rectangle(page, 0, H - 128, W, 128, colors.dark);
+  rectangle(page, 0, H - 128, 7, 128, colors.orange);
+  const [vac, eu] = await Promise.all([
+    embedClubLogo(doc, "vac-logo.png"),
+    embedClubLogo(doc, "eastern-university-logo.png")
+  ]);
+  fitImage(page, vac, 30, H - 112, 88, 80);
+  rectangle(page, 133, H - 102, 1, 57, rgb(.32,.36,.42));
+  fitImage(page, eu, 149, H - 109, 79, 75);
+  text(page, "VISUAL ARCHIVE CLUB", 244, H - 60, 15.5, bold, colors.white);
+  text(page, "EASTERN UNIVERSITY  |  SINCE 2010", 245, H - 77, 7.7, regular, rgb(.80,.80,.79));
+  text(page, "MEMBERSHIP APPLICATION", 244, H - 102, 10.2, editorial, rgb(1,.62,.33));
 
-  for (const row of rows) {
-    const lineCount = row.multiline ? wrap(row.value, 78).length : 1;
-    const cost = 2 + lineCount;
-    if (estimated + cost <= 25) {
-      firstPage.push(row);
-      estimated += cost;
-    } else {
-      secondPage.push(row);
-    }
+  let top = H - 139;
+  rectangle(page, margin, top - 31, contentW, 31, colors.cream);
+  rectangle(page, margin, top - 31, 3.5, 31, colors.orange);
+  label(page, "Application reference", margin + 12, top - 12, bold);
+  text(page, data.applicationRef, margin + 140, top - 17.7, 9.2, bold);
+  text(page, "PENDING VERIFICATION", W - margin - 126, top - 16, 7.2, bold, colors.orange);
+
+  top -= 48;
+  label(page, "01  /  Applicant profile", margin, top, bold);
+  top -= 13;
+
+  for (const row of fieldRows) {
+    const [left,right] = row.parts;
+    panelField(page, margin, top, colW, row.height, left.heading, left.lines, regular, bold, 9.3);
+    panelField(page, margin + colW + gap, top, colW, row.height, right.heading, right.lines, regular, bold, 9.3);
+    top -= row.height + 4;
   }
 
-  const pages = secondPage.length ? [firstPage, secondPage] : [firstPage];
-  const streams = pages.map((pageRows, index) =>
-    pageStream(
-      data,
-      pageRows,
-      index + 1,
-      pages.length,
-      index === pages.length - 1
-    )
-  );
+  top -= 9;
+  label(page, "02  /  Creative profile", margin, top, bold);
+  top -= 13;
+  panelField(page, margin, top, contentW, skillsHeight, "Skills and creative interests", skills, regular, bold, 9);
+  top -= skillsHeight + 7;
+  panelField(page, margin, top, contentW, reasonHeight, "Why I want to join VAC", reason, regular, bold, 9);
+  top -= reasonHeight + 14;
 
-  const objects: string[] = [];
-  const pageObjectIds: number[] = [];
+  const paymentH = 75;
+  rectangle(page, margin, top - paymentH, contentW, paymentH, colors.cream);
+  rectangle(page, margin, top - paymentH, 4, paymentH, colors.orange);
+  label(page, "03  /  Membership fee", margin + 13, top - 17, bold);
+  text(page, "BDT " + data.registrationFee, margin + 13, top - 46, 20, bold, colors.orange);
+  text(page, "bKash sender: " + data.bkashSender,
+       margin + 152, top - 28, 9, bold);
+  text(page, "Transaction ID: sent via official VAC WhatsApp",
+       margin + 152, top - 44, 7.9, regular, colors.muted);
+  text(page, "Payment pending manual verification",
+       margin + 152, top - 60, 8, bold, colors.orange);
+  top -= paymentH + 12;
 
-  objects[1] = "<< /Type /Catalog /Pages 2 0 R >>";
-  objects[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
-  objects[4] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>";
+  // The supplied President signature is a facsimile for issuance only.
+  // It is NOT an approval and does not verify payment.
+  page.drawLine({
+    start: { x: margin, y: top - 58 },
+    end: { x: W - margin, y: top - 58 },
+    color: colors.border, thickness: 0.7
+  });
+  label(page, "Submitted", margin + 2, top - 10, bold);
+  text(page, data.submittedAt, margin + 2, top - 27, 9, regular);
+  text(page, "RECEIVED  /  AWAITING TRX ID VERIFICATION",
+    margin + 2, top - 45, 7.5, bold, colors.muted);
 
-  let nextId = 5;
-  for (const stream of streams) {
-    const pageId = nextId++;
-    const contentId = nextId++;
-    pageObjectIds.push(pageId);
+  page.drawSvgPath(PRINCE_SIGNATURE_PATH, {
+    x: W - margin - 145, y: top + 8,
+    scale: 0.18, color: colors.orange
+  });
+  text(page, "Rezwan Hossain Prince", W - margin - 152, top - 46, 9.6, bold);
+  text(page, "President  |  VAC acknowledgement", W - margin - 152, top - 57, 7, regular, colors.muted);
 
-    objects[pageId] =
-      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] " +
-      "/Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> " +
-      "/Contents " +
-      contentId +
-      " 0 R >>";
+  rectangle(page, 0, 0, W, 31, colors.dark);
+  text(page, "VISUAL ARCHIVE CLUB  /  EASTERN UNIVERSITY", margin, 12, 7, bold, colors.white);
+  text(page, "ONE APPLICATION. ONE CREATIVE COMMUNITY.", W - margin - 228, 12, 7, regular, rgb(.82,.77,.73));
 
-    objects[contentId] =
-      "<< /Length " +
-      new TextEncoder().encode(stream).length +
-      " >>\nstream\n" +
-      stream +
-      "\nendstream";
-  }
-
-  objects[2] =
-    "<< /Type /Pages /Kids [" +
-    pageObjectIds.map((id) => id + " 0 R").join(" ") +
-    "] /Count " +
-    pageObjectIds.length +
-    " >>";
-
-  let pdf = "%PDF-1.4\n%VAC\n";
-  const offsets: number[] = [0];
-
-  for (let id = 1; id < objects.length; id++) {
-    offsets[id] = new TextEncoder().encode(pdf).length;
-    pdf += id + " 0 obj\n" + objects[id] + "\nendobj\n";
-  }
-
-  const xrefOffset = new TextEncoder().encode(pdf).length;
-  pdf += "xref\n0 " + objects.length + "\n";
-  pdf += "0000000000 65535 f \n";
-
-  for (let id = 1; id < objects.length; id++) {
-    pdf += String(offsets[id]).padStart(10, "0") + " 00000 n \n";
-  }
-
-  pdf +=
-    "trailer\n<< /Size " +
-    objects.length +
-    " /Root 1 0 R >>\nstartxref\n" +
-    xrefOffset +
-    "\n%%EOF";
-
-  return new TextEncoder().encode(pdf);
+  // pdf-lib produces a compact, cross-browser, fully downloadable one-page PDF.
+  return await doc.save({ useObjectStreams: true, addDefaultPage: false });
 }
