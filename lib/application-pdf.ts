@@ -126,6 +126,7 @@ function fitImage(page: PDFPage, image: PDFImage | null,
 }
 
 export async function createMembershipPdf(data: MembershipPdfData) {
+  console.log("VAC PDF STAGE 1: start");
   const doc = await PDFDocument.create();
   doc.setTitle("VAC Membership Application | " + clean(data.applicationRef));
   doc.setAuthor("Visual Archive Club, Eastern University");
@@ -136,6 +137,7 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
   const editorial = await doc.embedFont(StandardFonts.TimesRomanBoldItalic);
 
+  console.log("VAC PDF STAGE 2: font ready");
   const W = 595.28;
   const margin = 36;
   const contentW = W - 2 * margin;
@@ -175,6 +177,7 @@ export async function createMembershipPdf(data: MembershipPdfData) {
     embedClubLogo(doc, VAC_LOGO_PNG),
     embedClubLogo(doc, EU_LOGO_PNG)
   ]);
+  console.log("VAC PDF STAGE 3: logos embedded");
   fitImage(page, vac, 30, H - 112, 88, 80);
   rectangle(page, 133, H - 102, 1, 57, rgb(.32,.36,.42));
   fitImage(page, eu, 149, H - 109, 79, 75);
@@ -233,6 +236,7 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   text(page, "RECEIVED  /  AWAITING TRX ID VERIFICATION",
     margin + 2, top - 45, 7.5, bold, colors.muted);
 
+  console.log("VAC PDF STAGE 4: ready to sign");
   page.drawSvgPath(PRINCE_SIGNATURE_PATH, {
     x: W - margin - 136, y: top + 5,
     scale: 0.16, color: colors.orange
@@ -244,6 +248,7 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   text(page, "VISUAL ARCHIVE CLUB  /  EASTERN UNIVERSITY", margin, 12, 7, bold, colors.white);
   text(page, "ONE APPLICATION. ONE CREATIVE COMMUNITY.", W - margin - 228, 12, 7, regular, rgb(.82,.77,.73));
 
+  console.log("VAC PDF STAGE 5: ready to save");
   // pdf-lib produces a compact, cross-browser, fully downloadable one-page PDF.
   return await doc.save({ useObjectStreams: true, addDefaultPage: false });
 }
