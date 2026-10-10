@@ -12,14 +12,14 @@ export function VacLogo({
   return (
     <img
       className={"vac-logo-asset " + className}
-      src="/vac-logo-original.svg"
+      src="/vac-logo.webp"
       alt={alt}
-      width={441}
-      height={441}
+      width={220}
+      height={157}
       loading={priority ? "eager" : "lazy"}
       fetchPriority={priority ? "high" : "auto"}
       decoding="async"
-      style={{ "--logo-ratio": "1 / 1" } as CSSProperties}
+      style={{ "--logo-ratio": "220 / 157" } as CSSProperties}
     />
   );
 }
@@ -36,10 +36,10 @@ export function EuLogo({
   return (
     <img
       className={"eu-logo-asset " + className}
-      src="/eastern-university-logo-original.svg"
+      src="/eastern-university-logo.webp"
       alt={alt}
-      width={300}
-      height={216}
+      width={220}
+      height={125}
       loading={priority ? "eager" : "lazy"}
       fetchPriority={priority ? "high" : "auto"}
       decoding="async"
