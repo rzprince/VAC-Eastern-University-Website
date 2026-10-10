@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant, Montserrat } from "next/font/google";
 import { PremiumMotion } from "@/components/PremiumMotion";
 import "./globals.css";
+import "./premium-v5.css";
 
 const productionUrl = "https://vac-eastern-university.vercel.app";
 
@@ -38,8 +39,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   icons: {
-    icon: [{ url: "/vac-logo-original.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/vac-logo-original.svg", type: "image/webp" }]
+    icon: [{ url: "/vac-logo.webp", type: "image/webp" }],
+    apple: [{ url: "/vac-logo.webp", type: "image/webp" }]
   },
   openGraph: {
     title: "Visual Archive Club | Eastern University",
@@ -50,9 +51,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/vac-logo-original.svg",
-        width: 441,
-        height: 441,
+        url: "/vac-logo.webp",
+        width: 220,
+        height: 157,
         alt: "Visual Archive Club — Eastern University"
       }
     ]
@@ -62,7 +63,7 @@ export const metadata: Metadata = {
     title: "Visual Archive Club | Eastern University",
     description:
       "Photography, videography, filmmaking and visual storytelling at Eastern University.",
-    images: ["/vac-logo-original.svg"]
+    images: ["/vac-logo.webp"]
   }
 };
 

@@ -29,6 +29,6 @@ export const SITE: SiteSettings = {
   bkashNumber: "01860899999",
   registrationFee: 100,
   registrationOpen: true,
-  contactEmail: "rzprince02@gmail.com",
+  contactEmail: "vac.easternuni@gmail.com",
   contactPhone: "+880 1860899999"
 };
