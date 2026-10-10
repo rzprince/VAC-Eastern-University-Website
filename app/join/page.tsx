@@ -28,7 +28,7 @@ export default async function JoinPage() {
             </div>
 
             <div className="join-intro">
-              <div className="eyebrow">Official membership · {settings.tenure}</div>
+              <div className="eyebrow">Official VAC membership</div>
               <h1>
                 Join the people behind the <em>frame.</em>
               </h1>

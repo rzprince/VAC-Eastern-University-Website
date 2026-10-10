@@ -4,7 +4,7 @@ const disciplines = [
   {
     number: "01",
     title: "Photography",
-    copy: "Light, timing and perspective — used to preserve the moments that define campus life.",
+    copy: "Learn to see the world differently, capture moments and tell stories through photographs.",
     art: "https://images.unsplash.com/photo-1739296385343-ff091bca6203?auto=format&fit=crop&fm=webp&q=92&w=2600",
     credit: "Photography / field work · Unsplash",
     className: "craft-card--wide"
@@ -12,7 +12,7 @@ const disciplines = [
   {
     number: "02",
     title: "Videography",
-    copy: "Camera movement, sound and atmosphere shaped into stories that feel alive.",
+    copy: "Bring ideas to life with motion, sound, camera work and visual storytelling.",
     art: "https://images.unsplash.com/photo-1705107959309-ca7d26fbeb08?auto=format&fit=crop&fm=webp&q=92&w=2200",
     credit: "Cinema camera / production · Unsplash",
     className: ""
@@ -20,7 +20,7 @@ const disciplines = [
   {
     number: "03",
     title: "Filmmaking & Editing",
-    copy: "From the first shot to the final grade — direction, rhythm, edit and finish.",
+    copy: "Create, experiment and inspire through filmmaking, digital art and content creation.",
     art: "https://images.unsplash.com/photo-1727451139462-cd34008cd50b?auto=format&fit=crop&fm=webp&q=92&w=2200",
     credit: "Studio / post-production · Unsplash",
     className: ""
@@ -39,8 +39,8 @@ export function CreativeDisciplines() {
             </h2>
           </div>
           <p className="section-copy compact-copy">
-            A university creative club with the visual standard of a studio:
-            photography, cinematography, editing and an archive that keeps the work alive.
+            A community for creative minds to learn, create and experiment with visual stories,
+            from photography and filmmaking to content creation and digital art.
           </p>
         </div>
 

@@ -75,7 +75,7 @@ function EventCard({
       href={event.facebook_url}
       target="_blank"
       rel="noreferrer"
-      aria-label={event.title + " — open Facebook post"}
+      aria-label={event.title + ". Open Facebook post"}
     >
       {card}
     </a>

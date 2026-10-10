@@ -20,14 +20,6 @@ import {
 
 export const revalidate = 60;
 
-function compactTenure(tenure: string) {
-  const years = tenure.match(/20\d{2}/g);
-  if (years?.length === 2) {
-    return years[0] + "–" + years[1].slice(2);
-  }
-  return tenure;
-}
-
 export default async function Home() {
   const [committee, upcoming, recent, media, announcements, settings] =
     await Promise.all([
@@ -54,10 +46,16 @@ export default async function Home() {
 
           <div className="shell hero-layout">
             <div className="hero-copy">
-              <div className="hero-brandline">
-                <EuLogo alt={settings.university} priority />
-                <span />
-                <p>{settings.university}<b> · </b>Visual Archive Club</p>
+              <div className="hero-identity" aria-label="Visual Archive Club at Eastern University">
+                <div className="hero-identity-logos">
+                  <VacLogo alt="Visual Archive Club logo" priority />
+                  <span aria-hidden="true" className="hero-identity-divider" />
+                  <EuLogo alt="Eastern University logo" priority />
+                </div>
+                <div className="hero-identity-caption">
+                  <span>Visual Archive Club</span>
+                  <small>Eastern University · Est. {settings.since}</small>
+                </div>
               </div>
 
               <div className="eyebrow">Creative media community · Since {settings.since}</div>
@@ -67,9 +65,8 @@ export default async function Home() {
               </h1>
 
               <p className="hero-lead">
-                Visual Archive Club is the photography, film and storytelling
-                community of {settings.university} — shooting today so the campus
-                remembers tomorrow.
+                A club for creative minds. We bring ideas to life through
+                photography, filmmaking, videography, content creation and stories.
               </p>
 
               <div className="hero-actions">
@@ -89,8 +86,8 @@ export default async function Home() {
 
               <div className="hero-meta">
                 <div>
-                  <strong>{compactTenure(settings.tenure)}</strong>
-                  <small>Current committee</small>
+                  <strong>Since {settings.since}</strong>
+                  <small>Learning and creating</small>
                 </div>
                 <div>
                   <strong>{committee.length}</strong>
@@ -126,44 +123,31 @@ export default async function Home() {
             </div>
 
             <div className="about-story" data-reveal>
-              <p>{settings.aboutText}</p>
-              <p>
-                Since 2010, VAC has photographed, filmed and archived life at
-                Eastern University. We are students who shoot, edit and design —
-                and we keep what we make, so every new batch inherits the story
-                of the one before it.
-              </p>
+              {settings.aboutText.split(/\n\s*\n/).map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
 
-              <div className="about-pillars" aria-label="VAC creative pillars">
-                <article>
-                  <span>01</span>
-                  <strong>Photography</strong>
-                  <small>Portraits, events and street frames.</small>
-                </article>
-                <article>
-                  <span>02</span>
-                  <strong>Videography</strong>
-                  <small>Short films, coverage and reels.</small>
-                </article>
-                <article>
-                  <span>03</span>
-                  <strong>Content &amp; Design</strong>
-                  <small>Posters, edits and social stories.</small>
-                </article>
-                <article>
-                  <span>04</span>
-                  <strong>Archive</strong>
-                  <small>A growing record of university life.</small>
-                </article>
-              </div>
-
-              <div className="pill-row">
-                <span>Photography</span>
-                <span>Videography</span>
-                <span>Video Editing</span>
-                <span>Content Creation</span>
-                <span>Event Coverage</span>
-                <span>Archive</span>
+              <div className="vision-panel">
+                <div className="vision-heading">
+                  <span className="eyebrow">A new creative vision</span>
+                  <h3>Visual Archive Club returns with a new <em>vision.</em></h3>
+                </div>
+                <div className="vision-disciplines">
+                  {[
+                    "Photography",
+                    "Videography",
+                    "Content Creation",
+                    "Storytelling",
+                    "Filmmaking",
+                    "Art Exhibitions",
+                    "Digital Art"
+                  ].map((discipline, index) => (
+                    <span key={discipline} className="vision-discipline">
+                      <b>{String(index + 1).padStart(2, "0")}</b>
+                      {discipline}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div className="about-links">

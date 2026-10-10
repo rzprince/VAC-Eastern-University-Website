@@ -77,7 +77,7 @@ export function MediaSection({
               <h3>Your next visual story starts here.</h3>
               <p>
                 When VAC publishes photographs or Facebook video thumbnails in
-                Admin, they flow into this gallery automatically — newest first.
+                Admin, they appear in this gallery automatically, with the newest first.
               </p>
             </div>
           </div>

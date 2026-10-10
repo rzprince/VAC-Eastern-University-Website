@@ -102,7 +102,7 @@ export function CommitteeSection({
       <div className="shell">
         <div className="section-kicker-row" data-reveal>
           <div>
-            <div className="eyebrow">Committee · 2026–2027</div>
+            <div className="eyebrow">Meet the VAC committee</div>
             <h2>
               The people behind the <em>archive.</em>
             </h2>
@@ -149,13 +149,12 @@ export function CommitteeSection({
               <span className="president-kicker">President · Visual Archive Club</span>
               <h3>{president.name}</h3>
               <p>
-                President of the 2026–2027 Visual Archive Club committee,
-                leading VAC&apos;s creative direction, visual storytelling and
-                university-wide media initiatives.
+                The President of Visual Archive Club, supporting the club&apos;s
+                new creative vision through photography, filmmaking, storytelling
+                and collaboration across Eastern University.
               </p>
               <div className="president-meta">
                 <span>{president.department || "Eastern University"}</span>
-                <span>Committee 2026–2027</span>
               </div>
               <span className="president-open">
                 View president profile <b aria-hidden="true">↗</b>
@@ -222,7 +221,7 @@ export function CommitteeSection({
 
               <div className="member-modal-copy">
                 <div className="eyebrow">
-                  {isPresident(selected) ? "VAC President · 2026–2027" : selected.position}
+                  {isPresident(selected) ? "VAC President" : selected.position}
                 </div>
                 <h3>{selected.name}</h3>
                 <p className="member-modal-position">{selected.position}</p>

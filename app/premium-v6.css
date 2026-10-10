@@ -1,0 +1,247 @@
+/* VAC Studio motion and content update.
+   Intentionally appended after the existing design system to preserve its look. */
+
+.vac-scroll-progress {
+  position: fixed;
+  z-index: 120;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  pointer-events: none;
+  background: linear-gradient(90deg, #ff923b, #ffcd86, #fff3d6);
+  transform: scaleX(var(--vac-scroll-progress, 0));
+  transform-origin: left center;
+  transition: transform 100ms linear;
+  box-shadow: 0 0 12px rgba(255, 151, 58, .28);
+}
+
+/* Progressive entrance animations never hide or obscure website content. */
+[data-reveal] {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.vac-motion-ready [data-reveal].is-visible {
+  animation: vac-arrive 530ms cubic-bezier(.22, 1, .36, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+@keyframes vac-arrive {
+  from { opacity: .83; translate: 0 9px; }
+  to { opacity: 1; translate: 0 0; }
+}
+.section { content-visibility: visible !important; contain-intrinsic-size: auto !important; }
+
+/* A visible partnership between the club and Eastern University.
+   The logo files are displayed unchanged and without background overlays. */
+.hero-identity {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  gap: clamp(13px, 2vw, 24px);
+  padding: 12px 20px 12px 16px;
+  margin-bottom: clamp(26px, 3.4vw, 37px);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 18px;
+  background: linear-gradient(128deg, rgba(255,255,255,.065), rgba(255,255,255,.014));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.055), 0 14px 35px rgba(0,0,0,.18);
+  isolation: isolate;
+  position: relative;
+  overflow: hidden;
+}
+.hero-identity:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -60%;
+  top: 0;
+  width: 40%;
+  height: 100%;
+  transform: skewX(-22deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.055), transparent);
+  animation: vac-brand-shimmer 12s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes vac-brand-shimmer {
+  0%, 65% { left: -60%; }
+  85%, 100% { left: 130%; }
+}
+.hero-identity-logos {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 1.3vw, 20px);
+}
+.hero-identity-logos .vac-logo-asset {
+  width: clamp(86px, 8.8vw, 112px) !important;
+  height: auto !important;
+  max-height: 84px;
+  object-fit: contain;
+  background: none !important;
+  filter: none !important;
+}
+.hero-identity-logos .eu-logo-asset {
+  width: clamp(98px, 10.4vw, 136px) !important;
+  height: auto !important;
+  max-height: 77px;
+  object-fit: contain;
+  background: none !important;
+  filter: none !important;
+}
+.hero-identity-divider {
+  display: block;
+  width: 1px;
+  align-self: stretch;
+  max-height: 62px;
+  min-height: 51px;
+  background: linear-gradient(180deg, transparent, rgba(255,156,66,.67), transparent);
+}
+.hero-identity-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: clamp(11px, 1.6vw, 22px);
+  border-left: 1px solid rgba(255,255,255,.1);
+  min-width: 0;
+}
+.hero-identity-caption > span {
+  color: #f7f1e7;
+  font-weight: 750;
+  font-size: clamp(10px, .98vw, 12px);
+  line-height: 1.3;
+}
+.hero-identity-caption small {
+  font-size: 9px;
+  color: #d7b896;
+  font-weight: 550;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+.hero-identity-logos img { transition: transform 350ms cubic-bezier(.2,.8,.2,1); }
+@media (hover:hover) {
+  .hero-identity:hover .vac-logo-asset { transform: translateY(-2px); }
+  .hero-identity:hover .eu-logo-asset { transform: translateY(-2px); }
+}
+
+/* Seven creative directions, preserving the existing About area layout. */
+.vision-panel {
+  margin-top: 29px;
+  padding: clamp(19px, 2.5vw, 26px);
+  border: 1px solid rgba(255, 169, 93, .25);
+  border-radius: 22px;
+  background: radial-gradient(ellipse at 100% 0, rgba(255,138,48,.075), transparent 56%), #101721;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+}
+.vision-heading .eyebrow { margin-bottom: 9px; }
+.vision-heading h3 {
+  margin: 0 0 22px;
+  color: #f9f5ef;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(29px, 2.9vw, 42px);
+  line-height: 1.06;
+  letter-spacing: -.015em;
+}
+.vision-heading h3 em { color: var(--orange); font-style: italic; }
+.vision-disciplines {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+.vision-discipline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px 13px;
+  border: 1px solid rgba(255,255,255,.085);
+  border-radius: 13px;
+  color: #eee9e1;
+  background: rgba(255,255,255,.025);
+  font-size: clamp(10px, 1.02vw, 12px);
+  font-weight: 620;
+  transition: background .25s ease, border-color .25s ease, transform .25s ease;
+}
+.vision-discipline b {
+  flex: 0 0 auto;
+  color: var(--orange);
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+@media (hover:hover) {
+  .vision-discipline:hover {
+    background: rgba(255,145,57,.07);
+    border-color: rgba(255,169,93,.28);
+    transform: translateY(-2px);
+  }
+}
+
+/* Delicate continuous animation on existing brand components. */
+.brand-lockup {
+  position: relative;
+  isolation: isolate;
+}
+.brand-lockup:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 46%;
+  height: 70%;
+  left: 50%;
+  top: 15%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,138,48,.055), transparent 72%);
+  animation: vac-soft-glow 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes vac-soft-glow {
+  from { opacity: .32; scale: .92; }
+  to { opacity: 1; scale: 1.08; }
+}
+
+/* Keep layout stable for mobile users and avoid motion on touch. */
+@media (max-width: 1120px) {
+  .hero-identity { gap: 15px; }
+  .hero-identity-caption { padding-left: 12px; }
+}
+@media (max-width: 680px) {
+  .hero-identity {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 14px 12px;
+    margin-bottom: 25px;
+  }
+  .hero-identity-logos { width: 100%; gap: 18px; }
+  .hero-identity-logos .vac-logo-asset { width: min(39%, 114px) !important; max-height: 80px; }
+  .hero-identity-logos .eu-logo-asset { width: min(43%, 135px) !important; max-height: 78px; }
+  .hero-identity-divider { height: 56px; min-height: 50px; align-self: center; }
+  .hero-identity-caption {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,.09);
+    padding: 9px 0 0;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+  }
+  .hero-identity-caption > span { font-size: 12px; }
+  .hero-identity-caption small { font-size: 9px; }
+  .vision-disciplines { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .vision-discipline { padding: 12px 9px; gap: 8px; font-size: 10px; }
+}
+@media (max-width: 360px) {
+  .vision-disciplines { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vac-scroll-progress { transition: none !important; }
+  .vac-motion-ready [data-reveal].is-visible,
+  .hero-identity:after, .brand-lockup:after {
+    animation: none !important;
+  }
+  .hero-identity-logos img, .vision-discipline { transition: none !important; }
+}

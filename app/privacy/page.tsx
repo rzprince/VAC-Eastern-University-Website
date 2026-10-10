@@ -42,8 +42,8 @@ export default async function PrivacyPage() {
                 <h2>How it is used</h2>
                 <p>
                   Submitted information is used for VAC membership administration,
-                  payment-reference verification, applicant communication and the
-                  approved-member registry. A VAC-themed PDF snapshot of the
+                  payment reference verification, applicant communication and the
+                  approved member registry. A VAC branded PDF snapshot of the
                   application is generated when the form is submitted.
                 </p>
               </section>
@@ -54,7 +54,7 @@ export default async function PrivacyPage() {
                   Generated membership PDFs are stored privately in VAC&apos;s
                   Supabase storage. When the Google Drive integration is configured,
                   a copy is also saved to the club&apos;s restricted membership
-                  application folder. Applicants receive a private high-entropy
+                  application folder. Applicants receive a private secure private
                   download link for their own PDF after submitting the form.
                 </p>
               </section>

@@ -3,6 +3,7 @@ import { Cormorant, Montserrat } from "next/font/google";
 import { PremiumMotion } from "@/components/PremiumMotion";
 import "./globals.css";
 import "./premium-v5.css";
+import "./premium-v6.css";
 
 const productionUrl = "https://vac-eastern-university.vercel.app";
 
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s | Visual Archive Club"
   },
   description:
-    "Official website of Visual Archive Club (VAC), Eastern University — photography, videography, filmmaking, events, visual archive and membership.",
+    "Official website of Visual Archive Club (VAC), Eastern University. Photography, videography, filmmaking, content creation, visual storytelling, art exhibitions and digital art.",
   keywords: [
     "Visual Archive Club",
     "VAC",
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
         url: "/vac-logo.webp",
         width: 220,
         height: 157,
-        alt: "Visual Archive Club — Eastern University"
+        alt: "Visual Archive Club at Eastern University"
       }
     ]
   },
