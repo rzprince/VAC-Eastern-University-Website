@@ -32,7 +32,6 @@ export async function GET(
     );
   }
 
-  const bytes = await response.arrayBuffer();
   const headers = new Headers();
   headers.set("Content-Type", "application/pdf");
   headers.set(
@@ -44,5 +43,9 @@ export async function GET(
   headers.set("X-Content-Type-Options", "nosniff");
   headers.set("Referrer-Policy", "no-referrer");
 
-  return new Response(bytes, { status: 200, headers });
+  // Stream the already-stored PDF immediately instead of buffering it twice.
+  if (!response.body) {
+    return NextResponse.json({ error: "The application PDF is unavailable." }, { status: 502 });
+  }
+  return new Response(response.body, { status: 200, headers });
 }
