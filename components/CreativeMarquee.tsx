@@ -1,10 +1,11 @@
 const items = [
   "Photography",
   "Videography",
-  "Video Editing",
   "Content Creation",
-  "Event Coverage",
-  "Archive"
+  "Storytelling",
+  "Filmmaking",
+  "Art Exhibitions",
+  "Digital Art"
 ];
 
 export function CreativeMarquee() {
