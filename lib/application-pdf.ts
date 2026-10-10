@@ -242,8 +242,8 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   const signX = W - margin - 136;
   const signY = top + 5;
   const signScale = 0.16;
-  for (const contour of PRINCE_SIGNATURE_PATH.split(/\\s+(?=M)/)) {
-    const points = Array.from(contour.matchAll(/[ML](\\d+),(\\d+)/g),
+  for (const contour of PRINCE_SIGNATURE_PATH.split(" M").map((path, i) => i === 0 ? path : "M" + path) {
+    const points = Array.from(contour.matchAll(/[ML]([0-9]+),([0-9]+)/g),
       ([, px, py]) => ({ x: signX + Number(px) * signScale, y: signY - Number(py) * signScale }));
     if (points.length < 2) continue;
     for (let i = 1; i < points.length; i++) {
