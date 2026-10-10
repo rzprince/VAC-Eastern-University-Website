@@ -4,6 +4,7 @@ import { PremiumMotion } from "@/components/PremiumMotion";
 import "./globals.css";
 import "./premium-v5.css";
 import "./premium-v6.css";
+import "./premium-v7.css";
 
 const productionUrl = "https://vac-eastern-university.vercel.app";
 
