@@ -97,8 +97,6 @@ img {
 .section {
   position: relative;
   padding: 126px 0;
-  content-visibility: auto;
-  contain-intrinsic-size: 800px;
 }
 
 .section h2,
@@ -3253,18 +3251,15 @@ body {
   line-height: 1.78;
 }
 
+/* Never hide content while waiting for JavaScript.
+   Entry animation is an optional enhancement in premium-v6.css. */
 [data-reveal] {
-  opacity: 0;
-  transform: translate3d(0, 26px, 0);
-  transition:
-    opacity .72s var(--ease-premium) var(--reveal-delay, 0ms),
-    transform .72s var(--ease-premium) var(--reveal-delay, 0ms);
-  will-change: transform, opacity;
+  opacity: 1;
+  transform: none;
 }
 
 [data-reveal].is-visible {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
 }
 
 /* Premium navigation */
