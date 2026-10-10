@@ -155,7 +155,6 @@ export function CommitteeSection({
               </p>
               <div className="president-meta">
                 <span>{president.department || "Eastern University"}</span>
-                <span>Serial {displaySerial(president)}</span>
                 <span>Committee 2026–2027</span>
               </div>
               <span className="president-open">
@@ -164,7 +163,6 @@ export function CommitteeSection({
             </div>
 
             <div className="president-feature-mark" aria-hidden="true">
-              <span>{displaySerial(president)}</span>
               <strong>PRESIDENT</strong>
             </div>
           </button>
