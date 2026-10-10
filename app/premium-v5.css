@@ -1,0 +1,386 @@
+/* VAC STUDIO V5 — editorial, photograph-first, mobile-first.
+   Overrides legacy layers, without touching Supabase/admin/payment logic. */
+
+:root {
+ --bg:#080b10; --bg-soft:#0b1016; --panel:#111820; --panel-2:#151d26;
+ --panel-3:#19222d; --ink:#f8f5ed; --muted:#b8b6b4; --muted-2:#9299a0;
+ --orange:#ff8a30; --orange-2:#ffb36d; --champagne:#e9ca9f;
+ --line:rgba(237,243,250,.12); --line-strong:rgba(237,243,250,.23);
+ --shadow:0 35px 100px rgba(0,0,0,.38);
+}
+html {overflow-x:clip;scroll-padding-top:110px}
+body {
+ width:100%;max-width:100%;
+ color:var(--ink);
+ overflow-x:clip;
+ background:linear-gradient(180deg,#080b10 0,#0b1016 32%,#090d13 70%,#080b10 100%);
+ font-family:var(--font-body),Montserrat,system-ui,sans-serif;
+}
+.shell {width:min(1250px,calc(100% - 64px));margin-inline:auto}
+h1,h2,h3 {text-wrap:balance}
+a,button {-webkit-tap-highlight-color:transparent}
+img{max-width:100%}
+.vac-logo-asset,.eu-logo-asset{
+ display:block!important;width:100%;height:auto;object-fit:contain;
+ background:none!important;filter:none!important;mix-blend-mode:normal!important;
+ opacity:1!important;aspect-ratio:auto!important;
+}
+:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
+
+/* Upper navigation is breathable and consistent across widths */
+.navbar {
+ inset:14px 0 auto!important;
+ width:min(1248px,calc(100% - 48px))!important;
+ margin:0 auto;
+ transform:none!important;
+ border-radius:20px!important;
+ background:rgba(12,17,24,.89)!important;
+ border:1px solid rgba(255,255,255,.13)!important;
+ box-shadow:0 14px 52px rgba(0,0,0,.32)!important;
+ backdrop-filter:blur(18px) saturate(120%);
+}
+.nav-inner{height:68px!important;width:100%!important;padding:0 22px!important}
+.brand{min-width:0;max-width:360px;gap:12px}
+.brand-mark{
+ width:65px!important;height:53px!important;padding:0!important;flex:0 0 65px;
+ overflow:visible!important;border:0!important;background:transparent!important;
+}
+.brand-mark .vac-logo-asset{
+ width:65px!important;height:53px!important;object-fit:contain;
+}
+.brand-copy strong{
+ display:block;line-height:1.25;letter-spacing:-.025em!important;
+ font-weight:750;font-size:14px!important;
+}
+.brand-copy small{margin-top:5px!important;color:var(--orange)!important;letter-spacing:.09em;font-size:9px!important}
+.nav-links{gap:4px!important}
+.nav-links>a{white-space:nowrap;font-size:11px!important;letter-spacing:.03em!important;padding:12px 9px!important}
+.nav-links .nav-join{
+ padding:12px 16px!important;margin-left:8px!important;border:1px solid rgba(255,138,48,.46);
+ border-radius:999px;color:var(--ink);
+ background:linear-gradient(130deg,rgba(255,138,48,.22),rgba(255,138,48,.08));
+}
+.nav-links a:hover{color:#fff!important}
+
+/* Cinema editorial hero. Real photographic subject, not a rotating logo graphic */
+.hero-v2{
+ min-height:min(930px,100svh);
+ padding:clamp(146px,14vw,186px) 0 82px!important;
+ position:relative;isolation:isolate;
+ background:
+  radial-gradient(ellipse 62% 62% at 80% 38%,rgba(226,121,52,.15),transparent 65%),
+  radial-gradient(ellipse 44% 55% at -10% 90%,rgba(50,88,124,.15),transparent 72%),
+  linear-gradient(180deg,#090c11,#0d1119 72%,#080b10)!important;
+}
+.hero-v2:before {
+ content:"";position:absolute;inset:0;pointer-events:none;opacity:.27;
+ background-image:linear-gradient(90deg,rgba(244,237,223,.045) 1px,transparent 1px);
+ background-size:clamp(54px,9vw,118px) 100%;
+ mask-image:linear-gradient(to bottom,transparent,#000 26%,transparent 95%);
+}
+.hero-noise,.hero-orb{pointer-events:none;opacity:.14}
+.hero-layout{
+ display:grid;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr)!important;
+ align-items:center;gap:clamp(32px,6vw,100px)!important;
+}
+.hero-brandline {gap:16px;max-width:100%;margin-bottom:30px!important}
+.hero-brandline .eu-logo-asset{
+ width:72px!important;height:auto!important;max-height:58px;object-fit:contain!important;
+}
+.hero-brandline p{color:#c2b8ac;font-weight:600;font-size:11px;letter-spacing:.075em}
+.hero-copy{position:relative;min-width:0;z-index:4}
+.hero-copy .eyebrow{color:var(--champagne);font-size:10px;letter-spacing:.18em}
+.hero-copy h1{
+ max-width:10ch!important;line-height:.9!important;
+ font-size:clamp(72px,7.3vw,116px)!important;
+ font-weight:600!important;letter-spacing:-.036em!important;
+ font-family:var(--font-display),Georgia,serif!important;
+}
+.hero-copy h1 em{display:inline;color:var(--orange)!important}
+.hero-lead{font-size:clamp(15px,1.22vw,18px)!important;line-height:1.8!important;max-width:540px!important;color:#c7c2bd!important}
+.hero-actions{gap:12px!important;margin-top:36px!important}
+.primary-button,.secondary-button{
+ border-radius:999px!important;
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:52px;gap:13px;
+ padding-inline:26px;line-height:1.2;text-align:center;
+ transition:transform .23s ease,background .23s ease,border .23s ease,box-shadow .23s ease;
+}
+.primary-button{background:linear-gradient(135deg,#ffa54b,#ff8027)!important;color:#19120e!important;box-shadow:0 12px 30px rgba(251,127,30,.19)}
+.primary-button:hover,.secondary-button:hover{transform:translateY(-3px)}
+.secondary-button{border:1px solid rgba(255,255,255,.23)!important;background:rgba(255,255,255,.035)!important;color:#f8f5ed!important}
+.hero-meta {margin-top:54px!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:19px;border-top:1px solid var(--line)}
+.hero-meta>div{min-width:0;margin:0!important;padding:0 8px 0 0!important;border:0!important}
+.hero-meta strong{color:#ffe5c6!important;font:600 clamp(23px,3vw,32px)/1.1 var(--font-display),Georgia,serif!important}
+.hero-meta small{display:block;margin-top:8px;color:#9fa5aa;font-size:10px;line-height:1.3}
+
+/* New photo-led 3D composition: subtle interaction, no spinning wheel */
+.vac-editorial-stage{
+ --tilt-x:0deg;--tilt-y:0deg;
+ position:relative;width:100%;height:min(600px,52vw);min-height:480px;
+ isolation:isolate;perspective:1200px;
+}
+.vac-editorial-halo {
+ position:absolute;inset:9% -6% 0 8%;border-radius:50%;
+ filter:blur(58px);background:radial-gradient(circle,rgba(255,139,46,.27),transparent 70%);
+}
+.vac-editorial-photo{
+ position:absolute;z-index:1;inset:1% 7% 3% 6%;overflow:hidden;
+ border-radius:28px;border:1px solid rgba(255,255,255,.24);
+ background:#131a24;
+ box-shadow:0 50px 125px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);
+ transform:rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+ transition:transform .26s ease-out;
+}
+.vac-editorial-photo:after{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ border-radius:inherit;border:1px solid rgba(255,255,255,.09);
+}
+.vac-editorial-photo>img{
+ display:block;width:100%;height:100%;object-fit:cover;
+ object-position:center;filter:contrast(1.08) saturate(.78) brightness(.81);
+}
+.vac-editorial-photo-shade{
+ position:absolute;inset:0;
+ background:linear-gradient(to top,rgba(5,8,13,.94),rgba(5,8,13,.20) 50%,rgba(5,8,13,.12) 86%),
+ linear-gradient(100deg,rgba(5,8,13,.32),transparent 58%);
+}
+.vac-editorial-photo-caption{
+ position:absolute;left:clamp(22px,3vw,40px);right:22px;bottom:35px;
+ display:flex;flex-direction:column;gap:6px;
+}
+.vac-editorial-photo-caption>span,.vac-editorial-photo-caption>small{
+ font:700 10px/1.6 var(--font-body),sans-serif;letter-spacing:.15em;color:#e9b888;
+}
+.vac-editorial-photo-caption>strong{
+ font:600 clamp(28px,3vw,44px)/1 var(--font-display),Georgia,serif;letter-spacing:-.025em;color:#fff;
+}
+.vac-editorial-photo-caption>small{letter-spacing:.06em;color:#f3eae0;font-weight:500}
+.vac-editorial-stamp{
+ position:absolute;z-index:4;top:-1%;right:-1%;
+ width:clamp(110px,16vw,170px);
+ display:grid;place-items:center;padding:12px;
+ border:1px solid rgba(255,255,255,.21);border-radius:18px;
+ background:#10151c;box-shadow:0 16px 47px rgba(0,0,0,.49);
+ transform:rotate(5deg);
+}
+.vac-editorial-stamp .vac-logo-asset{width:100%!important;height:auto!important;}
+.vac-editorial-side-label{
+ position:absolute;z-index:4;left:-9%;top:40%;writing-mode:vertical-rl;
+ transform:rotate(180deg);color:#f1c193;letter-spacing:.23em;font-size:9px;font-weight:650;
+}
+.vac-editorial-counter{
+ position:absolute;z-index:4;right:2%;bottom:0;display:flex;align-items:center;gap:10px;
+ padding:11px 15px;border-radius:999px;border:1px solid rgba(255,255,255,.17);
+ color:#f5e4d2;background:#171b22;box-shadow:0 14px 35px rgba(0,0,0,.3);
+ font-size:10px;font-weight:700;letter-spacing:.12em;
+}
+.vac-editorial-counter i{display:block;width:7px;height:7px;background:var(--orange);border-radius:50%;box-shadow:0 0 12px var(--orange)}
+
+/* Subtle premium material and typographic hierarchy throughout */
+.section{padding:clamp(82px,10vw,138px) 0!important}
+.section h2,.page-title{font-family:var(--font-display),Georgia,serif;font-size:clamp(44px,5vw,79px);line-height:1.02;letter-spacing:-.025em}
+.section-kicker-row{margin-bottom:38px!important;align-items:end;gap:26px}
+.section-copy,.about-story p{color:#c0c2c6!important;line-height:1.75}
+.about-editorial{gap:54px 84px!important;align-items:start}
+.about-pillars article{
+ border:1px solid var(--line);background:linear-gradient(130deg,#131a22,#0d121b)!important;
+ border-radius:20px;min-height:148px;
+}
+.about-pillars strong{font-size:25px}
+.brand-lockup{
+ width:100%;min-height:184px!important;margin-top:10px;
+ border:1px solid var(--line);border-radius:24px;
+ background:linear-gradient(100deg,rgba(255,255,255,.035),transparent)!important;
+ padding:30px!important;display:flex;align-items:center;justify-content:center;gap:40px!important;
+}
+.brand-lockup .vac-logo-asset{width:180px!important;max-width:42vw;max-height:135px!important}
+.brand-lockup .eu-logo-asset{width:195px!important;max-width:42vw;max-height:128px!important}
+.brand-lockup>span{width:1px;height:86px;background:linear-gradient(transparent,rgba(255,138,48,.6),transparent);flex:0 0 1px}
+.craft-card{border-radius:24px!important;box-shadow:0 24px 65px rgba(0,0,0,.25)}
+.craft-grid{gap:18px!important}
+.craft-art img{object-fit:cover;object-position:center;filter:brightness(.74) saturate(.82)!important;transition:transform .55s ease,filter .4s}
+.craft-card:hover .craft-art img{filter:brightness(.88) saturate(.9)!important;transform:scale(1.055)}
+.craft-copy h3{font-size:clamp(33px,3.2vw,48px)!important}
+.president-feature{
+ overflow:hidden;border-radius:28px!important;
+ background:linear-gradient(130deg,rgba(249,160,71,.10),rgba(12,18,26,.98) 44%)!important;
+ border:1px solid rgba(248,187,108,.31)!important;
+ box-shadow:0 35px 92px rgba(0,0,0,.22);
+}
+.president-feature-copy h3{font-family:var(--font-display),Georgia,serif!important;letter-spacing:-.025em;font-size:clamp(48px,5.5vw,74px)!important}
+.president-kicker{color:#fac98c!important}
+.president-meta{display:flex;flex-wrap:wrap}
+.president-feature-mark{opacity:.35;pointer-events:none}
+.member-card--uniform{
+ border:1px solid var(--line)!important;border-radius:20px!important;
+ background:#101720!important;
+}
+.member-card--uniform:hover{background:#151d28!important;border-color:rgba(248,187,108,.45)!important}
+.member-avatar{background:linear-gradient(140deg,#1c2835,#101820)!important}
+.member-card-copy strong{font-size:clamp(14px,1.45vw,18px)!important}
+.contact-links a{border-radius:16px!important}
+
+/* All branding is truly transparent; never fake backgrounds/crop original art */
+.brand-mark,.hero-brandline,.join-logo-card,.footer-brand,.success-logo{
+ background:transparent!important;overflow:visible!important;
+}
+.hero-brandline .eu-logo-asset{max-height:58px!important}
+.join-institution-lockup{
+ display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr)!important;
+ justify-content:center;align-items:center;gap:20px;
+ min-height:220px;padding:20px!important;
+ border:1px solid var(--line);border-radius:24px;overflow:visible!important;
+ background:linear-gradient(145deg,#111822,#0d1219)!important;
+}
+.join-logo-card{display:grid;place-items:center;min-width:0;min-height:150px!important;padding:14px!important}
+.join-logo-card .vac-logo-asset{width:min(100%,235px)!important;max-height:162px!important}
+.join-logo-card .eu-logo-asset{width:min(100%,240px)!important;max-height:150px!important}
+.join-lockup-divider{width:1px!important;height:110px!important;background:linear-gradient(transparent,var(--orange),transparent)}
+.footer-brand .vac-logo-asset,.site-footer .footer-brand .vac-logo-asset{width:84px!important;height:auto!important}
+.footer-bottom{gap:18px}
+
+/* Tablet: image stacks below copy, navigation becomes a real touch menu */
+@media(max-width:1050px){
+ .shell{width:min(900px,calc(100% - 40px))}
+ .hero-v2{min-height:auto;padding-top:140px!important}
+ .hero-layout{grid-template-columns:1fr!important;gap:30px!important}
+ .hero-copy h1{max-width:13ch!important;font-size:clamp(68px,10vw,100px)!important}
+ .hero-lead{max-width:680px!important}
+ .vac-editorial-stage{width:min(700px,100%);height:580px;min-height:0;margin:0 auto}
+ .vac-editorial-side-label{left:-1%}
+ .about-editorial{grid-template-columns:1fr!important;gap:28px!important}
+ .brand-lockup{grid-column:1/-1}
+ .section-kicker-row{align-items:flex-start;flex-direction:column}
+ .nav-links{gap:0!important}
+ .nav-links>a{font-size:10px!important;padding:10px 7px!important}
+}
+@media(max-width:820px){
+ .navbar{top:10px!important;width:calc(100% - 24px)!important;border-radius:17px!important}
+ .nav-inner{height:64px!important;padding:0 14px!important}
+ .brand{max-width:calc(100% - 62px)}
+ .brand-mark,.brand-mark .vac-logo-asset{width:58px!important;height:50px!important;flex-basis:58px!important}
+ .brand-copy strong{font-size:13px!important}
+ .brand-copy small{font-size:8px!important}
+ .mobile-menu-button{
+  display:flex!important;align-items:center;justify-content:center;flex-direction:column;gap:5px;
+  width:44px;height:44px;flex:0 0 44px;
+  border-radius:13px;border:1px solid var(--line)!important;background:rgba(255,255,255,.045);
+ }
+ .mobile-menu-button>span{display:block;width:19px;height:2px;border-radius:2px;background:#f9f5ed}
+ .nav-links{
+  position:absolute;top:calc(100% + 9px)!important;left:0!important;right:0!important;
+  display:none!important;align-items:stretch!important;flex-direction:column;
+  width:100%!important;max-height:calc(100dvh - 100px);overflow-y:auto;
+  gap:3px!important;padding:12px!important;
+  border:1px solid var(--line)!important;border-radius:17px!important;
+  background:rgba(13,18,26,.98)!important;box-shadow:0 22px 65px rgba(0,0,0,.5);
+ }
+ .nav-links--open{display:flex!important}
+ .nav-links>a,.nav-links .nav-join{
+  display:flex;align-items:center;justify-content:space-between;width:100%;
+  margin:0!important;min-height:46px;border-radius:10px!important;
+  padding:12px 15px!important;font-size:12px!important;
+ }
+ .hero-v2{padding:126px 0 65px!important}
+ .hero-layout{grid-template-columns:1fr!important}
+ .hero-copy h1{font-size:clamp(64px,11vw,93px)!important}
+ .vac-editorial-stage{height:min(72vw,560px)}
+ .craft-grid{grid-template-columns:1fr!important;grid-template-rows:auto!important;gap:15px!important}
+ .craft-card,.craft-card--wide{grid-row:auto!important;min-height:400px!important}
+ .committee-grid,.committee-grid--uniform,.committee-grid--advisory{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .contact-layout{grid-template-columns:1fr!important;gap:32px!important}
+ .media-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .president-feature{grid-template-columns:1fr!important}
+ .president-feature-media{min-height:270px!important}
+ .president-feature-copy{padding:24px!important}
+ .form-header--premium{grid-template-columns:1fr!important;gap:34px!important}
+ .join-institution-lockup{max-width:720px}
+ .footer-top{flex-direction:column;align-items:flex-start}
+}
+
+/* Compact phones: no horizontal scroll, no clipped logos or oversized 3D panels */
+@media(max-width:560px){
+ .shell{width:calc(100% - 32px)!important}
+ .navbar{width:calc(100% - 20px)!important}
+ .nav-inner{padding:0 10px!important;height:60px!important}
+ .brand{gap:8px}
+ .brand-mark,.brand-mark .vac-logo-asset{width:49px!important;height:44px!important;flex-basis:49px!important}
+ .brand-copy strong{font-size:11.5px!important;line-height:1.2}
+ .brand-copy small{font-size:7.5px!important;margin-top:4px!important}
+ .hero-v2{padding:112px 0 50px!important}
+ .hero-brandline{gap:12px;margin-bottom:25px!important}
+ .hero-brandline .eu-logo-asset{width:63px!important;max-height:44px!important}
+ .hero-brandline p{font-size:8px!important;letter-spacing:.03em;line-height:1.4}
+ .hero-copy .eyebrow{font-size:8px!important;letter-spacing:.15em}
+ .hero-copy h1{font-size:clamp(53px,14vw,77px)!important;max-width:12ch!important}
+ .hero-lead{font-size:14px!important;line-height:1.65!important}
+ .hero-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important}
+ .hero-actions>a,.hero-actions>span{min-width:0;padding:13px 10px!important;font-size:10px!important;min-height:48px}
+ .hero-meta{gap:7px;margin-top:36px!important}
+ .hero-meta strong{font-size:22px!important}
+ .hero-meta small{font-size:8px!important;margin-top:5px}
+ .vac-editorial-stage{height:360px!important;min-height:0!important;max-width:440px}
+ .vac-editorial-photo{inset:5% 4% 4% 4%;border-radius:20px}
+ .vac-editorial-stamp{top:0;right:0;width:98px;padding:8px;border-radius:12px;transform:rotate(4deg)}
+ .vac-editorial-side-label{display:none}
+ .vac-editorial-counter{right:0;padding:8px 11px;font-size:8px}
+ .vac-editorial-photo-caption{left:20px;bottom:24px}
+ .vac-editorial-photo-caption>strong{font-size:30px}
+ .vac-editorial-photo-caption>span,.vac-editorial-photo-caption>small{font-size:8px}
+ .section{padding:76px 0!important}
+ .section h2,.page-title{font-size:clamp(39px,10vw,53px)!important}
+ .section-copy{font-size:13px!important}
+ .brand-lockup{gap:14px!important;padding:17px!important;min-height:136px!important}
+ .brand-lockup .vac-logo-asset{width:145px!important;max-width:43vw}
+ .brand-lockup .eu-logo-asset{width:146px!important;max-width:43vw}
+ .brand-lockup>span{height:72px}
+ .about-pillars{grid-template-columns:1fr 1fr!important;gap:9px}
+ .about-pillars article{padding:15px!important;min-height:123px}
+ .about-pillars strong{font-size:19px}
+ .about-pillars small{font-size:10px}
+ .craft-card,.craft-card--wide{min-height:360px!important}
+ .craft-copy{left:21px;bottom:22px}
+ .craft-copy h3{font-size:31px!important}
+ .committee-grid,.committee-grid--uniform,.committee-grid--advisory{gap:9px!important}
+ .member-card--uniform{min-height:273px!important;padding:9px!important}
+ .member-card--uniform .member-avatar{height:143px!important}
+ .member-card-copy strong{font-size:13px!important;line-height:1.3}
+ .member-card-copy small{font-size:8px}
+ .president-feature{margin:34px 0 48px!important;border-radius:23px!important}
+ .president-feature-media{min-height:230px!important}
+ .president-feature-copy{padding:20px 16px 24px!important}
+ .president-feature-copy h3{font-size:clamp(43px,11vw,59px)!important}
+ .president-feature-mark{display:none}
+ .member-modal{padding:16px!important;width:calc(100vw - 26px);max-height:calc(100dvh - 40px);overflow-y:auto}
+ .media-grid{grid-template-columns:1fr!important}
+ .join-institution-lockup{
+  grid-template-columns:1fr!important;
+  gap:0!important;padding:14px!important;min-height:260px;
+ }
+ .join-lockup-divider{width:60%!important;height:1px!important;justify-self:center;align-self:center}
+ .join-logo-card{min-height:112px!important;padding:6px!important}
+ .join-logo-card .vac-logo-asset{width:178px!important;max-height:128px!important}
+ .join-logo-card .eu-logo-asset{width:190px!important;max-height:114px!important}
+ .footer-bottom{flex-direction:column;align-items:flex-start}
+ .developer-credit{width:100%;white-space:normal}
+}
+@media(max-width:380px){
+ .shell{width:calc(100% - 24px)!important}
+ .hero-copy h1{font-size:clamp(47px,13.2vw,59px)!important}
+ .brand-copy strong{font-size:10px!important}
+ .brand-copy small{font-size:7px!important}
+ .hero-actions{grid-template-columns:1fr}
+ .vac-editorial-stage{height:295px!important}
+ .member-card--uniform{min-height:245px!important}
+ .member-card--uniform .member-avatar{height:120px!important}
+ .brand-lockup .vac-logo-asset,.brand-lockup .eu-logo-asset{width:43vw!important}
+}
+@media(hover:none){
+ .craft-card:hover,.member-card:hover,.primary-button:hover,.secondary-button:hover{transform:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .vac-editorial-photo{transform:none!important;transition:none!important}
+ .vac-editorial-stamp{transform:none!important}
+ *{scroll-behavior:auto!important}
+}
