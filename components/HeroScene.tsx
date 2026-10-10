@@ -1,62 +1,63 @@
 "use client";
 
-import { PointerEvent, useRef } from "react";
+import { useRef, type PointerEvent } from "react";
 import { VacLogo } from "@/components/BrandLogo";
 
 export function HeroScene() {
-  const ref = useRef<HTMLDivElement>(null);
-  const frame = useRef<number | null>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const raf = useRef<number>(0);
 
   function move(event: PointerEvent<HTMLDivElement>) {
-    if (!ref.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!stage.current ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const rect = ref.current.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-
-    if (frame.current) cancelAnimationFrame(frame.current);
-    frame.current = requestAnimationFrame(() => {
-      ref.current?.style.setProperty("--lens-ry", (-18 + x * 28).toFixed(2) + "deg");
-      ref.current?.style.setProperty("--lens-rx", (12 - y * 22).toFixed(2) + "deg");
-      ref.current?.style.setProperty("--lens-x", (x * 16).toFixed(2) + "px");
-      ref.current?.style.setProperty("--lens-y", (y * 14).toFixed(2) + "px");
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - .5;
+    const y = (event.clientY - rect.top) / rect.height - .5;
+    cancelAnimationFrame(raf.current);
+    raf.current = requestAnimationFrame(() => {
+      stage.current?.style.setProperty("--tilt-x", (-y * 5).toFixed(2) + "deg");
+      stage.current?.style.setProperty("--tilt-y", (x * 6).toFixed(2) + "deg");
     });
   }
 
   function reset() {
-    if (!ref.current) return;
-    ref.current.style.setProperty("--lens-ry", "-18deg");
-    ref.current.style.setProperty("--lens-rx", "12deg");
-    ref.current.style.setProperty("--lens-x", "0px");
-    ref.current.style.setProperty("--lens-y", "0px");
+    cancelAnimationFrame(raf.current);
+    stage.current?.style.setProperty("--tilt-x", "0deg");
+    stage.current?.style.setProperty("--tilt-y", "0deg");
   }
 
   return (
     <div
-      ref={ref}
-      className="hero-lens-stage"
+      className="vac-editorial-stage"
+      ref={stage}
       onPointerMove={move}
       onPointerLeave={reset}
-      aria-label="Animated Visual Archive Club camera lens"
+      aria-label="Creative filmmaking and photography at Visual Archive Club"
     >
-      <div className="lens-ambient" aria-hidden="true" />
-      <div className="vac-lens" aria-hidden="true">
-        <i className="lens-ring lens-ring--one" />
-        <i className="lens-ring lens-ring--two" />
-        <i className="lens-ring lens-ring--three" />
-        <i className="lens-ring lens-ring--four" />
-        <div className="lens-core">
-          <VacLogo alt="" priority />
+      <div className="vac-editorial-halo" aria-hidden="true" />
+      <div className="vac-editorial-photo">
+        <img
+          src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=88&w=1600"
+          alt="Cinematic film imagery, representing visual storytelling"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <div className="vac-editorial-photo-shade" aria-hidden="true" />
+        <div className="vac-editorial-photo-caption">
+          <span>CREATIVE ARCHIVE / 001</span>
+          <strong>Made to be remembered.</strong>
+          <small>Photography · Film · Visual Culture</small>
         </div>
       </div>
-
-      <div className="lens-note lens-note--top" aria-hidden="true">
-        <span>VISUAL ARCHIVE</span>
-        <b>EST. 2010</b>
+      <div className="vac-editorial-stamp">
+        <VacLogo alt="Visual Archive Club" priority />
       </div>
-      <div className="lens-note lens-note--bottom" aria-hidden="true">
-        <span>PHOTO · FILM · STORY</span>
-        <b>Eastern University</b>
+      <div className="vac-editorial-side-label" aria-hidden="true">EASTERN UNIVERSITY · DHAKA</div>
+      <div className="vac-editorial-counter" aria-hidden="true">
+        <i />
+        <span>EST. 2010</span>
       </div>
     </div>
   );
