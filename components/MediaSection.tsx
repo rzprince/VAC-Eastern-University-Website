@@ -67,18 +67,43 @@ export function MediaSection({
             })}
           </div>
         ) : (
-          <div className="archive-placeholder">
-            <div className="archive-placeholder-lens">
-              <span />
-              <span />
+          <div className="archive-placeholder archive-placeholder--editorial">
+            <div className="archive-storyboard" aria-label="Creative storytelling preview">
+              <div className="archive-storyboard-main">
+                <img
+                  src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&fm=webp&q=86&w=1300"
+                  alt="Film reels symbolizing the visual memories VAC will archive"
+                  loading="lazy"
+                />
+                <span>FRAME / 001</span>
+              </div>
+              <div className="archive-storyboard-detail">
+                <img
+                  src="https://images.unsplash.com/photo-1739296385343-ff091bca6203?auto=format&fit=crop&fm=webp&q=84&w=1000"
+                  alt="Photographer creating a visual story"
+                  loading="lazy"
+                />
+                <span>MAKE / CREATE / ARCHIVE</span>
+              </div>
+              <div className="archive-storyboard-counter" aria-hidden="true">VAC / VISUAL DIARY</div>
             </div>
-            <div>
-              <div className="eyebrow">Archive ready</div>
-              <h3>Your next visual story starts here.</h3>
+            <div className="archive-placeholder-story">
+              <div className="eyebrow">The living archive</div>
+              <h3>Every frame has a story. <em>Ours is just beginning.</em></h3>
               <p>
-                When VAC publishes photographs or Facebook video thumbnails in
-                Admin, they appear in this gallery automatically, with the newest first.
+                Real VAC photographs, creative projects and Facebook video posts
+                will appear here as soon as they are published by the club.
               </p>
+              <div className="archive-preview-actions">
+                <Link href="/archive" className="archive-preview-link">
+                  Explore the archive <span aria-hidden="true">↗</span>
+                </Link>
+                <a href={facebookPage} target="_blank" rel="noopener noreferrer" className="archive-preview-link archive-preview-link--secondary">
+                  <span className="archive-preview-facebook" aria-hidden="true">f</span>
+                  Visit VAC on Facebook <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+              <small className="archive-preview-note">Illustrative imagery. Official VAC work will replace these previews.</small>
             </div>
           </div>
         )}
