@@ -9,6 +9,7 @@ import { MediaSection } from "@/components/MediaSection";
 import { Navbar } from "@/components/Navbar";
 import { SiteFooter } from "@/components/SiteFooter";
 import { EuLogo, VacLogo } from "@/components/BrandLogo";
+import { ContactActions } from "@/components/ContactActions";
 import {
   getAnnouncements,
   getCommittee,
@@ -127,29 +128,6 @@ export default async function Home() {
                 <p key={index}>{paragraph}</p>
               ))}
 
-              <div className="vision-panel">
-                <div className="vision-heading">
-                  <span className="eyebrow">A new creative vision</span>
-                  <h3>Visual Archive Club returns with a new <em>vision.</em></h3>
-                </div>
-                <div className="vision-disciplines">
-                  {[
-                    "Photography",
-                    "Videography",
-                    "Content Creation",
-                    "Storytelling",
-                    "Filmmaking",
-                    "Art Exhibitions",
-                    "Digital Art"
-                  ].map((discipline, index) => (
-                    <span key={discipline} className="vision-discipline">
-                      <b>{String(index + 1).padStart(2, "0")}</b>
-                      {discipline}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
               <div className="about-links">
                 <a href={settings.facebookPage} target="_blank" rel="noreferrer">
                   Official Facebook Page <span>↗</span>
@@ -160,11 +138,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="brand-lockup" aria-label="VAC and Eastern University">
-              <VacLogo alt={settings.clubName} />
-              <span />
-              <EuLogo alt={settings.university} />
-            </div>
+
           </div>
         </section>
 
@@ -185,28 +159,12 @@ export default async function Home() {
               </p>
             </div>
 
-            <div className="contact-links">
-              <a href={settings.facebookPage} target="_blank" rel="noreferrer">
-                <small>Official page</small>
-                <strong>Facebook</strong>
-                <span>↗</span>
-              </a>
-              <a href={settings.facebookGroup} target="_blank" rel="noreferrer">
-                <small>Community</small>
-                <strong>VAC Group</strong>
-                <span>↗</span>
-              </a>
-              <a href={"tel:" + settings.contactPhone.replace(/\s/g, "")}>
-                <small>Committee</small>
-                <strong>{settings.contactPhone}</strong>
-                <span>↗</span>
-              </a>
-              <a href={"mailto:" + settings.contactEmail}>
-                <small>Email</small>
-                <strong>{settings.contactEmail}</strong>
-                <span>↗</span>
-              </a>
-            </div>
+            <ContactActions
+              facebookPage={settings.facebookPage}
+              facebookGroup={settings.facebookGroup}
+              contactPhone={settings.contactPhone}
+              contactEmail={settings.contactEmail}
+            />
           </div>
         </section>
 
