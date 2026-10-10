@@ -1,10 +1,9 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import {
   PDFDocument, StandardFonts, rgb,
   type PDFFont, type PDFPage, type PDFImage
 } from "pdf-lib";
 import { PRINCE_SIGNATURE_PATH } from "@/lib/prince-signature";
+import { VAC_LOGO_PNG, EU_LOGO_PNG } from "@/lib/brand-pdf-assets";
 
 export type MembershipPdfData = {
   applicationRef: string;
@@ -109,14 +108,8 @@ function panelField(page: PDFPage, x: number, top: number, width: number,
   }
 }
 
-async function embedClubLogo(doc: PDFDocument, filename: string) {
-  try {
-    const data = await readFile(join(process.cwd(), "public", filename));
-    return await doc.embedPng(data);
-  } catch {
-    // The PDF still generates if one branding image is unavailable.
-    return null;
-  }
+async function embedClubLogo(doc: PDFDocument, pngBase64: string) {
+  return await doc.embedPng(Buffer.from(pngBase64, "base64"));
 }
 
 function fitImage(page: PDFPage, image: PDFImage | null,
@@ -179,8 +172,8 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   rectangle(page, 0, H - 128, W, 128, colors.dark);
   rectangle(page, 0, H - 128, 7, 128, colors.orange);
   const [vac, eu] = await Promise.all([
-    embedClubLogo(doc, "vac-logo.png"),
-    embedClubLogo(doc, "eastern-university-logo.png")
+    embedClubLogo(doc, VAC_LOGO_PNG),
+    embedClubLogo(doc, EU_LOGO_PNG)
   ]);
   fitImage(page, vac, 30, H - 112, 88, 80);
   rectangle(page, 133, H - 102, 1, 57, rgb(.32,.36,.42));
