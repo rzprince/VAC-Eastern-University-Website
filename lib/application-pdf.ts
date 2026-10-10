@@ -1,9 +1,11 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import sharp from "sharp";
 import {
   PDFDocument, StandardFonts, rgb,
   type PDFFont, type PDFPage, type PDFImage
 } from "pdf-lib";
 import { PRINCE_SIGNATURE_PATH } from "@/lib/prince-signature";
-import { VAC_LOGO_PNG, EU_LOGO_PNG } from "@/lib/brand-pdf-assets";
 
 export type MembershipPdfData = {
   applicationRef: string;
@@ -108,8 +110,23 @@ function panelField(page: PDFPage, x: number, top: number, width: number,
   }
 }
 
-async function embedClubLogo(doc: PDFDocument, pngBase64: string) {
-  return await doc.embedPng(Buffer.from(pngBase64, "base64"));
+async function embedClubLogo(doc: PDFDocument, filename: string) {
+  // Read the original image from the deployment, then flatten it onto the
+  // exact masthead color. JPEG decoding in PDFs is fast and reliable, unlike
+  // the project's original indexed PNG encoding.
+  try {
+    const source = await readFile(join(process.cwd(), "public", filename));
+    const jpg = await sharp(source)
+      .resize({ width: 370, withoutEnlargement: true })
+      .flatten({ background: "#0e141c" })
+      .jpeg({ quality: 89, mozjpeg: true })
+      .toBuffer();
+    return await doc.embedJpg(jpg);
+  } catch (error) {
+    console.error("VAC PDF logo could not be loaded:", filename,
+      error instanceof Error ? error.message : "unknown error");
+    return null;
+  }
 }
 
 function fitImage(page: PDFPage, image: PDFImage | null,
@@ -174,8 +191,8 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   rectangle(page, 0, H - 128, W, 128, colors.dark);
   rectangle(page, 0, H - 128, 7, 128, colors.orange);
   const [vac, eu] = await Promise.all([
-    embedClubLogo(doc, VAC_LOGO_PNG),
-    embedClubLogo(doc, EU_LOGO_PNG)
+    embedClubLogo(doc, "vac-logo.png"),
+    embedClubLogo(doc, "eastern-university-logo.png")
   ]);
   console.log("VAC PDF STAGE 3: logos embedded");
   fitImage(page, vac, 30, H - 112, 88, 80);
