@@ -54,7 +54,7 @@ export function SiteFooter({
           href="https://www.facebook.com/rz.hs.prince"
           target="_blank"
           rel="noreferrer"
-          aria-label="Website developed by Rezwan Hossain Prince — open Facebook profile"
+          aria-label="Website developed by Rezwan Hossain Prince. Open Facebook profile"
         >
           <span>This website is developed by <b>Rezwan Hossain Prince</b></span>
           <i><FacebookIcon /></i>
