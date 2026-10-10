@@ -128,13 +128,9 @@ export default async function Home() {
                 <p key={index}>{paragraph}</p>
               ))}
 
-              <div className="about-links">
-                <a href={settings.facebookPage} target="_blank" rel="noreferrer">
-                  Official Facebook Page <span>↗</span>
-                </a>
-                <a href={settings.facebookGroup} target="_blank" rel="noreferrer">
-                  VAC Facebook Group <span>↗</span>
-                </a>
+              <div className="about-editorial-quote" aria-label="VAC creative vision">
+                <span className="about-quote-icon" aria-hidden="true">✦</span>
+                <span>Learn. Create. Experiment. <strong>Inspire.</strong></span>
               </div>
             </div>
 
