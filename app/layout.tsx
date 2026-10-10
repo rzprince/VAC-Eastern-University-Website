@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant, Montserrat } from "next/font/google";
 import { PremiumMotion } from "@/components/PremiumMotion";
 import "./globals.css";
+import "./premium-v5.css";
 
 const productionUrl = "https://vac-eastern-university.vercel.app";
 
