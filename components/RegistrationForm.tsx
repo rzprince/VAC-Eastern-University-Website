@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { VacLogo } from "@/components/BrandLogo";
 
 type SuccessData = {
@@ -19,12 +19,39 @@ export function RegistrationForm({
   const [state, setState] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState<SuccessData | null>(null);
+  const [preparedPdfUrl, setPreparedPdfUrl] = useState<string | null>(null);
+
+  // Fetch the stored PDF while the applicant reads their success message.
+  // Clicking Download is instant after the file has been prepared.
+  useEffect(() => {
+    if (!success?.pdfDownloadUrl) return;
+    const controller = new AbortController();
+    let objectUrl: string | null = null;
+    fetch(success.pdfDownloadUrl, {
+      credentials: "same-origin",
+      signal: controller.signal
+    }).then(async (response) => {
+      if (!response.ok) return;
+      const blob = await response.blob();
+      if (controller.signal.aborted) return;
+      objectUrl = URL.createObjectURL(blob);
+      setPreparedPdfUrl(objectUrl);
+    }).catch(() => {
+      // Direct secure PDF link remains available if preloading fails.
+    });
+    return () => {
+      controller.abort();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      setPreparedPdfUrl(null);
+    };
+  }, [success?.pdfDownloadUrl]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setState("sending");
     setMessage("");
     setSuccess(null);
+    setPreparedPdfUrl(null);
 
     // Open a user-initiated tab immediately so WhatsApp is not blocked after
     // the asynchronous database/PDF work completes.
@@ -248,12 +275,13 @@ export function RegistrationForm({
               {success.pdfDownloadUrl ? (
                 <a
                   className="primary-button"
-                  href={success.pdfDownloadUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  download
+                  href={preparedPdfUrl || success.pdfDownloadUrl}
+                  target={preparedPdfUrl ? undefined : "_blank"}
+                  rel={preparedPdfUrl ? undefined : "noreferrer"}
+                  download={preparedPdfUrl ? success.applicationRef + ".pdf" : undefined}
                 >
-                  Download my PDF <span aria-hidden="true">↓</span>
+                  {preparedPdfUrl ? "Download PDF now" : "Download my PDF"}
+                  <span aria-hidden="true">{preparedPdfUrl ? "✓" : "↓"}</span>
                 </a>
               ) : (
                 <span className="primary-button primary-button--disabled">
