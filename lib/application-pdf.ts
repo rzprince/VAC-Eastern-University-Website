@@ -1,11 +1,10 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import sharp from "sharp";
 import {
   PDFDocument, StandardFonts, rgb,
   type PDFFont, type PDFPage, type PDFImage
 } from "pdf-lib";
 import { PRINCE_SIGNATURE_PATH } from "@/lib/prince-signature";
+import { VAC_LOGO_PNG, EU_LOGO_PNG } from "@/lib/brand-pdf-assets";
 
 export type MembershipPdfData = {
   applicationRef: string;
@@ -110,12 +109,11 @@ function panelField(page: PDFPage, x: number, top: number, width: number,
   }
 }
 
-async function embedClubLogo(doc: PDFDocument, filename: string) {
-  // Read the original image from the deployment, then flatten it onto the
-  // exact masthead color. JPEG decoding in PDFs is fast and reliable, unlike
-  // the project's original indexed PNG encoding.
+async function embedClubLogo(doc: PDFDocument, name: string, logoBase64: string) {
+  // Bundle the original transparent logos to work reliably on Vercel functions.
+  // Flatten to match the masthead color and embed a small optimized JPEG.
   try {
-    const source = await readFile(join(process.cwd(), "public", filename));
+    const source = Buffer.from(logoBase64, "base64");
     const jpg = await sharp(source)
       .resize({ width: 370, withoutEnlargement: true })
       .flatten({ background: "#0e141c" })
@@ -123,7 +121,7 @@ async function embedClubLogo(doc: PDFDocument, filename: string) {
       .toBuffer();
     return await doc.embedJpg(jpg);
   } catch (error) {
-    console.error("VAC PDF logo could not be loaded:", filename,
+    console.error("VAC PDF logo could not be loaded:", name,
       error instanceof Error ? error.message : "unknown error");
     return null;
   }
@@ -143,7 +141,6 @@ function fitImage(page: PDFPage, image: PDFImage | null,
 }
 
 export async function createMembershipPdf(data: MembershipPdfData) {
-  console.log("VAC PDF STAGE 1: start");
   const doc = await PDFDocument.create();
   doc.setTitle("VAC Membership Application | " + clean(data.applicationRef));
   doc.setAuthor("Visual Archive Club, Eastern University");
@@ -154,7 +151,6 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
   const editorial = await doc.embedFont(StandardFonts.TimesRomanBoldItalic);
 
-  console.log("VAC PDF STAGE 2: font ready");
   const W = 595.28;
   const margin = 36;
   const contentW = W - 2 * margin;
@@ -191,10 +187,9 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   rectangle(page, 0, H - 128, W, 128, colors.dark);
   rectangle(page, 0, H - 128, 7, 128, colors.orange);
   const [vac, eu] = await Promise.all([
-    embedClubLogo(doc, "vac-logo.png"),
-    embedClubLogo(doc, "eastern-university-logo.png")
+    embedClubLogo(doc, "VAC", VAC_LOGO_PNG),
+    embedClubLogo(doc, "Eastern University", EU_LOGO_PNG)
   ]);
-  console.log("VAC PDF STAGE 3: logos embedded");
   fitImage(page, vac, 30, H - 112, 88, 80);
   rectangle(page, 133, H - 102, 1, 57, rgb(.32,.36,.42));
   fitImage(page, eu, 149, H - 109, 79, 75);
@@ -253,7 +248,6 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   text(page, "RECEIVED  /  AWAITING TRX ID VERIFICATION",
     margin + 2, top - 45, 7.5, bold, colors.muted);
 
-  console.log("VAC PDF STAGE 4: ready to sign");
   // Direct vector line segments avoid expensive SVG-path parsing in serverless.
   // The point geometry was traced from the transparent signature supplied by VAC.
   const signX = W - margin - 136;
@@ -281,7 +275,6 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   text(page, "VISUAL ARCHIVE CLUB  /  EASTERN UNIVERSITY", margin, 12, 7, bold, colors.white);
   text(page, "ONE APPLICATION. ONE CREATIVE COMMUNITY.", W - margin - 228, 12, 7, regular, rgb(.82,.77,.73));
 
-  console.log("VAC PDF STAGE 5: ready to save");
   // pdf-lib produces a compact, cross-browser, fully downloadable one-page PDF.
   return await doc.save({ useObjectStreams: true, addDefaultPage: false });
 }
