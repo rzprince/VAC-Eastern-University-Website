@@ -111,7 +111,6 @@ export function CreativeDisciplines() {
             </article>
           ))}
         </div>
-        <p className="craft-photo-credit">Discipline images are illustrative photography from Unsplash. VAC project and event photographs will be added separately.</p>
       </div>
     </section>
   );

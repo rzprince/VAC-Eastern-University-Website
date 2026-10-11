@@ -95,13 +95,14 @@ export function MediaSection({
                 will appear here as soon as they are published by the club.
               </p>
               <div className="archive-preview-actions">
-                <Link href="/archive" className="archive-preview-link">
+                <Link href="/archive" className="archive-preview-link archive-preview-link--spotlight">
+                  <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="2.5" y="5" width="19" height="15" rx="2.5" />
+                    <path d="m8 5 2.5 4M14 5l2.5 4M5 9h14" />
+                  </svg>
                   Explore the archive <span aria-hidden="true">↗</span>
                 </Link>
-                <a href={facebookPage} target="_blank" rel="noopener noreferrer" className="archive-preview-link archive-preview-link--secondary">
-                  <span className="archive-preview-facebook" aria-hidden="true">f</span>
-                  Visit VAC on Facebook <span aria-hidden="true">↗</span>
-                </a>
+                
               </div>
               <small className="archive-preview-note">Illustrative imagery. Official VAC work will replace these previews.</small>
             </div>

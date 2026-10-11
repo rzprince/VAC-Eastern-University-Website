@@ -28,7 +28,7 @@ export default async function JoinPage() {
             </div>
 
             <div className="join-intro">
-              <div className="eyebrow">Official VAC membership</div>
+              <div className="eyebrow">Official VAC membership <span className="join-live-mark" aria-hidden="true" /></div>
               <h1>
                 Join the people behind the <em>frame.</em>
               </h1>
@@ -38,8 +38,22 @@ export default async function JoinPage() {
                 Your application PDF becomes available immediately and WhatsApp opens
                 for manual TRX ID verification.
               </p>
+              <div className="join-hero-tags" aria-label="VAC creative disciplines">
+                <span>Photography</span>
+                <span>Filmmaking</span>
+                <span>Storytelling</span>
+              </div>
             </div>
           </header>
+
+          <div className="join-creative-banner" aria-label="Visual Archive Club membership journey">
+            <div className="join-creative-banner-shade" aria-hidden="true" />
+            <div className="join-creative-banner-copy">
+              <span>CREATE SOMETHING REMARKABLE</span>
+              <strong>Your story belongs in the frame.</strong>
+            </div>
+            <span className="join-banner-counter">VAC / 2010 <span aria-hidden="true">✦</span></span>
+          </div>
 
           {settings.registrationOpen ? (
             <RegistrationForm
