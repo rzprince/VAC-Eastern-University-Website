@@ -4,7 +4,7 @@ import {
   type PDFFont, type PDFPage, type PDFImage
 } from "pdf-lib";
 import { PRINCE_SIGNATURE_PATH } from "@/lib/prince-signature";
-import { VAC_LOGO_PNG, EU_LOGO_PNG } from "@/lib/brand-pdf-assets";
+import { VAC_LOGO_WEBP, EU_LOGO_WEBP } from "@/lib/brand-pdf-assets";
 
 export type MembershipPdfData = {
   applicationRef: string;
@@ -187,8 +187,8 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   rectangle(page, 0, H - 128, W, 128, colors.dark);
   rectangle(page, 0, H - 128, 7, 128, colors.orange);
   const [vac, eu] = await Promise.all([
-    embedClubLogo(doc, "VAC", VAC_LOGO_PNG),
-    embedClubLogo(doc, "Eastern University", EU_LOGO_PNG)
+    embedClubLogo(doc, "VAC", VAC_LOGO_WEBP),
+    embedClubLogo(doc, "Eastern University", EU_LOGO_WEBP)
   ]);
   fitImage(page, vac, 30, H - 112, 88, 80);
   rectangle(page, 133, H - 102, 1, 57, rgb(.32,.36,.42));
