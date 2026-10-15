@@ -90,6 +90,15 @@ async function upload(file: File | null, folder: string) {
   if (file.size > MAX_UPLOAD_BYTES) {
     throw new Error("Image files must be 8 MB or smaller.");
   }
+  const header = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  const matches = (values: number[], offset = 0) =>
+    values.every((byte, i) => header[i + offset] === byte);
+  const valid =
+    (file.type === "image/png" && matches([137,80,78,71,13,10,26,10])) ||
+    (file.type === "image/jpeg" && matches([255,216,255])) ||
+    (file.type === "image/webp" &&
+      matches([82,73,70,70]) && matches([87,69,66,80],8));
+  if (!valid) throw new Error("File content does not match the image format.");
 
   const supabase = await requireAdmin();
   const extension =
@@ -117,11 +126,16 @@ async function deleteStoredPublicFile(url?: string | null) {
   if (!url) return;
 
   const marker = "/vac-media/";
-  const index = url.indexOf(marker);
-  if (index < 0) return;
-
-  const path = decodeURIComponent(url.slice(index + marker.length));
-  if (!path) return;
+  let path: string;
+  try {
+    const parsed = new URL(url);
+    const origin = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || "https://invalid.local").origin;
+    if (parsed.origin !== origin) return;
+    const index = parsed.pathname.indexOf(marker);
+    if (index < 0) return;
+    path = decodeURIComponent(parsed.pathname.slice(index + marker.length));
+    if (!/^(archive|events|committee)\/[a-f0-9-]{36}\.(png|webp|jpg)$/.test(path)) return;
+  } catch { return; }
 
   const supabase = await requireAdmin();
   await supabase.storage.from("vac-media").remove([path]);
