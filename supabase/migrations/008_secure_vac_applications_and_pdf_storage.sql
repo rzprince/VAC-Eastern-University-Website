@@ -31,3 +31,10 @@ GRANT INSERT ON TABLE public.member_applications TO anon;
 UPDATE storage.buckets
 SET allowed_mime_types = ARRAY['application/pdf'], file_size_limit = 5242880
 WHERE id = 'vac-applications';
+
+-- Older applications that already have a stored PDF but no download token
+-- receive a new unpredictable token. The PDF bytes and application data are unchanged.
+UPDATE public.member_applications
+SET pdf_download_token =
+  replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '')
+WHERE pdf_storage_path IS NOT NULL AND pdf_download_token IS NULL;
