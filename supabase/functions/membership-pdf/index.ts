@@ -14,6 +14,13 @@ function adminKey() {
   return Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 }
 
+function sameToken(stored: string, provided: string) {
+  if (!/^[0-9a-f]{64}$/.test(stored) || !/^[0-9a-f]{64}$/.test(provided)) return false;
+  let different = 0;
+  for (let i = 0; i < 64; i++) different |= stored.charCodeAt(i) ^ provided.charCodeAt(i);
+  return different === 0;
+}
+
 function safeFileName(name: string) {
   return name
     .normalize("NFKD")
@@ -35,7 +42,7 @@ Deno.serve(async (req: Request) => {
   const id = url.searchParams.get("id")?.trim() || "";
   const token = url.searchParams.get("token")?.trim() || "";
 
-  if (!id || token.length < 48) {
+  if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/.test(id) || !/^[0-9a-f]{64}$/.test(token)) {
     return new Response("Invalid PDF download link.", { status: 400 });
   }
 
@@ -60,7 +67,7 @@ Deno.serve(async (req: Request) => {
     !application ||
     !application.pdf_storage_path ||
     !application.pdf_download_token ||
-    application.pdf_download_token !== token
+    !sameToken(application.pdf_download_token, token)
   ) {
     return new Response("PDF link not found or expired.", {
       status: 404,
@@ -88,7 +95,10 @@ Deno.serve(async (req: Request) => {
     "Content-Disposition": 'attachment; filename="' + filename + '"',
     "Cache-Control": "private, no-store, max-age=0",
     "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "no-referrer"
+    "Referrer-Policy": "no-referrer",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "Content-Security-Policy": "default-src 'none'; sandbox"
   });
 
   if (req.method === "HEAD") return new Response(null, { status: 200, headers });

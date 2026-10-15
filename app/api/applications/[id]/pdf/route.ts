@@ -11,7 +11,8 @@ export async function GET(
   const token = request.nextUrl.searchParams.get("token")?.trim() || "";
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 
-  if (!id || token.length < 48 || !supabaseUrl) {
+  if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/.test(id) ||
+      !/^[0-9a-f]{64}$/.test(token) || !supabaseUrl) {
     return NextResponse.json({ error: "Invalid PDF download link." }, { status: 400 });
   }
 
@@ -19,11 +20,18 @@ export async function GET(
   upstream.searchParams.set("id", id);
   upstream.searchParams.set("token", token);
 
-  const response = await fetch(upstream, {
+  let response: Response;
+  try {
+  response = await fetch(upstream, {
     method: "GET",
     cache: "no-store",
+    signal: AbortSignal.timeout(12000),
     headers: { Accept: "application/pdf" }
   });
+  } catch {
+    return NextResponse.json({ error: "PDF service is temporarily unavailable." },
+      { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
 
   if (!response.ok) {
     return NextResponse.json(

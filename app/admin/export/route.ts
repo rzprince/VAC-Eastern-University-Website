@@ -3,7 +3,10 @@ import { getServerSupabase } from "@/lib/supabase/server";
 
 function csvCell(value: unknown) {
   const text = value == null ? "" : String(value);
-  return '"' + text.replaceAll('"', '""') + '"';
+  // Excel and similar spreadsheet software interpret leading =,+,-,@ as
+  // formulas. Neutralize them before quoting user-controlled application data.
+  const safe = /^[\\s\\u0000-\\u001f]*[=+@-]/.test(text) ? "'" + text : text;
+  return '"' + safe.replaceAll('"', '""') + '"';
 }
 
 export async function GET(request: Request) {
