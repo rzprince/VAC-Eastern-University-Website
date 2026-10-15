@@ -6,6 +6,7 @@ import "./premium-v5.css";
 import "./premium-v6.css";
 import "./premium-v7.css";
 import "./premium-v8.css";
+import "./premium-v9.css";
 
 const productionUrl = "https://vac-eastern-university.vercel.app";
 
