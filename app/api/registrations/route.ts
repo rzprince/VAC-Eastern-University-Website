@@ -152,6 +152,7 @@ export async function POST(request: Request) {
   const networkIdentity = (
     request.headers.get("x-vercel-forwarded-for") ||
     request.headers.get("x-real-ip") ||
+    request.headers.get("x-forwarded-for") ||
     "unidentified"
   ).split(",")[0].trim().slice(0, 90);
   let proofTokens: ReturnType<typeof registrationRateToken>[];
