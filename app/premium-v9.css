@@ -1,0 +1,168 @@
+/* VAC Studio V9: self-contained brand motion, secure admin recovery UI. */
+
+/* Fix escaping hero shine. V8 used overflow: visible !important while V6
+   animated a large ::after element beyond the edge, causing a stuck flash. */
+.hero-identity {
+  overflow: hidden !important;
+  isolation: isolate !important;
+  border-radius: 20px;
+}
+.hero-identity::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  transform: none;
+  background:
+    linear-gradient(105deg,
+      transparent 0%, transparent 38%,
+      rgba(255, 177, 114, .025) 44%,
+      rgba(255, 255, 255, .095) 49%,
+      rgba(255, 177, 114, .025) 54%,
+      transparent 61%, transparent 100%);
+  background-size: 290% 100%;
+  background-position: 100% center;
+  animation: vac-brand-contained-sheen 9s linear infinite;
+  will-change: background-position;
+}
+.hero-identity-logos,
+.hero-identity-caption {
+  position: relative;
+  z-index: 1;
+}
+@keyframes vac-brand-contained-sheen {
+  0% { background-position: 100% center; }
+  100% { background-position: -100% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-identity::after { animation: none !important; background: none; }
+}
+
+/* Password recovery pages reuse the admin UI but make the actions clearer. */
+.admin-login-card.admin-recovery-card {
+  width: min(460px, 100%);
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid rgba(255, 171, 105, .24);
+  border-radius: 24px;
+  background: linear-gradient(145deg, #131a24, #0b1019);
+  box-shadow: 0 35px 90px rgba(0, 0, 0, .32);
+}
+.admin-recovery-card h1 {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 600;
+  letter-spacing: -.04em;
+  line-height: 1.03;
+}
+.admin-recovery-card > p, .admin-reset-form > p,
+.admin-security-status p {
+  color: #b7c0c9;
+  line-height: 1.75;
+  font-size: 13px;
+  margin: 0;
+}
+.admin-reset-form {
+  display: grid;
+  gap: 19px;
+}
+.admin-reset-form label {
+  display: grid;
+  gap: 9px;
+  color: #e3e6ea;
+  font-size: 12px;
+  font-weight: 700;
+}
+.admin-reset-form input {
+  min-height: 49px;
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.18);
+  outline: 0;
+  background: #0a101a;
+  color: #f8f7f5;
+}
+.admin-reset-form input:focus-visible {
+  border-color: #ffaf70;
+  box-shadow: 0 0 0 3px rgba(255, 149, 65, .14);
+}
+.admin-security-link {
+  display: inline-flex;
+  width: fit-content;
+  padding: 9px 0;
+  color: #f1bb91;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 162, 98, .42);
+  text-underline-offset: 4px;
+  transition: color .22s ease, text-decoration-color .22s ease;
+}
+.admin-security-link:hover, .admin-security-link:focus-visible {
+  color: #fff;
+  text-decoration-color: currentColor;
+}
+.admin-security-status {
+  background: rgba(255, 164, 70, .075);
+  border: 1px solid rgba(255, 164, 70, .25);
+  padding: 16px 18px;
+  border-radius: 13px;
+  line-height: 1.7;
+}
+.admin-security-status strong { display: block; color: #ffcf9d; margin-bottom: 5px; }
+.admin-login-card .admin-security-link { margin-top: 5px; }
+.admin-header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.admin-delete-confirm {
+  display: grid;
+  gap: 12px;
+  margin-top: 17px;
+  padding: 17px;
+  background: rgba(207, 66, 48, .045);
+  border: 1px solid rgba(227, 93, 71, .24);
+  border-radius: 12px;
+}
+.admin-delete-confirm > p {
+  margin: 0;
+  color: #dfbeb9;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.admin-delete-confirm-label {
+  display: grid;
+  gap: 8px;
+  color: #f0d9d6;
+  font-size: 11px;
+  font-weight: 700;
+}
+.admin-delete-confirm-label > input {
+  background: #11151c;
+  border: 1px solid rgba(239,115,93,.3);
+  border-radius: 10px;
+  color: #fff;
+  width: min(100%, 290px);
+  padding: 12px 13px;
+}
+.admin-delete-confirm > button {
+  justify-self: start;
+  min-height: 42px;
+  border-radius: 10px;
+}
+@media(max-width: 700px) {
+  .admin-login-card.admin-recovery-card { margin: 0 auto; }
+  .admin-header-actions { width: 100%; }
+  .admin-header-actions > a,.admin-header-actions > form { flex: 1 1 auto; }
+  .admin-header-actions > form > button { width: 100%; }
+  .hero-identity { overflow: hidden !important; }
+}

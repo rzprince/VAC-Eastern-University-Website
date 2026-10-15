@@ -6,6 +6,7 @@ import {
   addEvent,
   addMedia,
   deleteAnnouncement,
+  deleteCommitteeMember,
   deleteEvent,
   deleteMedia,
   logout,
@@ -188,6 +189,9 @@ export default async function AdminPage({
         <div className="admin-header-actions">
           <Link className="secondary-button" href="/" target="_blank">
             Open website ↗
+          </Link>
+          <Link className="secondary-button" href="/admin/forgot-password">
+            Password &amp; recovery
           </Link>
           <form action={logout}>
             <button className="secondary-button">Sign out</button>
@@ -428,6 +432,19 @@ export default async function AdminPage({
                 <label className="check"><input name="leader" type="checkbox" defaultChecked={member.leader} /> Leadership metadata</label>
                 <label className="check"><input name="active" type="checkbox" defaultChecked={member.active} /> Show publicly</label>
                 <button className="primary-button">Save member</button>
+              </form>
+              <form action={deleteCommitteeMember} className="admin-delete-confirm">
+                <input type="hidden" name="id" value={member.id} />
+                <p>Permanent removal. To keep this member for club history,
+                  uncheck “Show publicly” above instead.</p>
+                <label className="admin-delete-confirm-label">
+                  Type DELETE to confirm
+                  <input name="confirmation" type="text" pattern="DELETE"
+                    autoComplete="off" required placeholder="DELETE" />
+                </label>
+                <button type="submit" className="danger-button">
+                  Permanently delete committee record
+                </button>
               </form>
             </details>
           ))}

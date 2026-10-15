@@ -363,6 +363,30 @@ export async function addCommitteeMember(formData: FormData) {
   revalidateContent();
 }
 
+/**
+ * Permanently removes a committee record only after a second explicit
+ * confirmation. Prefer hiding a historical committee member.
+ */
+export async function deleteCommitteeMember(formData: FormData) {
+  const supabase = await requireAdmin();
+  const id = String(formData.get("id") || "").trim();
+  const confirmation = String(formData.get("confirmation") || "").trim();
+  if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/.test(id) || confirmation !== "DELETE") {
+    throw new Error("Type DELETE exactly to confirm committee record removal.");
+  }
+  const { data: member, error: readError } = await supabase
+    .from("committee_members")
+    .select("id,photo_url")
+    .eq("id", id)
+    .single();
+  if (readError || !member) throw new Error("Committee record not found.");
+  const { error } = await supabase.from("committee_members").delete().eq("id", id);
+  if (error) throw error;
+  // A photo is deleted only after the row has been removed successfully.
+  await deleteStoredPublicFile(member.photo_url);
+  revalidateContent();
+}
+
 export async function updateCommitteeMember(formData: FormData) {
   const supabase = await requireAdmin();
   const id = String(formData.get("id"));
