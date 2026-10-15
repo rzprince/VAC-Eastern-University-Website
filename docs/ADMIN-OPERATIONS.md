@@ -27,7 +27,8 @@ Go to **Supabase Dashboard → Authentication → URL Configuration** for the co
 - No arbitrary `next` or redirect URL is accepted by the callback.
 - New passwords must be 12–128 characters including upper- and lowercase, a digit, and a symbol.
 - Resetting does not create an admin. The account must remain authorized in `admin_users` and all write operations still require `requireAdmin()` and database RLS.
-- The recovery flow signs out of the current local session after updating the password.
+- The recovery flow signs out globally after updating the password, revoking active Supabase refresh sessions so a fresh sign-in is needed.
+- Enable **Leaked Password Protection** under Supabase Authentication password security; the current Supabase security advisor flags it as disabled. See https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection .
 - Consider MFA for Supabase admins when enabling additional contributors, and use unique admin accounts rather than sharing a password.
 
 ## VAC dashboard data operations
