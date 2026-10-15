@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSupabase } from "@/lib/supabase/server";
 import { uploadMembershipPdfToDrive } from "@/lib/google-drive";
@@ -42,7 +42,7 @@ function revalidateContent() {
     "vac-events",
     "vac-media",
     "vac-announcements"
-  ].forEach((tag) => revalidateTag(tag));
+  ].forEach((tag) => updateTag(tag));
 }
 
 function bangladeshDateTime(raw: string) {
