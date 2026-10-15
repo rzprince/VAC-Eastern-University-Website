@@ -1,4 +1,8 @@
 import { NextResponse } from "next/server";
+import {
+  PublicRequestError, readRegistrationJson, registrationRateToken,
+  sameOriginRequest, signedPdfPath
+} from "@/lib/security";
 import { createMembershipPdf } from "@/lib/application-pdf";
 import { uploadMembershipPdfToDrive } from "@/lib/google-drive";
 import { SITE } from "@/lib/site";
@@ -48,12 +52,19 @@ function applicationReference(id: string) {
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json().catch(() => null)) as
-    | Record<string, unknown>
-    | null;
-
-  if (!body) {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  if (!sameOriginRequest(request)) {
+    return NextResponse.json({ error: "Invalid request origin." }, {
+      status: 403, headers: { "Cache-Control": "no-store" }
+    });
+  }
+  let body: Record<string, unknown>;
+  try {
+    body = await readRegistrationJson(request);
+  } catch (error) {
+    const status = error instanceof PublicRequestError ? error.status : 400;
+    return NextResponse.json({
+      error: error instanceof PublicRequestError ? error.message : "Invalid application data."
+    }, { status, headers: { "Cache-Control": "no-store" } });
   }
 
   if (String(body.website || "").trim()) {
@@ -135,6 +146,37 @@ export async function POST(request: Request) {
     );
   }
 
+  // Atomic abuse limits are enforced in private Postgres tables.
+  // Callers cannot forge a rate-limit identity or bypass signed PDF storage
+  // paths without the Vercel-only private signing key.
+  const networkIdentity = (
+    request.headers.get("x-vercel-forwarded-for") ||
+    request.headers.get("x-real-ip") ||
+    "unidentified"
+  ).split(",")[0].trim().slice(0, 90);
+  let proofTokens: ReturnType<typeof registrationRateToken>[];
+  try {
+    proofTokens = [
+      registrationRateToken("network", networkIdentity),
+      registrationRateToken("student", textValue(body, "euId", 40)),
+      registrationRateToken("email", email)
+    ];
+  } catch {
+    return NextResponse.json({ error: "Registration security is temporarily unavailable." }, { status: 503 });
+  }
+
+  const rateResults = await Promise.all(
+    proofTokens.map((token) => supabase.rpc("vac_consume_registration_limit", token))
+  );
+  if (rateResults.some((result) => result.error)) {
+    return NextResponse.json({ error: "Registration protection is temporarily unavailable." }, { status: 503 });
+  }
+  if (rateResults.some((result) => result.data !== true)) {
+    return NextResponse.json({
+      error: "Too many application attempts. Please try again later or contact VAC."
+    }, { status: 429, headers: { "Retry-After": "3600", "Cache-Control": "no-store" } });
+  }
+
   const registrationFee = Number(
     settings?.registration_fee || SITE.registrationFee
   );
@@ -172,7 +214,7 @@ export async function POST(request: Request) {
     submittedAt
   });
 
-  const pdfPath = "membership/" + id + ".pdf";
+  const pdfPath = signedPdfPath(id);
   const { error: pdfError } = await supabase.storage
     .from("vac-applications")
     .upload(pdfPath, pdfBytes, {
@@ -268,5 +310,7 @@ export async function POST(request: Request) {
     pdfDownloadUrl,
     pdfSaved: true,
     driveStatus: drive.status
+  }, {
+    headers: { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" }
   });
 }
