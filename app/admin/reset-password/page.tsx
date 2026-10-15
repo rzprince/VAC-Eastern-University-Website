@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
       return;
     }
     // End the recovery session so a fresh sign in is required.
-    await supabase.auth.signOut({ scope: "local" });
+    await supabase.auth.signOut({ scope: "global" });
     router.replace("/admin/login?password=updated");
     router.refresh();
   }
