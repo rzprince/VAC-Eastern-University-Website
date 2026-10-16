@@ -122,6 +122,30 @@ async function upload(file: File | null, folder: string) {
   return supabase.storage.from("vac-media").getPublicUrl(path).data.publicUrl;
 }
 
+/**
+ * Direct browser-to-Supabase uploads bypass Vercel's 4.5 MB request cap.
+ * Admin authorization is still checked on the server before accepting paths.
+ * Legacy file uploads remain supported for backward compatibility.
+ */
+async function resolveImage(formData: FormData, field: "thumbnail" | "poster" | "photo", folder: "archive" | "events" | "committee") {
+  const existing = String(formData.get(field + "Path") || "").trim();
+  if (!existing) return upload(formData.get(field) as File | null, folder);
+
+  if (!new RegExp("^" + folder + "/[0-9a-f-]{36}\\.(jpg|png|webp)$").test(existing)) {
+    throw new Error("Invalid uploaded image reference.");
+  }
+  const supabase = await requireAdmin();
+  const filename = existing.slice(folder.length + 1);
+  const { data, error } = await supabase.storage.from("vac-media").list(folder, {
+    search: filename,
+    limit: 20
+  });
+  if (error || !data?.some(item => item.name === filename)) {
+    throw new Error("Uploaded image could not be verified. Please upload it again.");
+  }
+  return supabase.storage.from("vac-media").getPublicUrl(existing).data.publicUrl;
+}
+
 async function deleteStoredPublicFile(url?: string | null) {
   if (!url) return;
 
@@ -195,10 +219,7 @@ export async function deleteAnnouncement(formData: FormData) {
 
 export async function addMedia(formData: FormData) {
   const supabase = await requireAdmin();
-  const thumbnailUrl = await upload(
-    formData.get("thumbnail") as File | null,
-    "archive"
-  );
+  const thumbnailUrl = await resolveImage(formData, "thumbnail", "archive");
   const mediaType =
     String(formData.get("mediaType")) === "video" ? "video" : "photo";
   const destination =
@@ -247,10 +268,7 @@ export async function updateMedia(formData: FormData) {
 
   if (currentError) throw currentError;
 
-  const replacement = await upload(
-    formData.get("thumbnail") as File | null,
-    "archive"
-  );
+  const replacement = await resolveImage(formData, "thumbnail", "archive");
 
   const { error } = await supabase
     .from("media_items")
@@ -288,7 +306,7 @@ export async function deleteMedia(formData: FormData) {
 
 export async function addEvent(formData: FormData) {
   const supabase = await requireAdmin();
-  const posterUrl = await upload(formData.get("poster") as File | null, "events");
+  const posterUrl = await resolveImage(formData, "poster", "events");
 
   const { error } = await supabase.from("events").insert({
     title: String(formData.get("title") || "").trim(),
@@ -316,7 +334,7 @@ export async function updateEvent(formData: FormData) {
 
   if (currentError) throw currentError;
 
-  const replacement = await upload(formData.get("poster") as File | null, "events");
+  const replacement = await resolveImage(formData, "poster", "events");
 
   const { error } = await supabase
     .from("events")
@@ -355,10 +373,7 @@ export async function deleteEvent(formData: FormData) {
 
 export async function addCommitteeMember(formData: FormData) {
   const supabase = await requireAdmin();
-  const photoUrl = await upload(
-    formData.get("photo") as File | null,
-    "committee"
-  );
+  const photoUrl = await resolveImage(formData, "photo", "committee");
 
   const { error } = await supabase.from("committee_members").insert({
     serial: String(formData.get("serial") || "—"),
@@ -413,10 +428,7 @@ export async function updateCommitteeMember(formData: FormData) {
 
   if (currentError) throw currentError;
 
-  const replacement = await upload(
-    formData.get("photo") as File | null,
-    "committee"
-  );
+  const replacement = await resolveImage(formData, "photo", "committee");
 
   const { error } = await supabase
     .from("committee_members")
