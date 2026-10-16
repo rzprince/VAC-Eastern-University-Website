@@ -3,10 +3,12 @@
 import { type FormEvent, type ReactNode, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { AdminSaveResult } from "@/app/admin/save-actions";
+import { getBrowserSupabase } from "@/lib/supabase/client";
 
 const MAX_FILE_BYTES = 8 * 1024 * 1024;
 const OPTIMIZE_ABOVE = 1.4 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const IMAGE_FOLDERS: Record<string, string> = {thumbnail: "archive", poster: "events", photo: "committee"};
 
 async function optimizeImage(file: File) {
   if (file.size < OPTIMIZE_ABOVE || typeof createImageBitmap !== "function") return file;
@@ -58,30 +60,49 @@ export function AdminSaveForm({
     setPending(true);
     setFeedback(null);
 
+    const stagedUploads: string[] = [];
+    const storage = getBrowserSupabase();
     try {
-      // The client validates and optimizes first. Large files can otherwise
-      // be rejected by Next before server action validation even runs.
+      // Upload images directly to the admin-protected Supabase bucket.
+      // Server Actions receive only a small validated storage path, so Vercel
+      // never needs to parse a multi-megabyte image request.
       for (const [name, entry] of Array.from(data.entries())) {
         if (!(entry instanceof File) || entry.size === 0) continue;
         if (!ALLOWED_TYPES.has(entry.type)) {
           throw new Error("Use a JPG, PNG or WebP image.");
         }
+        if (!storage) throw new Error("Image storage is not configured.");
+        const folder = IMAGE_FOLDERS[name];
+        if (!folder) throw new Error("Unexpected image field.");
         setStage("Preparing your photo for upload…");
         let prepared = entry;
-        try {
-          prepared = await optimizeImage(entry);
-        } catch {
-          // Keep the original if this browser cannot compress the photograph.
+        try { prepared = await optimizeImage(entry); } catch {
+          // Keep the original when the browser cannot optimize this image.
         }
         if (prepared.size > MAX_FILE_BYTES) {
-          throw new Error("The image is too large. Please use a photo smaller than 8 MB.");
+          throw new Error("Please choose a photo smaller than 8 MB.");
         }
-        data.set(name, prepared);
+        const extension = prepared.type === "image/webp"
+          ? "webp" : prepared.type === "image/png" ? "png" : "jpg";
+        const path = folder + "/" + crypto.randomUUID() + "." + extension;
+        setStage("Uploading your image securely…");
+        const { error } = await storage.storage.from("vac-media").upload(path, prepared, {
+          upsert: false,
+          contentType: prepared.type,
+          cacheControl: "3600"
+        });
+        if (error) throw new Error("Photo upload failed: " + error.message);
+        stagedUploads.push(path);
+        data.delete(name);
+        data.set(name + "Path", path);
       }
 
       setStage("Uploading and saving to VAC…");
       const result = await action(data);
       setFeedback(result);
+      if (!result.ok && stagedUploads.length && storage) {
+        await storage.storage.from("vac-media").remove(stagedUploads).catch(() => {});
+      }
       if (result.ok) {
         if (resetOnSuccess) form.reset();
         // The action also invalidates public page caches. Refresh the editor
@@ -89,6 +110,9 @@ export function AdminSaveForm({
         router.refresh();
       }
     } catch (error) {
+      if (stagedUploads.length && storage) {
+        await storage.storage.from("vac-media").remove(stagedUploads).catch(() => {});
+      }
       setFeedback({
         ok: false,
         message: error instanceof Error && error.message.length < 220
