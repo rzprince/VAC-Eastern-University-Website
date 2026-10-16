@@ -29,6 +29,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Image-bearing admin Server Actions previously failed before execution at
+    // Next.js' default 1 MB request limit. Actual images remain capped at 8 MB
+    // and MIME/signature validated by app/admin/actions.ts.
+    serverActions: { bodySizeLimit: "10mb" },
+    proxyClientMaxBodySize: "10mb"
+  },
   images: { remotePatterns: [{ protocol: "https", hostname: "**.supabase.co" }] },
   outputFileTracingIncludes: {
     "/api/registrations": ["./public/vac-logo.png", "./public/eastern-university-logo.png"]
