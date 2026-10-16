@@ -100,9 +100,6 @@ export function AdminSaveForm({
       setStage("Uploading and saving to VAC…");
       const result = await action(data);
       setFeedback(result);
-      if (!result.ok && stagedUploads.length && storage) {
-        await storage.storage.from("vac-media").remove(stagedUploads).catch(() => {});
-      }
       if (result.ok) {
         if (resetOnSuccess) form.reset();
         // The action also invalidates public page caches. Refresh the editor
@@ -110,9 +107,8 @@ export function AdminSaveForm({
         router.refresh();
       }
     } catch (error) {
-      if (stagedUploads.length && storage) {
-        await storage.storage.from("vac-media").remove(stagedUploads).catch(() => {});
-      }
+      // A server action may have written the row before its final response
+      // fails. Keep uploaded files to avoid breaking already-saved content.
       setFeedback({
         ok: false,
         message: error instanceof Error && error.message.length < 220
