@@ -1,10 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
-  addAnnouncement,
-  addCommitteeMember,
-  addEvent,
-  addMedia,
   deleteAnnouncement,
   deleteCommitteeMember,
   deleteEvent,
@@ -12,15 +8,19 @@ import {
   logout,
   syncApplicationPdfToDrive,
   syncPendingApplicationPdfsToDrive,
-  updateAnnouncement,
   updateApplicationStatus,
   updateClubMember,
-  updateCommitteeMember,
-  updateEvent,
-  updateMedia,
   updateSiteSettings
 } from "./actions";
 import { getServerSupabase } from "@/lib/supabase/server";
+import { AdminSaveForm } from "@/components/AdminSaveForm";
+import {
+  saveNewAnnouncement, saveEditedAnnouncement,
+  saveNewEvent, saveEditedEvent,
+  saveNewMedia, saveEditedMedia,
+  saveNewCommitteeMember, saveEditedCommitteeMember,
+  saveClubSettings
+} from "./save-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -222,7 +222,7 @@ export default async function AdminPage({
         </div>
 
         {siteSettings ? (
-          <form action={updateSiteSettings} className="admin-form">
+          <AdminSaveForm action={saveClubSettings} className="admin-form">
             <label>Club name<input name="clubName" required defaultValue={siteSettings.club_name} /></label>
             <label>Short name<input name="shortName" required defaultValue={siteSettings.short_name} /></label>
             <label>University<input name="university" required defaultValue={siteSettings.university} /></label>
@@ -238,7 +238,7 @@ export default async function AdminPage({
             <label>Registration fee (৳)<input name="registrationFee" type="number" min="1" required defaultValue={siteSettings.registration_fee} /></label>
             <label className="check full"><input name="registrationOpen" type="checkbox" defaultChecked={siteSettings.registration_open} /> Accept new membership applications</label>
             <button className="primary-button">Save club settings</button>
-          </form>
+          </AdminSaveForm>
         ) : (
           <p>Run the site-settings migration to enable editable club settings.</p>
         )}
@@ -248,14 +248,14 @@ export default async function AdminPage({
         <h2>Announcements</h2>
         <p>Publish short notices on the homepage. Add an optional link and expiry time.</p>
 
-        <form action={addAnnouncement} className="admin-form">
+        <AdminSaveForm action={saveNewAnnouncement} className="admin-form" resetOnSuccess>
           <label>Title<input name="title" required /></label>
           <label>Optional link<input name="linkUrl" type="url" placeholder="https://..." /></label>
           <label className="full">Announcement<textarea name="body" required rows={3} /></label>
           <label>Expires at<input name="expiresAt" type="datetime-local" /></label>
           <label className="check"><input name="pinned" type="checkbox" /> Pin first</label>
           <button className="primary-button">Publish announcement</button>
-        </form>
+        </AdminSaveForm>
 
         <div className="admin-records">
           {announcements?.map((item) => (
@@ -267,7 +267,7 @@ export default async function AdminPage({
                 </span>
                 <span>Edit</span>
               </summary>
-              <form action={updateAnnouncement} className="admin-form compact-form">
+              <AdminSaveForm action={saveEditedAnnouncement} className="admin-form compact-form">
                 <input type="hidden" name="id" value={item.id} />
                 <label>Title<input name="title" required defaultValue={item.title} /></label>
                 <label>Link<input name="linkUrl" type="url" defaultValue={item.link_url || ""} /></label>
@@ -276,7 +276,7 @@ export default async function AdminPage({
                 <label className="check"><input name="pinned" type="checkbox" defaultChecked={item.pinned} /> Pinned</label>
                 <label className="check"><input name="published" type="checkbox" defaultChecked={item.published} /> Visible</label>
                 <button className="primary-button">Save announcement</button>
-              </form>
+              </AdminSaveForm>
               <form action={deleteAnnouncement}>
                 <input type="hidden" name="id" value={item.id} />
                 <button className="danger-button">Delete announcement</button>
@@ -298,7 +298,7 @@ export default async function AdminPage({
           <Link className="text-link" href="/archive" target="_blank">View archive ↗</Link>
         </div>
 
-        <form action={addMedia} className="admin-form">
+        <AdminSaveForm action={saveNewMedia} className="admin-form" resetOnSuccess>
           <label>Title<input name="title" required /></label>
           <label>Type
             <select name="mediaType" defaultValue="photo">
@@ -310,7 +310,7 @@ export default async function AdminPage({
           <label>Facebook post/video link<input name="destinationUrl" type="url" placeholder="https://www.facebook.com/..." /></label>
           <label className="check"><input name="featured" type="checkbox" /> Featured</label>
           <button className="primary-button">Publish media</button>
-        </form>
+        </AdminSaveForm>
 
         <div className="admin-records">
           {media?.map((item) => (
@@ -319,7 +319,7 @@ export default async function AdminPage({
                 <span><b>{item.title}</b><small>{item.media_type} · {item.published ? "published" : "hidden"}</small></span>
                 <span>{item.featured ? "★ Featured" : "Edit"}</span>
               </summary>
-              <form action={updateMedia} className="admin-form compact-form">
+              <AdminSaveForm action={saveEditedMedia} className="admin-form compact-form">
                 <input type="hidden" name="id" value={item.id} />
                 <label>Title<input name="title" required defaultValue={item.title} /></label>
                 <label>Type
@@ -333,7 +333,7 @@ export default async function AdminPage({
                 <label className="check"><input name="featured" type="checkbox" defaultChecked={item.featured} /> Featured</label>
                 <label className="check"><input name="published" type="checkbox" defaultChecked={item.published} /> Visible</label>
                 <button className="primary-button">Save media</button>
-              </form>
+              </AdminSaveForm>
               <form action={deleteMedia}>
                 <input type="hidden" name="id" value={item.id} />
                 <button className="danger-button">Delete media</button>
@@ -352,7 +352,7 @@ export default async function AdminPage({
           <Link className="text-link" href="/events" target="_blank">View events ↗</Link>
         </div>
 
-        <form action={addEvent} className="admin-form">
+        <AdminSaveForm action={saveNewEvent} className="admin-form" resetOnSuccess>
           <label>Event title<input name="title" required /></label>
           <label>Date & time<input name="startsAt" type="datetime-local" required /></label>
           <label>Location<input name="location" /></label>
@@ -360,7 +360,7 @@ export default async function AdminPage({
           <label>Poster<input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
           <label className="full">Description<textarea name="description" rows={3} /></label>
           <button className="primary-button">Publish event</button>
-        </form>
+        </AdminSaveForm>
 
         <div className="admin-records">
           {events?.map((event) => (
@@ -372,7 +372,7 @@ export default async function AdminPage({
                 </span>
                 <span>{event.published ? "Published" : "Hidden"}</span>
               </summary>
-              <form action={updateEvent} className="admin-form compact-form">
+              <AdminSaveForm action={saveEditedEvent} className="admin-form compact-form">
                 <input type="hidden" name="id" value={event.id} />
                 <label>Title<input name="title" required defaultValue={event.title} /></label>
                 <label>Date & time<input name="startsAt" type="datetime-local" required defaultValue={dhakaLocalValue(event.starts_at)} /></label>
@@ -382,7 +382,7 @@ export default async function AdminPage({
                 <label className="full">Description<textarea name="description" rows={3} defaultValue={event.description || ""} /></label>
                 <label className="check"><input name="published" type="checkbox" defaultChecked={event.published} /> Visible</label>
                 <button className="primary-button">Save event</button>
-              </form>
+              </AdminSaveForm>
               <form action={deleteEvent}>
                 <input type="hidden" name="id" value={event.id} />
                 <button className="danger-button">Delete event</button>
@@ -399,7 +399,7 @@ export default async function AdminPage({
           or hide past members.
         </p>
 
-        <form action={addCommitteeMember} className="admin-form">
+        <AdminSaveForm action={saveNewCommitteeMember} className="admin-form" resetOnSuccess>
           <label>Serial<input name="serial" /></label>
           <label>Sort order<input name="sortOrder" type="number" /></label>
           <label>Position<input name="position" required /></label>
@@ -410,7 +410,7 @@ export default async function AdminPage({
           <label>Photo<input name="photo" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" /></label>
           <label className="check"><input name="leader" type="checkbox" /> Leadership metadata</label>
           <button className="primary-button">Add member</button>
-        </form>
+        </AdminSaveForm>
 
         <div className="admin-records">
           {committee?.map((member) => (
@@ -419,7 +419,7 @@ export default async function AdminPage({
                 <span><b>{member.name}</b><small>{member.position} · {member.department || "VAC"}</small></span>
                 <span>{member.active ? "Active" : "Hidden"}</span>
               </summary>
-              <form action={updateCommitteeMember} className="admin-form compact-form">
+              <AdminSaveForm action={saveEditedCommitteeMember} className="admin-form compact-form">
                 <input type="hidden" name="id" value={member.id} />
                 <label>Serial<input name="serial" defaultValue={member.serial || "—"} /></label>
                 <label>Sort order<input name="sortOrder" type="number" defaultValue={member.sort_order} /></label>
@@ -432,7 +432,7 @@ export default async function AdminPage({
                 <label className="check"><input name="leader" type="checkbox" defaultChecked={member.leader} /> Leadership metadata</label>
                 <label className="check"><input name="active" type="checkbox" defaultChecked={member.active} /> Show publicly</label>
                 <button className="primary-button">Save member</button>
-              </form>
+              </AdminSaveForm>
               <form action={deleteCommitteeMember} className="admin-delete-confirm">
                 <input type="hidden" name="id" value={member.id} />
                 <p>Permanent removal. To keep this member for club history,
