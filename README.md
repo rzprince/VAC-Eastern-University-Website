@@ -44,28 +44,24 @@
 <table>
 <tr>
 <td width="49%" valign="top">
-
-**THE CREATIVE SPIRIT**
-
-From photography and filmmaking to videography and content creation, we bring ideas to life through visuals and stories.
-
-Since **2010**, VAC has been a place to **learn, create, experiment, and inspire**.
-
+<p><strong>THE CREATIVE SPIRIT</strong></p>
+<p>From photography and filmmaking to videography and content creation, we bring ideas to life through visuals and stories.</p>
+<p>Since <strong>2010</strong>, VAC has been a place to <strong>learn, create, experiment, and inspire</strong>.</p>
 </td>
 <td width="51%" valign="top">
-
-**THE STORIES WE PRESERVE**
-
-VAC is a home for people who notice the unnoticed: a fleeting expression, a carefully composed image, an unforgettable sequence, an idea waiting to become art. Each project contributes something larger than itself. Together, these moments form a growing creative memory of **Eastern University**.
-
+<p><strong>THE STORIES WE PRESERVE</strong></p>
+<p>VAC is a home for people who notice the unnoticed: a fleeting expression, a carefully composed image, an unforgettable sequence, an idea waiting to become art. Each project contributes something larger than itself. Together, these moments form a growing creative memory of <strong>Eastern University</strong>.</p>
 </td>
 </tr>
 </table>
 
 <div align="center">
 
-*A club's work deserves more than a temporary announcement or a forgotten folder.*  
-*This space gives it a presence, a story and a future.*
+<em>A club's work deserves more than a temporary announcement or a forgotten folder.</em>
+
+<br />
+
+<strong>This space gives it a presence, a story and a future.</strong>
 
 </div>
 
@@ -87,33 +83,30 @@ VAC is a home for people who notice the unnoticed: a fleeting expression, a care
 
 <div align="center">
 
-**CINEMATIC DEPTH &nbsp; · &nbsp; EDITORIAL MINIMALISM &nbsp; · &nbsp; HUMAN-CENTERED INTERACTION**
+<strong>CINEMATIC DEPTH &nbsp; · &nbsp; EDITORIAL MINIMALISM &nbsp; · &nbsp; HUMAN-CENTERED INTERACTION</strong>
 
 </div>
 
 <table>
 <tr>
 <td width="50%" valign="top">
-
-**01 / A DISTINCT VISUAL LANGUAGE**
-
-The VAC experience brings the visual language of a professional creative studio into a university club. Layered photography, rich midnight tones, warm orange highlights, dramatic editorial typography and **3D-inspired, pointer-responsive depth** make the first impression unmistakably VAC.
-
+<p><strong>01 / A DISTINCT VISUAL LANGUAGE</strong></p>
+<p>The VAC experience brings the visual language of a professional creative studio into a university club. Layered photography, rich midnight tones, warm orange highlights, dramatic editorial typography and <strong>3D-inspired, pointer-responsive depth</strong> make the first impression unmistakably VAC.</p>
 </td>
 <td width="50%" valign="top">
-
-**02 / MOVEMENT WITH PURPOSE**
-
-Every glow, reveal, highlight, motion accent and transition has a purpose. Movement brings life to the story without getting in the way of it. Navigation stays clear, reading remains comfortable and layouts adapt from **mobile screens to wide desktop displays**. Visitors who prefer reduced motion can experience the same content without unnecessary animation.
-
+<p><strong>02 / MOVEMENT WITH PURPOSE</strong></p>
+<p>Every glow, reveal, highlight, motion accent and transition has a purpose. Movement brings life to the story without getting in the way of it. Navigation stays clear, reading remains comfortable and layouts adapt from <strong>mobile screens to wide desktop displays</strong>. Visitors who prefer reduced motion can experience the same content without unnecessary animation.</p>
 </td>
 </tr>
 </table>
 
 <div align="center">
 
-*The interface does not exist to show off effects.*  
-**It exists to make creative work, people and moments worth exploring.**
+<em>The interface does not exist to show off effects.</em>
+
+<br />
+
+<strong>It exists to make creative work, people and moments worth exploring.</strong>
 
 </div>
 
@@ -122,62 +115,38 @@ Every glow, reveal, highlight, motion accent and transition has a purpose. Movem
 <table>
 <tr>
 <td width="50%" valign="top">
-
-#### ◈ THE PEOPLE
-
-**The faces behind the frames.**
-
-A committee experience designed around the people who build VAC. Distinct member profiles, portraits, positions and contact details make the organization feel present and approachable, with its President featured as part of the club's story.
-
+<h4>◈ THE PEOPLE</h4>
+<p><strong>The faces behind the frames.</strong></p>
+<p>A committee experience designed around the people who build VAC. Distinct member profiles, portraits, positions and contact details make the organization feel present and approachable, with its President featured as part of the club's story.</p>
 </td>
 <td width="50%" valign="top">
-
-#### ◈ THE CREATIVE ARCHIVE
-
-**A place for work that deserves to last.**
-
-Photography, video thumbnails, memorable events and featured projects have a structured home. Video previews connect back to VAC's original Facebook posts so the work retains its context and community.
-
+<h4>◈ THE CREATIVE ARCHIVE</h4>
+<p><strong>A place for work that deserves to last.</strong></p>
+<p>Photography, video thumbnails, memorable events and featured projects have a structured home. Video previews connect back to VAC's original Facebook posts so the work retains its context and community.</p>
 </td>
 </tr>
 <tr>
 <td valign="top">
-
-#### ◈ THE LIVING CALENDAR
-
-**Stories still waiting to happen.**
-
-Events, announcements, future activities, banners and countdowns bring campus life into focus. Today's activity becomes tomorrow's archive.
-
+<h4>◈ THE LIVING CALENDAR</h4>
+<p><strong>Stories still waiting to happen.</strong></p>
+<p>Events, announcements, future activities, banners and countdowns bring campus life into focus. Today's activity becomes tomorrow's archive.</p>
 </td>
 <td valign="top">
-
-#### ◈ THE MEMBERSHIP JOURNEY
-
-**A thoughtful welcome to a creative community.**
-
-A branded digital application, membership information, downloadable PDF record and manual bKash payment verification through the official WhatsApp contact turn a paper form into a clear online experience.
-
+<h4>◈ THE MEMBERSHIP JOURNEY</h4>
+<p><strong>A thoughtful welcome to a creative community.</strong></p>
+<p>A branded digital application, membership information, downloadable PDF record and manual bKash payment verification through the official WhatsApp contact turn a paper form into a clear online experience.</p>
 </td>
 </tr>
 <tr>
 <td valign="top">
-
-#### ◈ THE CONTROL ROOM
-
-**Built to keep evolving.**
-
-An authenticated administration experience supports the maintenance of club information, committee profiles, events, media and membership applications without rebuilding the public website each time.
-
+<h4>◈ THE CONTROL ROOM</h4>
+<p><strong>Built to keep evolving.</strong></p>
+<p>An authenticated administration experience supports the maintenance of club information, committee profiles, events, media and membership applications without rebuilding the public website each time.</p>
 </td>
 <td valign="top">
-
-#### ◈ THE ENGINE BENEATH THE ART
-
-**Creative expression with a real application behind it.**
-
-The website pairs **Next.js, React and TypeScript** with **Supabase** for managed data, authentication and media, and **Vercel** for its live deployment. The visual identity and the operational foundation are designed to work together.
-
+<h4>◈ THE ENGINE BENEATH THE ART</h4>
+<p><strong>Creative expression with a real application behind it.</strong></p>
+<p>The website pairs <strong>Next.js, React and TypeScript</strong> with <strong>Supabase</strong> for managed data, authentication and media, and <strong>Vercel</strong> for its live deployment. The visual identity and the operational foundation are designed to work together.</p>
 </td>
 </tr>
 </table>
@@ -273,22 +242,14 @@ The live website is the front door. The people and conversations behind it live 
 <table>
 <tr>
 <td width="50%" valign="top">
-
-**© 2026 · ALL RIGHTS RESERVED**
-
-Copyright (c) 2026 Rezwan Hossain Prince and Visual Archive Club, Eastern University. All rights reserved.
-
-This source code is published for viewing only. No permission is granted to copy, modify, distribute, sublicense or deploy this code, or to use the VAC and Eastern University names and branding, in whole or in part, without prior written permission.
-
+<p><strong>© 2026 · ALL RIGHTS RESERVED</strong></p>
+<p>Copyright (c) 2026 Rezwan Hossain Prince and Visual Archive Club, Eastern University. All rights reserved.</p>
+<p>This source code is published for viewing only. No permission is granted to copy, modify, distribute, sublicense or deploy this code, or to use the VAC and Eastern University names and branding, in whole or in part, without prior written permission.</p>
 </td>
 <td width="50%" valign="top">
-
-**ORIGINAL IDENTITY · PROTECTED WORK**
-
-The original names, logos, identity and creative materials of **Visual Archive Club** and **Eastern University** must be respected. Written authorization must be obtained from the relevant rights holders before any proposed use.
-
-The [LICENSE](./LICENSE) contains the proprietary notice for this revision.
-
+<p><strong>ORIGINAL IDENTITY · PROTECTED WORK</strong></p>
+<p>The original names, logos, identity and creative materials of <strong>Visual Archive Club</strong> and <strong>Eastern University</strong> must be respected. Written authorization must be obtained from the relevant rights holders before any proposed use.</p>
+<p>The <a href="./LICENSE">LICENSE</a> contains the proprietary notice for this revision.</p>
 </td>
 </tr>
 </table>
@@ -318,7 +279,7 @@ The [LICENSE](./LICENSE) contains the proprietary notice for this revision.
 
 <strong>DESIGNED & DEVELOPED BY</strong>
 
-<h2><a href="https://www.facebook.com/rz.hs.prince">REZWAN HOSSAIN PRINCE</a></h2>
+<h2>REZWAN HOSSAIN PRINCE</h2>
 
 <strong>President · Visual Archive Club</strong>
 
