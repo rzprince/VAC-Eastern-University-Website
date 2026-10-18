@@ -1,7 +1,41 @@
-.next
-node_modules
+# Framework output and dependencies
+.next/
+node_modules/
+.vercel/
+out/
+dist/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# All local or production environment files, except the empty template
 .env
-.env.local
-.vercel
+.env.*
+!.env.example
+
+# Keys, credentials and exports must stay outside Git
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*.json
+*service-account*.json
+*.secret
+secrets/
+private/
+backups/
+exports/
+
+# Personal membership documents and data exports
+VAC-Membership-*.pdf
+membership-applications/
+member-applications/
+*.sqlite
+*.db
+
+# Operating system / editors
 *.log
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/

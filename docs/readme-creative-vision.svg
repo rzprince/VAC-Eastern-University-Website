@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 160" width="1200" height="160" role="img" aria-labelledby="title desc">
+<title id="title">Visual Archive Club creative vision</title>
+<desc id="desc">Seven VAC creative disciplines presented as a subtle animated editorial filmstrip.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#0B121C"/><stop offset=".54" stop-color="#141B25"/><stop offset="1" stop-color="#0A0E14"/>
+  </linearGradient>
+  <linearGradient id="light" x1="0" y1="0" x2="1" y2="0">
+    <stop stop-color="#FF8B3C" stop-opacity="0"/><stop offset=".48" stop-color="#FFAF6C"/><stop offset="1" stop-color="#FF8B3C" stop-opacity="0"/>
+  </linearGradient>
+  <pattern id="grain" width="54" height="54" patternUnits="userSpaceOnUse">
+    <path d="M54 0H0V54" stroke="#F0E8DB" stroke-opacity=".035" fill="none"/>
+  </pattern>
+</defs>
+<style>
+  .pulse { animation: pulse 4.8s ease-in-out infinite; }
+  .glint { animation: glint 8.5s ease-in-out infinite; }
+  .reel { animation: reel 35s linear infinite; transform-origin: 1110px 80px; }
+  .caption { font: 700 12px Arial,Helvetica,sans-serif;letter-spacing:1.35px; }
+  @keyframes pulse { 0%,100%{opacity:.38} 50%{opacity:1} }
+  @keyframes glint { 0%,62%{transform:translateX(-330px);opacity:0} 77%{opacity:.6} 100%{transform:translateX(1450px);opacity:0} }
+  @keyframes reel { to {transform:rotate(360deg)} }
+  @media (prefers-reduced-motion:reduce) { .pulse,.glint,.reel { animation:none } }
+</style>
+<rect width="1200" height="160" rx="20" fill="url(#bg)"/>
+<rect width="1200" height="160" rx="20" fill="url(#grain)"/>
+<rect x="1" y="1" width="1198" height="158" rx="19" fill="none" stroke="#F1C7A6" stroke-opacity=".18"/>
+<path d="M36 31h74" stroke="#FF9D59" stroke-width="2" stroke-linecap="round"/>
+<circle class="pulse" cx="124" cy="31" r="3" fill="#FFA663"/>
+<text x="38" y="61" fill="#CCA98B" font-size="11" font-family="Arial,Helvetica,sans-serif" letter-spacing="2.8" font-weight="700">OUR CREATIVE UNIVERSE</text>
+<text x="38" y="101" fill="#F9F6F1" font-size="28" font-family="Georgia,serif" font-weight="bold">Different perspectives.</text>
+<text x="38" y="132" fill="#FFAD6F" font-size="28" font-family="Georgia,serif" font-style="italic">One collective story.</text>
+<g fill="none" stroke="#F9D2B2" stroke-opacity=".4" stroke-width="1.2">
+ <path d="M490 40v80" stroke-dasharray="3 7"/>
+</g>
+<g class="caption" fill="#D6DCE0">
+ <text x="518" y="57">PHOTOGRAPHY</text>
+ <text x="518" y="88">VIDEOGRAPHY</text>
+ <text x="518" y="119">FILMMAKING</text>
+ <text x="727" y="57">STORYTELLING</text>
+ <text x="727" y="88">CONTENT CREATION</text>
+ <text x="727" y="119">ART EXHIBITIONS</text>
+ <text x="944" y="143" fill="#FFA663">DIGITAL ART</text>
+</g>
+<g class="reel" fill="none" stroke="#EDAA78" stroke-opacity=".42" stroke-width="2">
+ <circle cx="1110" cy="75" r="54"/>
+ <circle cx="1110" cy="75" r="13"/>
+ <circle cx="1110" cy="35" r="11"/><circle cx="1150" cy="75" r="11"/>
+ <circle cx="1110" cy="115" r="11"/><circle cx="1070" cy="75" r="11"/>
+</g>
+<path class="glint" d="M-350 0h120l-45 160h-120z" fill="url(#light)" opacity=".6"/>
+</svg>

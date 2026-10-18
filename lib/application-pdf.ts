@@ -3,7 +3,6 @@ import {
   PDFDocument, StandardFonts, rgb,
   type PDFFont, type PDFPage, type PDFImage
 } from "pdf-lib";
-import { PRINCE_SIGNATURE_PATH } from "@/lib/prince-signature";
 import { VAC_LOGO_WEBP, EU_LOGO_WEBP } from "@/lib/brand-pdf-assets";
 
 export type MembershipPdfData = {
@@ -248,12 +247,13 @@ export async function createMembershipPdf(data: MembershipPdfData) {
   text(page, "RECEIVED  /  AWAITING TRX ID VERIFICATION",
     margin + 2, top - 45, 7.5, bold, colors.muted);
 
-  // Direct vector line segments avoid expensive SVG-path parsing in serverless.
-  // The point geometry was traced from the transparent signature supplied by VAC.
+  // The President's signature artwork is supplied by a private server-only setting.
+  // It is an acknowledgement, not a payment verification.
+  const signaturePath = process.env.VAC_PRESIDENT_SIGNATURE_PATH || "";
   const signX = W - margin - 136;
   const signY = top + 5;
   const signScale = 0.16;
-  for (const contour of PRINCE_SIGNATURE_PATH.split(" M").map((path, i) => i === 0 ? path : "M" + path)) {
+  for (const contour of signaturePath.split(" M").map((path, i) => i === 0 ? path : "M" + path)) {
     const points = Array.from(contour.matchAll(/[ML]([0-9]+),([0-9]+)/g),
       ([, px, py]) => ({ x: signX + Number(px) * signScale, y: signY - Number(py) * signScale }));
     if (points.length < 2) continue;

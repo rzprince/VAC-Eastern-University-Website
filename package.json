@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "security:test": "node --experimental-strip-types --test tests/security.test.mjs",
-    "security:audit": "npm audit --omit=dev --audit-level=high"
+    "security:audit": "npm audit --omit=dev --audit-level=high",
+    "security:public": "node --test tests/public-repository.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
