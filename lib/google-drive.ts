@@ -67,9 +67,7 @@ export async function uploadMembershipPdfToDrive({
 }): Promise<DriveUploadResult> {
   const email = process.env.GOOGLE_DRIVE_SERVICE_ACCOUNT_EMAIL;
   const privateKey = process.env.GOOGLE_DRIVE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-  const folderId =
-    process.env.GOOGLE_DRIVE_FOLDER_ID ||
-    "1JPVZHucyP8lqSxIeDAINvOXZT8462vA2";
+  const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
   if (!email || !privateKey || !folderId) {
     return { status: "not_configured" };
