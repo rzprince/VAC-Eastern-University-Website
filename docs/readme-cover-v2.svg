@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="452" viewBox="0 0 1200 452" role="img" aria-labelledby="title description">
+<title id="title">Visual Archive Club — Eastern University</title>
+<desc id="description">Cinematic midnight-blue banner featuring expressive ivory and ember-orange typography alongside a large photographic-style sunset film frame, with an animated recording light and gentle cinematic motion.</desc>
+<defs>
+  <linearGradient id="back" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#101923"/><stop offset=".52" stop-color="#0A1119"/><stop offset="1" stop-color="#17141A"/>
+  </linearGradient>
+  <radialGradient id="halo"><stop stop-color="#FF984D" stop-opacity=".25"/><stop offset="1" stop-color="#FF984D" stop-opacity="0"/></radialGradient>
+  <linearGradient id="titleOrange" x1="0" y1="0" x2="1" y2=".5">
+    <stop stop-color="#FFBD84"/><stop offset=".48" stop-color="#FF964C"/><stop offset="1" stop-color="#E66E32"/>
+  </linearGradient>
+  <linearGradient id="sky" x1="0" y1="0" x2=".75" y2="1">
+    <stop stop-color="#29354B"/><stop offset=".35" stop-color="#66505B"/>
+    <stop offset=".72" stop-color="#B76C56"/><stop offset="1" stop-color="#E9A16A"/>
+  </linearGradient>
+  <radialGradient id="sun"><stop stop-color="#FFE1AA" stop-opacity=".95"/><stop offset=".33" stop-color="#FFC08B" stop-opacity=".5"/><stop offset="1" stop-color="#FFC08B" stop-opacity="0"/></radialGradient>
+  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#EBD9CC" stop-opacity=".20"/><stop offset=".45" stop-color="#FFFFFF" stop-opacity=".02"/><stop offset="1" stop-color="#08121D" stop-opacity=".32"/>
+  </linearGradient>
+  <pattern id="lines" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0H0V56" stroke="#F5EEE4" stroke-opacity=".035" fill="none"/></pattern>
+  <pattern id="grain" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="6" r=".65" fill="#FFF" opacity=".09"/><circle cx="7" cy="1" r=".55" fill="#FFE0BB" opacity=".11"/></pattern>
+  <clipPath id="screen"><rect x="730" y="82" width="387" height="284" rx="13"/></clipPath>
+  <filter id="soft"><feGaussianBlur stdDeviation="27"/></filter>
+</defs>
+<style>
+  .slowfloat{animation:slowfloat 8s ease-in-out infinite;transform-origin:925px 229px}
+  .record{animation:record 2.4s steps(1,end) infinite}
+  .lightline{animation:lightline 7s ease-in-out infinite}
+  @keyframes slowfloat {0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes record {0%,55%{opacity:1}56%,100%{opacity:.3}}
+  @keyframes lightline {0%,100%{opacity:.35}50%{opacity:1}}
+  @media(prefers-reduced-motion:reduce){.slowfloat,.record,.lightline{animation:none!important}}
+</style>
+<rect width="1200" height="452" rx="24" fill="url(#back)"/>
+<rect width="1200" height="452" rx="24" fill="url(#lines)"/>
+<ellipse cx="913" cy="235" rx="300" ry="275" fill="url(#halo)"/>
+<rect x="1.5" y="1.5" width="1197" height="449" rx="22.5" fill="none" stroke="#EEC7A5" stroke-opacity=".24" stroke-width="1.5"/>
+<rect x="57" y="42" width="60" height="3" rx="1.5" fill="#FF9953"/>
+<rect x="128" y="42" width="21" height="3" rx="1.5" fill="#FF9953" opacity=".3"/>
+<circle cx="158" cy="43.5" r="3.3" fill="#FFA35F"/>
+<text x="60" y="78" font-family="Arial,Helvetica,sans-serif" font-size="12.5" font-weight="700" letter-spacing="3.2" fill="#E7CAB2">EASTERN UNIVERSITY  /  EST. 2010</text>
+<text x="55" y="176" font-family="Georgia,'Times New Roman',serif" font-size="99" font-weight="700" letter-spacing="-4.3" fill="#F9F5EF">VISUAL</text>
+<text x="54" y="278" font-family="Georgia,'Times New Roman',serif" font-size="103" font-style="italic" font-weight="700" letter-spacing="-6" fill="url(#titleOrange)">Archive</text>
+<text x="58" y="371" font-family="Georgia,'Times New Roman',serif" font-size="99" font-weight="700" letter-spacing="-4.3" fill="#F9F5EF">CLUB.</text>
+<path d="M61 391H102" stroke="#FFA45F" stroke-width="2.5" stroke-linecap="round"/>
+<text x="116" y="396" font-family="Arial,Helvetica,sans-serif" font-size="16" letter-spacing=".5" fill="#CBD0D4">Where every frame becomes history.</text>
+<text x="60" y="429" font-family="Arial,Helvetica,sans-serif" font-size="10.5" font-weight="700" letter-spacing="3" fill="#A78B79">CREATE  /  CAPTURE  /  REMEMBER</text>
+<g class="slowfloat">
+  <rect x="713" y="66" width="423" height="317" rx="24" fill="#0F1620" stroke="#DAB18E" stroke-opacity=".47" stroke-width="1.5"/>
+  <rect x="721" y="74" width="407" height="301" rx="19" fill="#17212D"/>
+  <g clip-path="url(#screen)">
+    <rect x="730" y="82" width="387" height="284" fill="url(#sky)"/>
+    <ellipse cx="1006" cy="212" rx="122" ry="108" fill="url(#sun)"/>
+    <path d="M730 222C805 193 828 210 892 185S1017 187 1117 158" stroke="#F4BF9A" stroke-opacity=".23" stroke-width="17" fill="none" filter="url(#soft)"/>
+    <path d="M730 284L776 264L820 238L879 263L950 221L1018 248L1062 214L1117 247V366H730Z" fill="#263342" opacity=".95"/>
+    <path d="M730 321L789 288L852 308L924 265L996 297L1050 267L1117 302V366H730Z" fill="#172532"/>
+    <path d="M730 350L781 325L837 336L906 303L982 327L1040 306L1117 334V366H730Z" fill="#0C1B27"/>
+    <path d="M1035 270l13 -55 13 55 11 96h-48z" fill="#0B1822" opacity=".98"/>
+    <path d="M1050 220v145" stroke="#101B24" stroke-width="3"/>
+    <path d="M806 366l16 -99 11 0 17 99z" fill="#111C27"/>
+    <path d="M807 288l39 -10-19 26z" fill="#101A23"/>
+    <rect x="730" y="82" width="387" height="284" fill="url(#grain)" opacity=".5"/>
+    <rect x="730" y="82" width="387" height="284" fill="url(#glass)"/>
+    <path d="M749 121v-21h24M1098 121v-21h-24M749 330v21h24M1098 330v21h-24" fill="none" stroke="#FAE0C8" stroke-opacity=".78" stroke-width="2"/>
+    <circle cx="923" cy="226" r="26" stroke="#F4D8BF" stroke-opacity=".65" stroke-width="1" fill="none"/>
+    <path d="M889 226h14m40 0h14m-34 -34v14m0 40v14" stroke="#F4D8BF" stroke-opacity=".65" stroke-width="1.3"/>
+  </g>
+  <rect x="730" y="82" width="387" height="284" rx="13" fill="none" stroke="#FCB783" stroke-opacity=".39" stroke-width="1.6"/>
+  <rect x="1006" y="38" width="110" height="32" rx="16" fill="#1D222B" stroke="#F7A568" stroke-opacity=".72"/>
+  <circle class="record" cx="1024" cy="54" r="4" fill="#FF9750"/>
+  <text x="1037" y="58.2" font-family="Arial,Helvetica,sans-serif" font-size="11" font-weight="700" letter-spacing="1.5" fill="#F5E2D3">REC  01</text>
+</g>
+<rect x="751" y="389" width="358" height="34" rx="7" fill="#1B2531" stroke="#D9B596" stroke-opacity=".28"/>
+<circle class="record" cx="770" cy="406" r="3.5" fill="#FF9C55"/>
+<text x="785" y="410" font-family="Arial,Helvetica,sans-serif" font-size="11" font-weight="700" letter-spacing="1.7" fill="#E6D7C7">FRAME 001</text>
+<path class="lightline" d="M904 406h36" stroke="#FFA867" stroke-width="1.4"/>
+<text x="954" y="410" font-family="Arial,Helvetica,sans-serif" font-size="11" font-weight="700" letter-spacing="1.4" fill="#F2EEE9">THE ARCHIVE</text>
+<path d="M1156 96v240" stroke="#EC9C65" stroke-opacity=".26" stroke-width="1.5" stroke-dasharray="3 9"/>
+<path class="lightline" d="M1156 96v58" stroke="#FFAC72" stroke-opacity=".9" stroke-width="1.5" stroke-dasharray="3 9"/>
+</svg>
