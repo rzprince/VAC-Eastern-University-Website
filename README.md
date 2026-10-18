@@ -1,36 +1,42 @@
 <div align="center">
 
-<a href="https://vac-eastern-university.vercel.app">
-  <img src="./docs/readme-cover.svg" alt="Visual Archive Club | Where every frame becomes history" width="100%" />
+<a href="https://vac-eastern-university.vercel.app" title="Enter the official VAC website">
+  <img src="./docs/readme-cover.svg" width="100%" alt="Visual Archive Club at Eastern University. Where every frame becomes history. Cinematic animated editorial artwork." />
 </a>
 
-<br/>
+<br />
 
-### A living archive for the next generation of visual storytellers.
+<img src="./public/vac-logo.webp" width="134" alt="Original Visual Archive Club logo" />
+&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="./public/eastern-university-logo.webp" width="158" alt="Original Eastern University logo" />
 
-<sub>EST. 2010 &nbsp; • &nbsp; EASTERN UNIVERSITY &nbsp; • &nbsp; DHAKA, BANGLADESH</sub>
+<br />
 
-<br/><br/>
+<h2>Not just a website. A universe of visual stories.</h2>
 
-[**Enter the VAC experience ↗**](https://vac-eastern-university.vercel.app) &nbsp;·&nbsp;
-[**Discover the archive ↗**](https://vac-eastern-university.vercel.app/archive) &nbsp;·&nbsp;
-[**Meet the people ↗**](https://vac-eastern-university.vercel.app/#committee) &nbsp;·&nbsp;
-[**Become a member ↗**](https://vac-eastern-university.vercel.app/join)
+<strong>VISUAL ARCHIVE CLUB</strong> &nbsp; ✦ &nbsp; <strong>EASTERN UNIVERSITY</strong> &nbsp; ✦ &nbsp; <strong>EST. 2010</strong>
 
-<br/><br/>
+<br /><br />
 
-[![Build](https://github.com/rzprince/VAC-Eastern-University-Website/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rzprince/VAC-Eastern-University-Website/actions/workflows/ci.yml)
-![Next.js](https://img.shields.io/badge/Next.js-16-121923?style=flat-square&logo=nextdotjs&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-React-121923?style=flat-square&logo=typescript&logoColor=91BBFF)
-![Supabase](https://img.shields.io/badge/Database-Supabase-121923?style=flat-square&logo=supabase&logoColor=84E1BB)
-![Vercel](https://img.shields.io/badge/Hosted_on-Vercel-121923?style=flat-square&logo=vercel&logoColor=white)
-[![MIT](https://img.shields.io/badge/Code-MIT_License-121923?style=flat-square)](./LICENSE)
+<em>Where every frame becomes history.</em>
+
+<br /><br />
+
+<a href="https://vac-eastern-university.vercel.app" title="Enter the official VAC website">
+<img src="https://img.shields.io/badge/ENTER_THE_EXPERIENCE-FF963F?style=for-the-badge&logo=vercel&logoColor=161B22&labelColor=121A25" alt="Enter the VAC live website" /></a>
+&nbsp;
+<a href="https://vac-eastern-university.vercel.app/join" title="Official VAC membership">
+<img src="https://img.shields.io/badge/BECOME_A_MEMBER-FF963F?style=for-the-badge&logo=googledocs&logoColor=white&labelColor=121A25" alt="Join Visual Archive Club" /></a>
+
+<br /><br />
+
+<sub>A cinematic digital home for the creative minds of Eastern University, Dhaka, Bangladesh.</sub>
 
 </div>
 
-<br/>
+---
 
-## ✦ The story behind the frame
+### THE STORY BEHIND THE FRAME
 
 > **Visual Archive Club (VAC) is a club for creative minds.**
 
@@ -38,184 +44,230 @@ From photography and filmmaking to videography and content creation, we bring id
 
 Since **2010**, VAC has been a place to **learn, create, experiment, and inspire**.
 
-We believe that a photograph can preserve a feeling. A film can spark a conversation. An exhibition can change how somebody sees the world. The VAC website is where those moments meet a community and become a growing visual record of Eastern University.
+VAC is a home for people who notice the unnoticed: a fleeting expression, a carefully composed image, an unforgettable sequence, an idea waiting to become art. Each project contributes something larger than itself. Together, these moments form a growing creative memory of **Eastern University**.
 
-<br/>
+A club's work deserves more than a temporary announcement or a forgotten folder. This space gives it a presence, a story and a future.
 
-<img src="./docs/readme-creative-vision.svg" alt="VAC's seven creative disciplines: photography, videography, filmmaking, storytelling, content creation, art exhibitions and digital art." width="100%" />
+<br />
 
-<br/>
+<div align="center">
+<img src="./docs/readme-creative-vision.svg" width="100%" alt="Animated visual strip introducing the creative disciplines of Visual Archive Club." />
 
-## Designed like a studio. Built for a community.
+<br />
 
-This is more than a club landing page. It combines a cinematic, editorial experience with the tools a student-led creative organization needs to keep its work alive across committees and years.
+<strong>PHOTOGRAPHY &nbsp; · &nbsp; VIDEOGRAPHY &nbsp; · &nbsp; CONTENT CREATION &nbsp; · &nbsp; STORYTELLING</strong>
+
+<strong>FILMMAKING &nbsp; · &nbsp; ART EXHIBITIONS &nbsp; · &nbsp; DIGITAL ART</strong>
+</div>
+
+---
+
+### THE EXPERIENCE IS THE IDENTITY
+
+<div align="center">
+
+**CINEMATIC DEPTH &nbsp; · &nbsp; EDITORIAL MINIMALISM &nbsp; · &nbsp; HUMAN-CENTERED INTERACTION**
+
+</div>
+
+The VAC experience brings the visual language of a professional creative studio into a university club. Layered photography, rich midnight tones, warm orange highlights, dramatic editorial typography and **3D-inspired, pointer-responsive depth** make the first impression unmistakably VAC.
+
+Every glow, reveal, highlight, motion accent and transition has a purpose. Movement brings life to the story without getting in the way of it. Navigation stays clear, reading remains comfortable and layouts adapt from **mobile screens to wide desktop displays**. Visitors who prefer reduced motion can experience the same content without unnecessary animation.
+
+The interface does not exist to show off effects. It exists to make creative work, people and moments worth exploring.
+
+<br />
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-**01 / The first impression**
+#### ◈ THE PEOPLE
 
-- Editorial type and photographic storytelling
-- Midnight tones with VAC's signature orange
-- Motion, depth and soft light
-- Responsive layouts for small screens and large displays
+**The faces behind the frames.**
+
+A committee experience designed around the people who build VAC. Distinct member profiles, portraits, positions and contact details make the organization feel present and approachable, with its President featured as part of the club's story.
 
 </td>
 <td width="50%" valign="top">
 
-**02 / A home for the work**
+#### ◈ THE CREATIVE ARCHIVE
 
-- Photography and moving-image gallery
-- Events, artwork and announcements
-- Video thumbnails linking to their original Facebook posts
-- Living archive designed to grow over time
+**A place for work that deserves to last.**
+
+Photography, video thumbnails, memorable events and featured projects have a structured home. Video previews connect back to VAC's original Facebook posts so the work retains its context and community.
 
 </td>
 </tr>
 <tr>
 <td valign="top">
 
-**03 / The people behind it**
+#### ◈ THE LIVING CALENDAR
 
-- Committee profiles and creative roles
-- President's featured profile
-- Club updates and community links
-- Branded membership journey
+**Stories still waiting to happen.**
+
+Events, announcements, future activities, banners and countdowns bring campus life into focus. Today's activity becomes tomorrow's archive.
 
 </td>
 <td valign="top">
 
-**04 / The tools behind the scenes**
+#### ◈ THE MEMBERSHIP JOURNEY
 
-- Content management for authorized club editors
-- Data-backed membership applications
-- Document receipts for submitted applications
-- A structured system for future committees
+**A thoughtful welcome to a creative community.**
+
+A branded digital application, membership information, downloadable PDF record and manual bKash payment verification through the official WhatsApp contact turn a paper form into a clear online experience.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+#### ◈ THE CONTROL ROOM
+
+**Built to keep evolving.**
+
+An authenticated administration experience supports the maintenance of club information, committee profiles, events, media and membership applications without rebuilding the public website each time.
+
+</td>
+<td valign="top">
+
+#### ◈ THE ENGINE BENEATH THE ART
+
+**Creative expression with a real application behind it.**
+
+The website pairs **Next.js, React and TypeScript** with **Supabase** for managed data, authentication and media, and **Vercel** for its live deployment. The visual identity and the operational foundation are designed to work together.
 
 </td>
 </tr>
 </table>
 
-<details>
-<summary><strong>What makes the interface feel different?</strong></summary>
+---
 
-<br/>
-
-The design system borrows the visual language of a studio rather than a traditional administration portal: confident negative space, art-directed imagery, expressive display typography and intentional interaction. Animation serves the story, not the other way around.
-
-Motion is an enhancement, not a dependency. Content remains accessible without animation, and the site supports reduced-motion preferences.
-
-</details>
-
-## Built with modern web tools
+### EXPLORE THE VAC WORLD
 
 <div align="center">
 
-| Creative layer | Technology |
-| :--- | :--- |
-| **Application experience** | Next.js App Router, React, TypeScript |
-| **Design & interaction** | Custom CSS, responsive layouts, progressive motion |
-| **Data platform** | Supabase PostgreSQL, Auth and Storage |
-| **Membership documents** | PDF generation in the application backend |
-| **Deployment** | Vercel and GitHub Actions |
+<a href="https://vac-eastern-university.vercel.app/" title="VAC homepage">
+<img src="https://img.shields.io/badge/EXPLORE-HOMEPAGE-1A2432?style=for-the-badge&logo=googlechrome&logoColor=FFB879&labelColor=FF9345" alt="Open VAC homepage" /></a>
+&nbsp;
+<a href="https://vac-eastern-university.vercel.app/archive" title="Photography and video archive">
+<img src="https://img.shields.io/badge/DISCOVER-ARCHIVE-1A2432?style=for-the-badge&logo=googlephotos&logoColor=FFB879&labelColor=FF9345" alt="Explore VAC archive" /></a>
+&nbsp;
+<a href="https://vac-eastern-university.vercel.app/events" title="Club events and announcements">
+<img src="https://img.shields.io/badge/SEE-EVENTS-1A2432?style=for-the-badge&logo=googlecalendar&logoColor=FFB879&labelColor=FF9345" alt="Explore VAC events" /></a>
+
+<br /><br />
+
+<a href="https://vac-eastern-university.vercel.app/#committee" title="Meet the VAC committee">
+<img src="https://img.shields.io/badge/MEET_THE-COMMITTEE-1A2432?style=for-the-badge&logo=googlemeet&logoColor=FFB879&labelColor=FF9345" alt="Meet VAC committee" /></a>
+&nbsp;
+<a href="https://vac-eastern-university.vercel.app/join" title="Join VAC">
+<img src="https://img.shields.io/badge/START_YOUR-STORY-1A2432?style=for-the-badge&logo=googledocs&logoColor=FFB879&labelColor=FF9345" alt="Apply for VAC membership" /></a>
 
 </div>
 
-Our goal is a maintainable project that a future VAC committee can extend as confidently as today's.
+---
 
-## A closer look
+### PEOPLE MAKE THE LEGACY
 
 <div align="center">
 
-<a href="https://vac-eastern-university.vercel.app"><b>Explore the homepage</b></a>
-&nbsp;&nbsp; ✧ &nbsp;&nbsp;
-<a href="https://vac-eastern-university.vercel.app/events"><b>What's happening</b></a>
-&nbsp;&nbsp; ✧ &nbsp;&nbsp;
-<a href="https://vac-eastern-university.vercel.app/archive"><b>Visual archive</b></a>
+#### REZWAN HOSSAIN PRINCE
 
-<br/><br/>
+**President · Visual Archive Club, Eastern University**
 
-<sub>New committee portraits, original gallery work and future event banners will make the experience even richer as VAC publishes them.</sub>
+**Website design, development and creative direction**
 
 </div>
 
-## Start developing
+Created with the conviction that a university club's digital presence can feel as considered, cinematic and purposeful as the work of a professional visual studio.
 
-You'll need a supported Node.js release, npm and a Supabase project. The repository provides an **empty environment-variable template**, not deployment credentials.
+The ambition is personal. The archive is collective. The value of VAC is in its photographers, filmmakers, artists, storytellers and future members. **Technology gives their creativity a lasting place to be seen.**
 
-```bash
-git clone https://github.com/rzprince/VAC-Eastern-University-Website.git
-cd VAC-Eastern-University-Website
-npm install
-cp .env.example .env.local
-npm run dev
-```
+<div align="center">
 
-Configure your *own* backend settings in `.env.local`. This file is excluded from Git. Database migrations are maintained in `supabase/migrations`; use a new development project rather than an existing live membership database.
+<a href="https://www.facebook.com/rz.hs.prince" title="Rezwan Hossain Prince on Facebook">
+<img src="https://img.shields.io/badge/REZWAN_HOSSAIN_PRINCE-FACEBOOK-161E2A?style=for-the-badge&logo=facebook&logoColor=FFAB66&labelColor=232D3B" alt="Rezwan Hossain Prince personal Facebook profile" /></a>
 
-To verify changes:
+</div>
 
-```bash
-npm run security:test
-npm run security:public
-npm run security:audit
-npx tsc --noEmit
-npm run build
-```
+---
 
-<details>
-<summary><strong>Repository structure</strong></summary>
+### THE OFFICIAL COMMUNITY
+
+The live website is the front door. The people and conversations behind it live in VAC's official spaces. Each destination below opens the genuine club resource.
+
+<div align="center">
+
+<a href="https://www.facebook.com/visualarchiveeu" title="Official VAC Facebook page">
+<img src="https://img.shields.io/badge/OFFICIAL_FACEBOOK-PAGE-162235?style=for-the-badge&logo=facebook&logoColor=FFB679&labelColor=24334A" alt="Visit VAC official Facebook Page" /></a>
+&nbsp;
+<a href="https://www.facebook.com/groups/603306963175089" title="VAC Facebook community group">
+<img src="https://img.shields.io/badge/VAC_FACEBOOK-GROUP-162235?style=for-the-badge&logo=facebook&logoColor=FFB679&labelColor=24334A" alt="Visit VAC official Facebook group" /></a>
+&nbsp;
+<a href="mailto:vac.easternuni@gmail.com" title="Contact Visual Archive Club by email">
+<img src="https://img.shields.io/badge/OFFICIAL_VAC-EMAIL-162235?style=for-the-badge&logo=gmail&logoColor=FFB679&labelColor=24334A" alt="Email Visual Archive Club at vac.easternuni@gmail.com" /></a>
+
+<br /><br />
+
+<sub>Official contact: vac.easternuni@gmail.com &nbsp; · &nbsp; Eastern University, Bangladesh</sub>
+
+</div>
+
+---
+
+### PROPRIETARY SOURCE & COPYRIGHT
+
+<div align="center">
+<img src="./docs/readme-proprietary.svg" width="100%" alt="Animated copyright notice: proprietary source, viewing only and all rights reserved." />
+</div>
+
+> **SOURCE-AVAILABLE FOR VIEWING ONLY. NOT OPEN SOURCE.**  
+> Public visibility does **not** mean permission to reproduce, adapt, host, redistribute, sublicense or commercially exploit the website or its branding.
 
 ```text
-app/             Pages, app layouts and application endpoints
-components/      Reusable UI and interactive experiences
-lib/             Data access and server-side functionality
-public/          VAC and Eastern University design assets
-docs/            Visuals and project documentation
-supabase/        Database migrations and server functions
-tests/           Automated quality checks
+Copyright (c) 2026 Rezwan Hossain Prince and Visual Archive Club, Eastern University.
+All rights reserved.
+
+This source code is published for viewing only. No permission is granted to copy,
+modify, distribute, sublicense or deploy this code, or to use the VAC and
+Eastern University names and branding, in whole or in part, without prior
+written permission.
 ```
 
-</details>
+The original names, logos, identity and creative materials of **Visual Archive Club** and **Eastern University** must be respected. Written authorization must be obtained from the relevant rights holders before any proposed use. The [LICENSE](./LICENSE) contains the proprietary notice for this revision.
 
-### Contributing
-
-Thoughtful contributions are welcome. For a new feature or visual change, open an issue or pull request describing the intention and showing before/after screenshots where useful. Keep changes accessible, mobile-friendly and consistent with the existing VAC identity.
-
-Never add personal membership records, credentials, private keys, application PDFs or other confidential material to commits, issues or pull requests. Use sample data for demonstrations.
-
-## From one committee to the next
-
-A new photographer brings a set of unforgettable frames. A filmmaker shares a story. An artist prepares an exhibition. A future committee carries them forward. **The archive gets better because the people keep creating.**
-
-<br/>
+<sub>Historical licensing clarification: earlier versions of this repository were published under MIT terms. This notice does not retroactively cancel permissions already granted for those earlier versions.</sub>
 
 ---
 
 <div align="center">
 
-<img src="./public/vac-logo.webp" alt="Visual Archive Club original logo" width="125" />
-&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="./public/eastern-university-logo.webp" alt="Eastern University original logo" width="145" />
+<img src="./public/vac-logo.webp" width="117" alt="Visual Archive Club original logo" />
+&nbsp;&nbsp;&nbsp;
+<img src="./public/eastern-university-logo.webp" width="144" alt="Eastern University original logo" />
 
-### WHERE EVERY FRAME BECOMES HISTORY.
+<br />
 
-**Visual Archive Club** &nbsp; · &nbsp; **Eastern University** &nbsp; · &nbsp; **Since 2010**
+### WHAT WE CREATE TODAY BECOMES THE STORY WE LEAVE BEHIND.
 
-<br/>
+**Visual Archive Club &nbsp; · &nbsp; Eastern University &nbsp; · &nbsp; Since 2010**
 
-[Official VAC Facebook Page ↗](https://www.facebook.com/visualarchiveeu) &nbsp;·&nbsp;
-[VAC Facebook Community ↗](https://www.facebook.com/groups/603306963175089)
+<br />
 
-<br/>
+<a href="https://vac-eastern-university.vercel.app" title="Open VAC official website">
+<img src="https://img.shields.io/badge/STEP_INTO_THE_ARCHIVE-FF9A4A?style=for-the-badge&logo=vercel&logoColor=141923&labelColor=1A2432" alt="Step into the Visual Archive Club website" /></a>
 
-Designed and developed by **[Rezwan Hossain Prince](https://www.facebook.com/rz.hs.prince)**
+<br /><br />
 
-<br/>
+<sub>Developed by <a href="https://www.facebook.com/rz.hs.prince"><strong>Rezwan Hossain Prince</strong></a> · President, VAC</sub>
 
-<sub>Created for the people who capture, create and remember.</sub>
+<br />
 
-<sub>The source code is MIT-licensed. VAC and Eastern University branding remains the property of its respective rights holders.</sub>
+<sub>© 2026 Rezwan Hossain Prince and Visual Archive Club, Eastern University. All rights reserved.</sub>
+
+<br />
+
+**The frame ends. The story continues.**
 
 </div>
