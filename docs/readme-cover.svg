@@ -1,6 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="title desc">
 <title id="title">Visual Archive Club, Eastern University</title>
 <desc id="desc">A cinematic midnight-blue cover with editorial lettering, warm amber accents, and an abstract film-frame collage. Where every frame becomes history.</desc>
+<style>
+  .film-stack {animation: floatFrame 9s ease-in-out infinite;transform-origin:943px 235px}
+  .word-light {animation: wordGlow 7s ease-in-out infinite}
+  .micro-glow {animation: microGlow 5s ease-in-out infinite}
+  @keyframes floatFrame {
+    0%,100% {transform:translateY(0)}
+    50% {transform:translateY(-7px)}
+  }
+  @keyframes wordGlow {
+    0%,100% {filter:drop-shadow(0 0 0 rgba(255,151,62,0))}
+    50% {filter:drop-shadow(0 0 12px rgba(255,151,62,.18))}
+  }
+  @keyframes microGlow {
+    0%,100% {opacity:.3}
+    50% {opacity:1}
+  }
+  @media (prefers-reduced-motion:reduce) {
+    .film-stack,.word-light,.micro-glow {animation:none !important}
+  }
+</style>
 <defs>
   <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101923"/><stop offset=".62" stop-color="#090f17"/><stop offset="1" stop-color="#15151a"/></linearGradient>
   <radialGradient id="warm"><stop stop-color="#F78538" stop-opacity=".27"/><stop offset="1" stop-color="#F78538" stop-opacity="0"/></radialGradient>
@@ -15,14 +35,14 @@
 <rect width="1200" height="470" rx="24" fill="url(#grid)"/>
 <ellipse cx="910" cy="188" rx="320" ry="310" fill="url(#warm)" filter="url(#blur)"/>
 <rect x="1" y="1" width="1198" height="468" rx="23" fill="none" stroke="#F5D9BE" stroke-opacity=".17"/>
-<path d="M55 34H146" stroke="#FF9A4F" stroke-width="2.5" stroke-linecap="round"/>
+<path class="micro-glow" d="M55 34H146" stroke="#FF9A4F" stroke-width="2.5" stroke-linecap="round"/>
 <circle cx="158" cy="34" r="3.5" fill="#FFA762"><animate attributeName="opacity" values=".4;1;.4" dur="4s" repeatCount="indefinite"/></circle>
 <text x="57" y="82" fill="#D4C6B6" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="4" font-weight="700">EASTERN UNIVERSITY  /  EST. 2010</text>
 <text x="51" y="191" fill="#F8F5F0" font-family="Georgia,'Times New Roman',serif" font-size="108" font-weight="700" letter-spacing="-5">VISUAL</text>
-<text x="51" y="293" fill="url(#orange)" font-family="Georgia,'Times New Roman',serif" font-size="106" font-style="italic" font-weight="700" letter-spacing="-7">Archive</text>
+<text class="word-light" x="51" y="293" fill="url(#orange)" font-family="Georgia,'Times New Roman',serif" font-size="106" font-style="italic" font-weight="700" letter-spacing="-7">Archive</text>
 <text x="55" y="382" fill="#F8F5F0" font-family="Georgia,'Times New Roman',serif" font-size="100" font-weight="700" letter-spacing="-5">CLUB.</text>
 <text x="59" y="427" fill="#BFC6CE" font-family="Arial,Helvetica,sans-serif" font-size="17" letter-spacing=".25">Where every frame becomes history.</text>
-<g opacity=".9">
+<g class="film-stack" opacity=".9">
   <rect x="791" y="82" width="306" height="315" rx="24" fill="#10151D" stroke="#FFE0BB" stroke-opacity=".21" transform="rotate(-3 944 239)"/>
   <rect x="803" y="95" width="282" height="288" rx="15" fill="url(#scene)"/>
   <g clip-path="url(#frame)">
