@@ -158,6 +158,7 @@ To verify changes:
 
 ```bash
 npm run security:test
+npm run security:public
 npm run security:audit
 npx tsc --noEmit
 npm run build
