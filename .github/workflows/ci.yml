@@ -27,6 +27,9 @@ jobs:
       - name: Synthetic security regression tests
         run: npm run security:test
 
+      - name: Check tracked files for public repository safety
+        run: npm run security:public
+
       - name: Audit runtime dependencies for high severity advisories
         run: npm run security:audit
 
